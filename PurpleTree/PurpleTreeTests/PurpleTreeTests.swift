@@ -1,15 +1,15 @@
 //
-//  Purple_TreeTests.swift
-//  Purple TreeTests
+//  PurpleTreeTests.swift
+//  PurpleTreeTests
 //
-//  Created by apple on 2019/10/4.
+//  Created by apple on 2019/11/2.
 //  Copyright © 2019 purpletree. All rights reserved.
 //
 
 import XCTest
-@testable import Purple_Tree
+@testable import PurpleTree
 
-class Purple_TreeTests: XCTestCase {
+class PurpleTreeTests: XCTestCase {
 
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.

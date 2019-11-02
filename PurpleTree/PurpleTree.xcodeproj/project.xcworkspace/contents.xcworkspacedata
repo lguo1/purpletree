@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:Purple Tree.xcodeproj">
+      location = "self:PurpleTree.xcodeproj">
    </FileRef>
 </Workspace>
