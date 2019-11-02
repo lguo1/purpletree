@@ -1,10 +1,14 @@
 [
     {
-        "title": "Prof Yin on HK",
-        "category": "Politics",
         "id": 1001,
-        "isFavorite": false,
+        "speaker": "George Yin",
+        "speakerTitle": "Political Science Professor",
+        "time": "4:30 pm",
+        "day": "Tue",
+        "date": "Oct 8th",
+        "imageName": "event_image",
+        "category": "Politics",
         "location": "Mccabe Atrium",
-        "imageName": "HK Protests"
+        "description": "What started as demonstrations against an extradition bill have since taken on a much wider scope. Multiple rumors and speculations sprung at the same time. In the age of post-truth politics, which version of the story should we believe? How should we judge this protest? How should we judge any social movement?"
     }
 ]
