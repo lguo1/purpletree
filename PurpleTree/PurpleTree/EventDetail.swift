@@ -13,12 +13,12 @@ struct EventDetail: View {
     var logo: Image
     var body: some View {
         GeometryReader { proxy in
-            VStack {
+            VStack(alignment: .leading) {
                 Profile(screenSize: proxy.size, event: self.event)
                 SpeakerDescription(screenSize: proxy.size, event: self.event, logo: self.logo)
-                    //.position(x: proxy.size.width/2, y:proxy.size.height*89/128)
+                    .padding(.bottom, proxy.size.height/24)
+                Text(self.event.description).italic()
                 Spacer()
-                Text(self.event.description)
                 }
             }
         .edgesIgnoringSafeArea(.top)
@@ -71,7 +71,7 @@ struct SpeakerDescription: View {
                 .frame(height: screenSize.height/16
             )
         }
-        .background(Rectangle().fill(Color.white).frame(height: screenSize.height*9/64))
+        //.background(Rectangle().fill(Color.white).frame(height: screenSize.height*9/64))
         
     }
 }
