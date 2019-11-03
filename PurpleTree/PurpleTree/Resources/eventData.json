@@ -10,5 +10,17 @@
         "category": "Politics",
         "location": "Mccabe Atrium",
         "description": "What started as demonstrations against an extradition bill have since taken on a much wider scope. Multiple rumors and speculations sprung at the same time. In the age of post-truth politics, which version of the story should we believe? How should we judge this protest? How should we judge any social movement?"
+    },
+    {
+        "id": 1002,
+        "speaker": "Richard Eldridge",
+        "speakerTitle": "Philosophy Professor",
+        "time": "4:30 pm",
+        "day": "Tue",
+        "date": "Nov 19th",
+        "imageName": "event_image",
+        "category": "Philosophy",
+        "location": "Mccabe Atrium",
+        "description": "What is courage? Is it still relevant to us today?"
     }
 ]

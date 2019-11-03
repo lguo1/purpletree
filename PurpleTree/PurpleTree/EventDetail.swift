@@ -10,7 +10,7 @@ import SwiftUI
 
 struct EventDetail: View {
     var event: Event
-    var logo: Image
+    var logo: Image = Image("logo")
     var body: some View {
         GeometryReader { proxy in
             VStack(alignment: .leading) {
@@ -27,7 +27,7 @@ struct EventDetail: View {
 
 struct EventDetail_Previews: PreviewProvider {
     static var previews: some View {
-        EventDetail(event: EventData[0], logo: Image("logo"))
+        EventDetail(event: EventData[0])
     }
 }
 
