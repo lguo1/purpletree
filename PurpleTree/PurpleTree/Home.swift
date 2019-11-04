@@ -9,14 +9,28 @@
 import SwiftUI
 
 struct Home: View {
-    var items: [Event]
+    var items = EventData
+    var currentEvents: [Event] = EventData.filter({(event: Event) -> Bool in return event.current})
+    var futureEvents: [Event] = EventData.filter({(event: Event) -> Bool in return !event.current})
     var body: some View {
         NavigationView {
             ScrollView(.vertical, showsIndicators: false) {
-                VStack{
-                    ForEach(self.items) { event in
+                VStack (alignment: .leading){
+                    Text("this fall")
+                        .padding(.leading,60)
+                    ForEach(self.currentEvents) { event in
                         HomeRow(event: event)
-                                .padding()
+                            .padding(.leading)
+                            .padding(.bottom,20)
+                            .padding(.trailing)
+                    }
+                    Text("in the future")
+                        .padding(.leading,60)
+                    ForEach(self.futureEvents) { event in
+                        HomeRow(event: event)
+                            .padding(.leading)
+                            .padding(.bottom,20)
+                            .padding(.trailing)
                     }
                 }
             }
@@ -31,7 +45,7 @@ struct Home: View {
 
 struct Home_Previews: PreviewProvider {
     static var previews: some View {
-        Home(items: EventData)
+        Home()
     }
 }
 
@@ -40,11 +54,19 @@ struct HomeRow: View {
     var body: some View {
         HStack {
             VStack{
-                Text(event.month)
-                Text(event.monthday)
+                if event.current {
+                        Text(event.month)
+                        Text(event.monthday)
+                    }
+                else {
+                        Text(event.season)
+                        Text(event.year)
+                }
             }
             NavigationLink(
-            destination: EventDetail(event: event)){HomeItem(event: event)}
+            destination: EventDetail(event: event)){
+                    HomeItem(event: event)
+            }
         }
     }
 }
@@ -61,12 +83,12 @@ struct HomeItem: View {
             .frame(height: 155)
             .cornerRadius(10)
             .clipped()
-            .overlay(
-                Text(event.speaker)
-                    .font(.title)
-                    .padding(.leading, 5)
-                    .padding(.bottom, 5)
-                    .foregroundColor(.white),
-                alignment:.bottomLeading)
+        .overlay(
+        Text(event.speaker)
+            .font(.title)
+            .padding(.leading, 5)
+            .padding(.bottom, 5)
+            .foregroundColor(.white),
+        alignment:.bottomLeading)
     }
 }

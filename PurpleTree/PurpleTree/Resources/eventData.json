@@ -15,7 +15,7 @@
         "location": "Mccabe Atrium",
         "description": "What started as demonstrations against an extradition bill have since taken on a much wider scope. Multiple rumors and speculations sprung at the same time. In the age of post-truth politics, which version of the story should we believe? How should we judge this protest? How should we judge any social movement?",
         "interested": false,
-        "isDetermined": true
+        "current": true
     },
     {
         "id": 1,
@@ -33,7 +33,7 @@
         "location": "Mccabe Atrium",
         "description": "What is courage? Is it still relevant to us today?",
         "interested": true,
-        "isDetermined": true
+        "current": true
     },
     {
         "id": 3,
@@ -51,6 +51,6 @@
         "location": "Mccabe Atrium",
         "description": "What is courage? Is it still relevant to us today?",
         "interested": true,
-        "isDetermined": false
+        "current": false
     }
 ]

@@ -65,7 +65,6 @@ struct SpeakerDescription: View {
                     .font(.subheadline)
                 HStack(alignment: .top) {
                     Group {
-                        Text(event.weekday)
                         Text(event.date)
                         Text(event.time)
                     }

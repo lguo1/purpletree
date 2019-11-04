@@ -24,7 +24,7 @@ struct Event: Hashable, Codable, Identifiable {
     var location: String
     var description: String
     var interested: Bool
-    var isDetermined: Bool
+    var current: Bool
     
     enum Category: String, CaseIterable, Codable, Hashable {
         case politics = "Politics"
