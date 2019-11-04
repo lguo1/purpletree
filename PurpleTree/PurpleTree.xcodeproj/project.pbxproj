@@ -21,6 +21,7 @@
 		183A4802236DEF9A00FCDBCE /* logo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 183A4801236DEF9900FCDBCE /* logo.jpg */; };
 		183A4804236E008900FCDBCE /* event_image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 183A4803236E008900FCDBCE /* event_image.jpg */; };
 		183A4806236E23BC00FCDBCE /* EventList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183A4805236E23BB00FCDBCE /* EventList.swift */; };
+		18DCF2E7236F8061009A1DD3 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DCF2E6236F8060009A1DD3 /* Home.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +53,7 @@
 		183A4801236DEF9900FCDBCE /* logo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = logo.jpg; sourceTree = "<group>"; };
 		183A4803236E008900FCDBCE /* event_image.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = event_image.jpg; sourceTree = "<group>"; };
 		183A4805236E23BB00FCDBCE /* EventList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventList.swift; sourceTree = "<group>"; };
+		18DCF2E6236F8060009A1DD3 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 				183A47D1236DD71500FCDBCE /* SceneDelegate.swift */,
 				183A47FF236DD9D800FCDBCE /* EventDetail.swift */,
 				183A4805236E23BB00FCDBCE /* EventList.swift */,
+				18DCF2E6236F8060009A1DD3 /* Home.swift */,
 				183A47D5236DD71800FCDBCE /* Assets.xcassets */,
 				183A47DA236DD71800FCDBCE /* LaunchScreen.storyboard */,
 				183A47DD236DD71800FCDBCE /* Info.plist */,
@@ -254,6 +257,7 @@
 				183A47D2236DD71500FCDBCE /* SceneDelegate.swift in Sources */,
 				183A47F5236DD7F000FCDBCE /* Data.swift in Sources */,
 				183A47F7236DD81B00FCDBCE /* Event.swift in Sources */,
+				18DCF2E7236F8061009A1DD3 /* Home.swift in Sources */,
 				183A4800236DD9D800FCDBCE /* EventDetail.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

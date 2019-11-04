@@ -13,12 +13,18 @@ struct EventDetail: View {
     var logo: Image = Image("logo")
     var body: some View {
         GeometryReader { proxy in
-            VStack(alignment: .leading) {
-                Profile(screenSize: proxy.size, event: self.event)
-                SpeakerDescription(screenSize: proxy.size, event: self.event, logo: self.logo)
-                    .padding(.bottom, proxy.size.height/24)
-                Text(self.event.description).italic()
-                Spacer()
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(alignment: .leading) {
+                    Profile(screenSize: proxy.size, event: self.event)
+                    SpeakerDescription(event: self.event, logo: self.logo).environmentObject(UserData())
+                        .padding(.leading)
+                        .padding(.trailing)
+                        .padding(.bottom, proxy.size.height/24)
+                    Text(self.event.description)
+                        .padding(.leading)
+                        .padding(.trailing)
+                    Spacer()
+                    }
                 }
             }
         .edgesIgnoringSafeArea(.top)
@@ -38,40 +44,52 @@ struct Profile: View {
         event.image
             .resizable()
             .aspectRatio(contentMode: .fill)
-            .frame(width: screenSize.width, height: screenSize.height*5.5/8)
+            .frame(width: screenSize.width, height: screenSize.height*5/8)
             .clipped()
     }
 }
 
 struct SpeakerDescription: View {
-    let screenSize: CGSize
     var event: Event
     var logo: Image
+    @EnvironmentObject var userData: UserData
+    var eventIndex: Int {
+        userData.events.firstIndex(where: { $0.id == event.id })!
+    }
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
                 Text(event.speaker)
                     .font(.title)
-                    .fontWeight(.heavy)
-                Text(event.speakerTitle)
+                Text(event.speakerTitle).italic()
                     .font(.subheadline)
                 HStack(alignment: .top) {
                     Group {
-                        Text(event.day)
+                        Text(event.weekday)
                         Text(event.date)
                         Text(event.time)
                     }
                     .font(.subheadline)
                 }
+                Text(event.location)
+                .font(.subheadline)
             }
             Spacer()
-            logo
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: screenSize.height/16
-            )
+            Button(action: {
+                self.userData.events[self.eventIndex].interested.toggle()
+            }) {
+                if self.userData.events[self.eventIndex].interested {
+                    Image("logo")
+                        .renderingMode(.original)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 50)
+                } else {
+                    Text("register")
+                        .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
+                        .frame(height: 50)
+                }
+            }
         }
-        //.background(Rectangle().fill(Color.white).frame(height: screenSize.height*9/64))
-        
     }
 }
