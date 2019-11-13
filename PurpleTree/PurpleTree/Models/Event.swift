@@ -13,18 +13,18 @@ struct Event: Hashable, Codable, Identifiable {
     var speaker: String
     var speakerTitle: String
     var time: String
-    var weekday: String
-    var monthday: String
-    var month: String
-    var date: String
+    var weekday: String?
+    var monthday: String?
+    var month: String?
+    var date: String?
     var season: String
     var year: String
     fileprivate var imageName: String
-    var category: Category
+    var category: Category?
     var location: String
-    var description: String
-    var interested: Bool
+    var description: String?
     var current: Bool
+    var interested: Bool
     
     enum Category: String, CaseIterable, Codable, Hashable {
         case politics = "Politics"

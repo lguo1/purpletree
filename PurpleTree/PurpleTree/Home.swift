@@ -9,25 +9,23 @@
 import SwiftUI
 
 struct Home: View {
-    var items = EventData
-    var currentEvents: [Event] = EventData.filter({(event: Event) -> Bool in return event.current})
-    var futureEvents: [Event] = EventData.filter({(event: Event) -> Bool in return !event.current})
+    @EnvironmentObject private var userData: UserData
     var body: some View {
         NavigationView {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack (alignment: .leading){
                     Text("this fall")
                         .padding(.leading,60)
-                    ForEach(self.currentEvents) { event in
-                        HomeRow(event: event)
+                    ForEach((self.userData.current.events)!) { event in
+                        HomeRow(event: event).environmentObject(self.userData.current)
                             .padding(.leading)
                             .padding(.bottom,20)
                             .padding(.trailing)
                     }
                     Text("in the future")
                         .padding(.leading,60)
-                    ForEach(self.futureEvents) { event in
-                        HomeRow(event: event)
+                    ForEach((self.userData.future.events)!) { event in
+                        HomeRow(event: event).environmentObject(self.userData.future)
                             .padding(.leading)
                             .padding(.bottom,20)
                             .padding(.trailing)
@@ -50,13 +48,14 @@ struct Home_Previews: PreviewProvider {
 }
 
 struct HomeRow: View {
+    @EnvironmentObject private var list: List
     var event: Event
     var body: some View {
         HStack {
             VStack{
                 if event.current {
-                        Text(event.month)
-                        Text(event.monthday)
+                        Text(event.month!)
+                        Text(event.monthday!)
                     }
                 else {
                         Text(event.season)
@@ -64,7 +63,7 @@ struct HomeRow: View {
                 }
             }
             NavigationLink(
-            destination: EventDetail(event: event)){
+            destination: EventDetail(event: event).environmentObject(self.list)){
                     HomeItem(event: event)
             }
         }

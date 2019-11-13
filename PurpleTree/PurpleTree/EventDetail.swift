@@ -9,6 +9,7 @@
 import SwiftUI
 
 struct EventDetail: View {
+    @EnvironmentObject private var list: List
     var event: Event
     var logo: Image = Image("logo")
     var body: some View {
@@ -16,11 +17,11 @@ struct EventDetail: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading) {
                     Profile(screenSize: proxy.size, event: self.event)
-                    SpeakerDescription(event: self.event, logo: self.logo).environmentObject(UserData())
+                    SpeakerDescription(event: self.event, logo: self.logo).environmentObject(self.list)
                         .padding(.leading)
                         .padding(.trailing)
                         .padding(.bottom, proxy.size.height/24)
-                    Text(self.event.description)
+                    Text(self.event.description!)
                         .padding(.leading)
                         .padding(.trailing)
                     Spacer()
@@ -50,11 +51,11 @@ struct Profile: View {
 }
 
 struct SpeakerDescription: View {
+    @EnvironmentObject private var list: List
     var event: Event
     var logo: Image
-    @EnvironmentObject var userData: UserData
     var eventIndex: Int {
-        userData.events.firstIndex(where: { $0.id == event.id })!
+        return list.events!.firstIndex(where: { $0.id == event.id })!
     }
     var body: some View {
         HStack {
@@ -65,7 +66,7 @@ struct SpeakerDescription: View {
                     .font(.subheadline)
                 HStack(alignment: .top) {
                     Group {
-                        Text(event.date)
+                        Text(event.date!)
                         Text(event.time)
                     }
                     .font(.subheadline)
@@ -75,9 +76,9 @@ struct SpeakerDescription: View {
             }
             Spacer()
             Button(action: {
-                self.userData.events[self.eventIndex].interested.toggle()
+                self.list.events![self.eventIndex].interested.toggle()
             }) {
-                if self.userData.events[self.eventIndex].interested {
+                if self.list.events![self.eventIndex].interested {
                     Image("logo")
                         .renderingMode(.original)
                         .resizable()
