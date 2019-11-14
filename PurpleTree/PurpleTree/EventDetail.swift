@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct EventDetail: View {
     @EnvironmentObject private var userData: UserData
@@ -78,7 +79,6 @@ struct SpeakerDescription: View {
             Button(action: {
                 self.userData.events![self.eventIndex].interested.toggle()
             }) {
-                self.userData.store(index: self.eventIndex)
                 if self.userData.events![self.eventIndex].interested {
                     Image("logo")
                         .renderingMode(.original)
