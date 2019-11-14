@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct EventDetail: View {
-    @EnvironmentObject private var list: List
+    @EnvironmentObject private var userData: UserData
     var event: Event
     var logo: Image = Image("logo")
     var body: some View {
@@ -17,7 +17,7 @@ struct EventDetail: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading) {
                     Profile(screenSize: proxy.size, event: self.event)
-                    SpeakerDescription(event: self.event, logo: self.logo).environmentObject(self.list)
+                    SpeakerDescription(event: self.event, logo: self.logo).environmentObject(self.userData)
                         .padding(.leading)
                         .padding(.trailing)
                         .padding(.bottom, proxy.size.height/24)
@@ -51,11 +51,11 @@ struct Profile: View {
 }
 
 struct SpeakerDescription: View {
-    @EnvironmentObject private var list: List
+    @EnvironmentObject private var userData: UserData
     var event: Event
     var logo: Image
     var eventIndex: Int {
-        return list.events!.firstIndex(where: { $0.id == event.id })!
+        return userData.events!.firstIndex(where: { $0.id == event.id })!
     }
     var body: some View {
         HStack {
@@ -76,9 +76,10 @@ struct SpeakerDescription: View {
             }
             Spacer()
             Button(action: {
-                self.list.events![self.eventIndex].interested.toggle()
+                self.userData.events![self.eventIndex].interested.toggle()
             }) {
-                if self.list.events![self.eventIndex].interested {
+                self.userData.store(index: self.eventIndex)
+                if self.userData.events![self.eventIndex].interested {
                     Image("logo")
                         .renderingMode(.original)
                         .resizable()

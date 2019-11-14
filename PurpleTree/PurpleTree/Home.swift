@@ -16,27 +16,30 @@ struct Home: View {
                 VStack (alignment: .leading){
                     Text("this fall")
                         .padding(.leading,60)
-                    ForEach((self.userData.current.events)!) { event in
-                        HomeRow(event: event).environmentObject(self.userData.current)
+                    ForEach(self.userData.events ?? []) { event in
+                        if event.current {
+                            HomeRow(event: event).environmentObject(self.userData)
                             .padding(.leading)
                             .padding(.bottom,20)
                             .padding(.trailing)
+                        }
                     }
                     Text("in the future")
                         .padding(.leading,60)
-                    ForEach((self.userData.future.events)!) { event in
-                        HomeRow(event: event).environmentObject(self.userData.future)
+                    ForEach(self.userData.events ?? []) { event in
+                        if !event.current {
+                            HomeRow(event: event).environmentObject(self.userData)
                             .padding(.leading)
                             .padding(.bottom,20)
                             .padding(.trailing)
+                        }
                     }
                 }
             }
             .navigationBarTitle(
-                Text("PURPLETREE")
-                    .font(.title)
-                    .fontWeight(.heavy))
-            
+            Text("PURPLETREE")
+                .font(.title)
+                .fontWeight(.heavy))
         }
     }
 }
@@ -48,7 +51,7 @@ struct Home_Previews: PreviewProvider {
 }
 
 struct HomeRow: View {
-    @EnvironmentObject private var list: List
+    @EnvironmentObject private var userData: UserData
     var event: Event
     var body: some View {
         HStack {
@@ -63,7 +66,7 @@ struct HomeRow: View {
                 }
             }
             NavigationLink(
-            destination: EventDetail(event: event).environmentObject(self.list)){
+            destination: EventDetail(event: event).environmentObject(self.userData)){
                     HomeItem(event: event)
             }
         }

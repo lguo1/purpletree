@@ -9,7 +9,7 @@ import SwiftUI
 import CoreLocation
 
 struct Event: Hashable, Codable, Identifiable {
-    var id: Int
+    var id: String
     var speaker: String
     var speakerTitle: String
     var time: String

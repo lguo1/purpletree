@@ -20,6 +20,7 @@
 		183A4800236DD9D800FCDBCE /* EventDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183A47FF236DD9D800FCDBCE /* EventDetail.swift */; };
 		183A4802236DEF9A00FCDBCE /* logo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 183A4801236DEF9900FCDBCE /* logo.jpg */; };
 		183A4804236E008900FCDBCE /* event_image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 183A4803236E008900FCDBCE /* event_image.jpg */; };
+		183CC31D237C7B82005BDE34 /* pastInterest.json in Resources */ = {isa = PBXBuildFile; fileRef = 183CC31C237C7B82005BDE34 /* pastInterest.json */; };
 		18DCF2E7236F8061009A1DD3 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DCF2E6236F8060009A1DD3 /* Home.swift */; };
 /* End PBXBuildFile section */
 
@@ -51,6 +52,7 @@
 		183A47FF236DD9D800FCDBCE /* EventDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetail.swift; sourceTree = "<group>"; };
 		183A4801236DEF9900FCDBCE /* logo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = logo.jpg; sourceTree = "<group>"; };
 		183A4803236E008900FCDBCE /* event_image.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = event_image.jpg; sourceTree = "<group>"; };
+		183CC31C237C7B82005BDE34 /* pastInterest.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pastInterest.json; sourceTree = "<group>"; };
 		18DCF2E6236F8060009A1DD3 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -140,6 +142,7 @@
 				183A4803236E008900FCDBCE /* event_image.jpg */,
 				183A4801236DEF9900FCDBCE /* logo.jpg */,
 				183A47FB236DD92700FCDBCE /* eventData.json */,
+				183CC31C237C7B82005BDE34 /* pastInterest.json */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -230,6 +233,7 @@
 				183A47FC236DD92800FCDBCE /* eventData.json in Resources */,
 				183A4802236DEF9A00FCDBCE /* logo.jpg in Resources */,
 				183A4804236E008900FCDBCE /* event_image.jpg in Resources */,
+				183CC31D237C7B82005BDE34 /* pastInterest.json in Resources */,
 				183A47D6236DD71800FCDBCE /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

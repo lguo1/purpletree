@@ -34,23 +34,58 @@ func request(_ location: String, completionHandler: @escaping ([Event]?, Error?)
    task.resume()
 }
 
-final class List: ObservableObject {
-    @Published var events: [Event]?
+func load<T: Decodable>(_ filename: String, as type: T.Type = T.self) -> T {
+    let data: Data
+    
+    guard let file = Bundle.main.url(forResource: filename, withExtension: nil)
+        else {
+            fatalError("Couldn't find \(filename) in main bundle.")
+    }
+
+    do {
+        data = try Data(contentsOf: file)
+    } catch {
+        fatalError("Couldn't load \(filename) from main bundle:\n\(error)")
+    }
+    
+    do {
+        let decoder = JSONDecoder()
+        return try decoder.decode(T.self, from: data)
+    } catch {
+        fatalError("Couldn't parse \(filename) as \(T.self):\n\(error)")
+    }
 }
 
 final class UserData: ObservableObject {
-    @Published var current = List()
-    @Published var future = List()
+    @Published var events: [Event]?
+    @Published var interests: [Int:Bool]?
     init() {
-        request("http://localhost:5000/", completionHandler: {
+        request("http://localhost:5000/") {
         (EventData, error) in
             if let EventData = EventData {
-                self.current.events = EventData.filter({(event: Event) -> Bool in return event.current})
-                self.future.events = EventData.filter({(event: Event) -> Bool in return !event.current})
+                self.events = EventData
             }
-        })
+            else {
+                self.events = [Event]()
+            }
+        }
+    }
+    
+    func modify() {
+        for index in self.events!.indices {
+            if let past = UserDefaults.standard.value(forKey: self.events![index].id) {
+                self.events![index].interested = past as! Bool
+            } else {
+                UserDefaults.standard.set(self.events![index].interested, forKey: self.events![index].id)
+            }
+        }
+    }
+    
+    func store(index: Int) {
+        UserDefaults.standard.set(self.events![index].interested, forKey: self.events![index].id)
     }
 }
+
 
 final class ImageStore {
     typealias _ImageDictionary = [String: CGImage]
