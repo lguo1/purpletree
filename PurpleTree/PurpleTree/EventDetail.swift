@@ -22,7 +22,7 @@ struct EventDetail: View {
                         .padding(.leading)
                         .padding(.trailing)
                         .padding(.bottom, proxy.size.height/24)
-                    Text(self.event.description!)
+                    Text(self.event.description)
                         .padding(.leading)
                         .padding(.trailing)
                     Spacer()
@@ -77,9 +77,9 @@ struct SpeakerDescription: View {
             }
             Spacer()
             Button(action: {
-                self.userData.events![self.eventIndex].interested.toggle()
+                self.userData.events![self.eventIndex].interest.isInterested.toggle()
             }) {
-                if self.userData.events![self.eventIndex].interested {
+                if self.userData.events![self.eventIndex].interest.isInterested {
                     Image("logo")
                         .renderingMode(.original)
                         .resizable()

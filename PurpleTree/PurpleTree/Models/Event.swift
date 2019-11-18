@@ -19,12 +19,11 @@ struct Event: Hashable, Codable, Identifiable {
     var date: String?
     var season: String
     var year: String
-    fileprivate var imageName: String
+    var imageName: String
     var category: Category?
     var location: String
-    var description: String?
+    var description: String
     var current: Bool
-    var interested: Bool
     
     enum Category: String, CaseIterable, Codable, Hashable {
         case politics = "Politics"
@@ -35,6 +34,9 @@ struct Event: Hashable, Codable, Identifiable {
 
 extension Event {
     var image: Image {
-        ImageStore.shared.image(name: imageName)
+        ImageStore.shared.image(name: self.imageName)
+    }
+    var interest: Interest {
+        Interest(id: self.id)
     }
 }
