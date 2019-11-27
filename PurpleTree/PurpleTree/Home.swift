@@ -75,28 +75,30 @@ struct HomeRow: View {
 }
 
 struct HomeItem: View{
-    var speaker: String
-    @State var image: Image
+    @State var image: UIImage
     @ObservedObject var observed: ImageLoader
+    var speaker: String
     var body: some View {
-        image
-            .renderingMode(.original)
-            .resizable()
-            .aspectRatio(contentMode: .fill)
-            .overlay(
-                Color.black.opacity(0.5))
-            .frame(height: 155)
-            .cornerRadius(10)
-            .clipped()
-            .onReceive(observed.update) {image in
+        VStack{
+            Image(uiImage: image)
+                .renderingMode(.original)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .overlay(
+                    Color.black.opacity(0.5))
+                .frame(height: 155)
+                .cornerRadius(10)
+                .clipped()
+                .onReceive(observed.didChange) {image in
                 self.image = image
+                }
+            .overlay(
+            Text(speaker)
+                .font(.title)
+                .padding(.leading, 5)
+                .padding(.bottom, 5)
+                .foregroundColor(.white),
+            alignment:.bottomLeading)
         }
-        .overlay(
-        Text(speaker)
-            .font(.title)
-            .padding(.leading, 5)
-            .padding(.bottom, 5)
-            .foregroundColor(.white),
-        alignment:.bottomLeading)
     }
 }

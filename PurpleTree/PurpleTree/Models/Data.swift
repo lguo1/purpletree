@@ -18,7 +18,10 @@ final class UserData: ObservableObject {
                     requestImage("http://localhost:5050/", imageName: event.imageName) {
                         (image, error) in
                         if let image = image {
-                            event.loader.update.send(image)
+                            self.saveImage(imageName: event.imageName, image: image)
+                            DispatchQueue.main.async {
+                                event.loader.image = image
+                            }
                         } else {
                             print("error getting image")
                         }
@@ -33,65 +36,17 @@ final class UserData: ObservableObject {
             }
         }
     }
-}
-
-final class ImageStore {
-    typealias _ImageDictionary = [String: CGImage]
-    fileprivate var images: _ImageDictionary = [:]
-
-    fileprivate static var scale = 2
-    
-    static var shared = ImageStore()
-    
-    func image(name: String) -> Image {
-        let index = _guaranteeImage(name: name)
-        
-        return Image(images.values[index], scale: CGFloat(ImageStore.scale), label: Text(verbatim: name))
-    }
-
-    static func loadImage(name: String) -> CGImage {
-        guard
-            let url = Bundle.main.url(forResource: name, withExtension: "jpg"),
-            let imageSource = CGImageSourceCreateWithURL(url as NSURL, nil),
-            let image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil)
-        else {
-            fatalError("Couldn't load image \(name).jpg from main bundle.")
-        }
-        return image
-    }
-    
-    fileprivate func _guaranteeImage(name: String) -> _ImageDictionary.Index {
-        if let index = images.index(forKey: name) { return index }
-        
-        images[name] = ImageStore.loadImage(name: name)
-        return images.index(forKey: name)!
-    }
-}
-
-
-func saveImage(imageName: String, image: UIImage) {
-    let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-    let fileURL = documentsDirectory.appendingPathComponent(imageName)
-    if let data = image.jpegData(compressionQuality:  1.0),
-      !FileManager.default.fileExists(atPath: fileURL.path) {
-        do {
-            // writes the image data to disk
-            try data.write(to: fileURL)
-            print("file saved")
-        } catch {
-            print("error saving file:", error)
+    func saveImage(imageName: String, image: UIImage) {
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let fileURL = documentsDirectory.appendingPathComponent(imageName)
+        if let data = image.jpegData(compressionQuality:  1.0),
+          !FileManager.default.fileExists(atPath: fileURL.path) {
+            do {
+                try data.write(to: fileURL)
+                print("image saved")
+            } catch {
+                print("error saving image:", error)
+            }
         }
     }
 }
-
-func loadDefault() -> CGImage {
-    guard
-        let url = Bundle.main.url(forResource: "default", withExtension: "jpg"),
-        let imageSource = CGImageSourceCreateWithURL(url as NSURL, nil),
-        let image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil)
-    else {
-        fatalError("Couldn't load image default.jpg from main bundle.")
-    }
-    return image
-}
-

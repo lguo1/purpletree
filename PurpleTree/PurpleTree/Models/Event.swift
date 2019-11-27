@@ -33,7 +33,7 @@ struct Event: Hashable, Codable, Identifiable {
 }
 
 extension Event {
-    var image: Image {
+    var image: UIImage {
         ImageStore.shared.image(name: self.imageName)
     }
     var interest: Interest {
@@ -61,5 +61,10 @@ final class Interest {
 }
 
 final class ImageLoader: ObservableObject {
-    var update = PassthroughSubject<UIImage, Never>()
+    var didChange = PassthroughSubject<UIImage, Never>()
+    var image = UIImage() {
+        didSet {
+            didChange.send(image)
+        }
+    }
 }
