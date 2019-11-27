@@ -7,6 +7,7 @@
 //
 import SwiftUI
 import CoreLocation
+import Combine
 
 struct Event: Hashable, Codable, Identifiable {
     var id: String
@@ -38,8 +39,8 @@ extension Event {
     var interest: Interest {
         Interest(id: self.id)
     }
-    var observer: ImageObserver{
-        ImageObserver(subject: UserData.shared, id: self.id)
+    var loader: ImageLoader {
+        ImageLoader()
     }
 }
 
@@ -57,4 +58,8 @@ final class Interest {
         self.id = id
         self.isInterested = false
     }
+}
+
+final class ImageLoader: ObservableObject {
+    var update = PassthroughSubject<UIImage, Never>()
 }

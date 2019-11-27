@@ -35,7 +35,7 @@ func request(_ location: String, completionHandler: @escaping ([Event]?, Error?)
 }
 
 
-func requestImage(_ location: String, imageName: String, completionHandler: @escaping (CGImage?, Error?) -> Void) -> Void {
+func requestImage(_ location: String, imageName: String, completionHandler: @escaping (UIImage?, Error?) -> Void) -> Void {
     guard let url = URL(string: location+"img/"+imageName+"/") else {
         print("Cannot create URL")
         return
@@ -47,7 +47,7 @@ func requestImage(_ location: String, imageName: String, completionHandler: @esc
         completionHandler(nil, error)
         return
     }
-        let image = UIImage(data: data)!.cgImage
+        let image = UIImage(data: data)
         completionHandler(image, nil)
     }
     task.resume()

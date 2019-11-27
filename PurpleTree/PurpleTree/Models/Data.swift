@@ -5,22 +5,20 @@
 //  Created by apple on 2019/11/2.
 //  Copyright © 2019 purpletree. All rights reserved.
 //
-
 import SwiftUI
 
 final class UserData: ObservableObject {
     @Published var events: [Event]?
     static var shared = UserData()
-    private var observerArray = [Observer]()
     init() {
         request("http://localhost:5050/") {
         (EventData, error) in
             if let EventData = EventData {
                 for event in EventData {
                     requestImage("http://localhost:5050/", imageName: event.imageName) {
-                        (Image, error) in
-                        if Image != nil {
-                            self.notify(event.id)
+                        (image, error) in
+                        if let image = image {
+                            event.loader.update.send(image)
                         } else {
                             print("error getting image")
                         }
@@ -34,35 +32,6 @@ final class UserData: ObservableObject {
                 self.events = [Event]()
             }
         }
-    }
-    func attachObserver(observer : Observer){
-        observerArray.append(observer)
-    }
-    private func notify(_ id: String){
-        var observerIndex: Int {
-            return observerArray.firstIndex(where: { $0.id == id})!
-        }
-        observerArray[observerIndex].update()
-    }
-}
-
-protocol Observer: class {
-    var id: String { get }
-    var updated: Bool { get }
-    func update() -> Void
-}
-
-final class ImageObserver: Observer {
-    private var subject: UserData
-    var updated = false
-    var id: String
-    init(subject: UserData, id: String) {
-        self.subject = subject
-        self.id = id
-        self.subject.attachObserver(observer: self)
-    }
-    func update() -> Void {
-        updated = true
     }
 }
 
@@ -125,5 +94,4 @@ func loadDefault() -> CGImage {
     }
     return image
 }
-
 

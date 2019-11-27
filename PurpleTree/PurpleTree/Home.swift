@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct Home: View{
     @EnvironmentObject private var userData: UserData
@@ -67,16 +68,18 @@ struct HomeRow: View {
             }
             NavigationLink(
             destination: EventDetail(event: event).environmentObject(self.userData)){
-                    HomeItem(event: event)
+                HomeItem(image: event.image, observed: event.loader, speaker: event.speaker)
             }
         }
     }
 }
 
 struct HomeItem: View{
-    var event: Event
+    var speaker: String
+    @State var image: Image
+    @ObservedObject var observed: ImageLoader
     var body: some View {
-        event.image
+        image
             .renderingMode(.original)
             .resizable()
             .aspectRatio(contentMode: .fill)
@@ -85,8 +88,11 @@ struct HomeItem: View{
             .frame(height: 155)
             .cornerRadius(10)
             .clipped()
+            .onReceive(observed.update) {image in
+                self.image = image
+        }
         .overlay(
-        Text(event.speaker)
+        Text(speaker)
             .font(.title)
             .padding(.leading, 5)
             .padding(.bottom, 5)
