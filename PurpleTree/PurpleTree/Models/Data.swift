@@ -6,100 +6,63 @@
 //  Copyright © 2019 purpletree. All rights reserved.
 //
 
-import Combine
 import SwiftUI
-
-func request(_ location: String, completionHandler: @escaping ([Event]?, Error?) -> Void) -> Void {
-    
-    guard let url = URL(string: location) else {
-        print("Cannot create URL")
-        return
-    }
-    let task = URLSession.shared.dataTask(with: url) {
-       (data, response, error) in
-       guard let data = data else {
-            print("No data")
-            completionHandler(nil, error)
-            return
-       }
-       let decoder = JSONDecoder()
-       do {
-        let eventData = try decoder.decode(Array<Event>.self, from: data)
-            print("Networking succeeded")
-            for event in eventData {
-                request_image(location, imageName: event.imageName)
-            }
-            completionHandler(eventData, nil)
-       } catch {
-            print("Decoding failed")
-            completionHandler(nil, error)
-       }
-   }
-   task.resume()
-}
-
-func request_image(_ location: String, imageName: String) -> Void {
-    
-    guard let url = URL(string: location+"img/"+imageName+"/") else {
-        print("Cannot create URL")
-        return
-    }
-    let task = URLSession.shared.dataTask(with: url) {
-    (data, response, error) in
-    guard let data = data else {
-         print("No data")
-         return
-    }
-        save_image(imageName: imageName, image: UIImage(data: data)!)
-    }
-    task.resume()
-}
-
-
-func save_image(imageName: String, image: UIImage) {
-    let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-    let fileURL = documentsDirectory.appendingPathComponent(imageName)
-    if let data = image.jpegData(compressionQuality:  1.0),
-      !FileManager.default.fileExists(atPath: fileURL.path) {
-        do {
-            // writes the image data to disk
-            try data.write(to: fileURL)
-            print("file saved")
-        } catch {
-            print("error saving file:", error)
-        }
-    }
-}
-
 
 final class UserData: ObservableObject {
     @Published var events: [Event]?
+    static var shared = UserData()
+    private var observerArray = [Observer]()
     init() {
         request("http://localhost:5050/") {
         (EventData, error) in
             if let EventData = EventData {
-                self.events = EventData
+                for event in EventData {
+                    requestImage("http://localhost:5050/", imageName: event.imageName) {
+                        (Image, error) in
+                        if Image != nil {
+                            self.notify(event.id)
+                        } else {
+                            print("error getting image")
+                        }
+                    }
+                }
+                DispatchQueue.main.async{
+                    self.events = EventData
+                }
             }
             else {
                 self.events = [Event]()
             }
         }
     }
+    func attachObserver(observer : Observer){
+        observerArray.append(observer)
+    }
+    private func notify(_ id: String){
+        var observerIndex: Int {
+            return observerArray.firstIndex(where: { $0.id == id})!
+        }
+        observerArray[observerIndex].update()
+    }
 }
 
-final class Interest {
+protocol Observer: class {
+    var id: String { get }
+    var updated: Bool { get }
+    func update() -> Void
+}
+
+final class ImageObserver: Observer {
+    private var subject: UserData
+    var updated = false
     var id: String
-    var isInterested: Bool {
-        get {
-            UserDefaults.standard.value(forKey: self.id) as! Bool
-        }
-        set(new) {
-            UserDefaults.standard.set(new, forKey: self.id)
-        }
-    }
-    init(id: String) {
+    init(subject: UserData, id: String) {
+        self.subject = subject
         self.id = id
-        self.isInterested = false
+        self.subject.attachObserver(observer: self)
+    }
+    func update() -> Void {
+        updated = true
     }
 }
 
@@ -117,16 +80,15 @@ final class ImageStore {
         return Image(images.values[index], scale: CGFloat(ImageStore.scale), label: Text(verbatim: name))
     }
 
-    static func loadImage(name: String) -> CGImage? {
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let url = documentsDirectory.appendingPathComponent(name)
-        do {
-            let imageData = try Data(contentsOf: url)
-            return UIImage(data: imageData)!.cgImage
-        } catch {
-            print("Error loading image : \(error)")
-            return nil
+    static func loadImage(name: String) -> CGImage {
+        guard
+            let url = Bundle.main.url(forResource: name, withExtension: "jpg"),
+            let imageSource = CGImageSourceCreateWithURL(url as NSURL, nil),
+            let image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil)
+        else {
+            fatalError("Couldn't load image \(name).jpg from main bundle.")
         }
+        return image
     }
     
     fileprivate func _guaranteeImage(name: String) -> _ImageDictionary.Index {
@@ -136,3 +98,32 @@ final class ImageStore {
         return images.index(forKey: name)!
     }
 }
+
+
+func saveImage(imageName: String, image: UIImage) {
+    let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+    let fileURL = documentsDirectory.appendingPathComponent(imageName)
+    if let data = image.jpegData(compressionQuality:  1.0),
+      !FileManager.default.fileExists(atPath: fileURL.path) {
+        do {
+            // writes the image data to disk
+            try data.write(to: fileURL)
+            print("file saved")
+        } catch {
+            print("error saving file:", error)
+        }
+    }
+}
+
+func loadDefault() -> CGImage {
+    guard
+        let url = Bundle.main.url(forResource: "default", withExtension: "jpg"),
+        let imageSource = CGImageSourceCreateWithURL(url as NSURL, nil),
+        let image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil)
+    else {
+        fatalError("Couldn't load image default.jpg from main bundle.")
+    }
+    return image
+}
+
+

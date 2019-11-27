@@ -24,7 +24,6 @@ struct Event: Hashable, Codable, Identifiable {
     var location: String
     var description: String
     var current: Bool
-    
     enum Category: String, CaseIterable, Codable, Hashable {
         case politics = "Politics"
         case economics = "Economics"
@@ -38,5 +37,24 @@ extension Event {
     }
     var interest: Interest {
         Interest(id: self.id)
+    }
+    var observer: ImageObserver{
+        ImageObserver(subject: UserData.shared, id: self.id)
+    }
+}
+
+final class Interest {
+    var id: String
+    var isInterested: Bool {
+        get {
+            UserDefaults.standard.value(forKey: self.id) as! Bool
+        }
+        set(new) {
+            UserDefaults.standard.set(new, forKey: self.id)
+        }
+    }
+    init(id: String) {
+        self.id = id
+        self.isInterested = false
     }
 }

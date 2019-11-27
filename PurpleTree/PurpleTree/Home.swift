@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct Home: View {
+struct Home: View{
     @EnvironmentObject private var userData: UserData
     var body: some View {
         NavigationView {
@@ -73,7 +73,7 @@ struct HomeRow: View {
     }
 }
 
-struct HomeItem: View {
+struct HomeItem: View{
     var event: Event
     var body: some View {
         event.image
