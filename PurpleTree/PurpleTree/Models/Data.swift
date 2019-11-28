@@ -8,13 +8,15 @@
 import SwiftUI
 
 final class UserData: ObservableObject {
-    @Published var events: [Event]?
+    var test = false
+    @Published var events = [Event]()
     static var shared = UserData()
     init() {
         request("http://localhost:5050/") {
         (EventData, error) in
             if let EventData = EventData {
                 for event in EventData {
+                    UserDefaults.standard.set(false, forKey: event.id)
                     requestImage("http://localhost:5050/", imageName: event.imageName) {
                         (image, error) in
                         if let image = image {

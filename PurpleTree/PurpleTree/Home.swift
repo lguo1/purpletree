@@ -17,7 +17,7 @@ struct Home: View{
                 VStack (alignment: .leading){
                     Text("this fall")
                         .padding(.leading,60)
-                    ForEach(self.userData.events ?? []) { event in
+                    ForEach(self.userData.events) { event in
                         if event.current {
                             HomeRow(event: event).environmentObject(self.userData)
                             .padding(.leading)
@@ -27,7 +27,7 @@ struct Home: View{
                     }
                     Text("in the future")
                         .padding(.leading,60)
-                    ForEach(self.userData.events ?? []) { event in
+                    ForEach(self.userData.events) { event in
                         if !event.current {
                             HomeRow(event: event).environmentObject(self.userData)
                             .padding(.leading)

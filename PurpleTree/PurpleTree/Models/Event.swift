@@ -44,19 +44,17 @@ extension Event {
     }
 }
 
-final class Interest {
+class Interest: ObservableObject {
     var id: String
-    var isInterested: Bool {
-        get {
-            UserDefaults.standard.value(forKey: self.id) as! Bool
-        }
-        set(new) {
-            UserDefaults.standard.set(new, forKey: self.id)
+    var didChange = PassthroughSubject<Bool, Never>()
+    var yes = Bool() {
+        didSet {
+            UserDefaults.standard.set(yes, forKey: self.id)
+            didChange.send(yes)
         }
     }
     init(id: String) {
         self.id = id
-        self.isInterested = false
     }
 }
 

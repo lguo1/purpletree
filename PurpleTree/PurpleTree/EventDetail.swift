@@ -7,18 +7,15 @@
 //
 
 import SwiftUI
-import Combine
 
 struct EventDetail: View {
-    @EnvironmentObject private var userData: UserData
     var event: Event
-    var logo: Image = Image("logo")
     var body: some View {
         GeometryReader { proxy in
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading) {
                     Profile(screenSize: proxy.size, image: self.event.image, observed: self.event.loader)
-                    SpeakerDescription(event: self.event, logo: self.logo).environmentObject(self.userData)
+                    SpeakerDescription(event: self.event, interested: UserDefaults.standard.bool(forKey: self.event.id), observed: self.event.interest)
                         .padding(.leading)
                         .padding(.trailing)
                         .padding(.bottom, proxy.size.height/24)
@@ -30,12 +27,6 @@ struct EventDetail: View {
                 }
             }
         .edgesIgnoringSafeArea(.top)
-    }
-}
-
-struct EventDetail_Previews: PreviewProvider {
-    static var previews: some View {
-        EventDetail(event: EventData[0])
     }
 }
 
@@ -56,12 +47,9 @@ struct Profile: View {
 }
 
 struct SpeakerDescription: View {
-    @EnvironmentObject private var userData: UserData
     var event: Event
-    var logo: Image
-    var eventIndex: Int {
-        return userData.events!.firstIndex(where: { $0.id == event.id })!
-    }
+    @State var interested: Bool
+    @ObservedObject var observed: Interest
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -81,19 +69,22 @@ struct SpeakerDescription: View {
             }
             Spacer()
             Button(action: {
-                self.userData.events![self.eventIndex].interest.isInterested.toggle()
+                self.observed.yes.toggle()
             }) {
-                if self.userData.events![self.eventIndex].interest.isInterested {
-                    Image("logo")
-                        .renderingMode(.original)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 50)
-                } else {
-                    Text("register")
+                VStack{
+                    if self.interested {
+                            Image("logo")
+                                .renderingMode(.original)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: 50)
+                    } else {
+                        Text("register")
                         .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
                         .frame(height: 50)
+                    }
                 }
+                .onReceive(observed.didChange) { interested in self.interested = interested}
             }
         }
     }
