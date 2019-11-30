@@ -58,7 +58,11 @@ struct HomeItem: View{
                 .cornerRadius(10)
             .overlay(
                 HStack {
-                    ProfileView(image: event.imageHome, observed: event.homeLoader)
+                    Image(uiImage: event.homeLoader.data != nil ? UIImage(data: event.homeLoader.data!)! : UIImage())
+                    .renderingMode(.original)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: 180)
                     Spacer()
                 })
             .overlay(
@@ -72,22 +76,6 @@ struct HomeItem: View{
                     Spacer()
                 }
             })
-        }
-    }
-}
-
-struct ProfileView: View {
-    @State var image: UIImage
-    @ObservedObject var observed: ImageLoader
-    var body: some View {
-        VStack {
-            Image(uiImage: image)
-                .renderingMode(.original)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: 180)
-        }.onReceive(observed.didChange) { data in
-            self.image = UIImage(data: data) ?? UIImage()
         }
     }
 }

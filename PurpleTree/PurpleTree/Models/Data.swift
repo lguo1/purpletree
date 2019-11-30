@@ -18,31 +18,6 @@ final class UserData: ObservableObject {
                 DispatchQueue.main.async{
                     self.events = EventData
                 }
-                for event in EventData {
-                    UserDefaults.standard.set(false, forKey: event.id)
-                    requestImageData("http://localhost:5050/", imageName: event.imageHomeName) {
-                        (data, error) in
-                        if let data = data {
-                            self.saveImageData(imageName: event.imageHomeName, data: data)
-                            DispatchQueue.main.async {
-                                event.homeLoader.didChange.send(data)
-                            }
-                        } else {
-                            print("error getting \(event.imageHomeName) from internet")
-                        }
-                    }
-                    requestImageData("http://localhost:5050/", imageName: event.imageDetailName) {
-                        (data, error) in
-                        if let data = data {
-                            self.saveImageData(imageName: event.imageDetailName, data: data)
-                            DispatchQueue.main.async {
-                                event.detailLoader.didChange.send(data)
-                            }
-                        } else {
-                            print("error getting \(event.imageDetailName) from internet")
-                        }
-                    }
-                }
             }
             else {
                 self.events = [Event]()

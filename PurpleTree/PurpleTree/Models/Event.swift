@@ -37,22 +37,14 @@ struct Event: Hashable, Codable, Identifiable {
 }
 
 extension Event {
-    var imageHome: UIImage {
-        ImageStore.shared.image(name: self.imageHomeName)
-        return UIImage()
-    }
-    var imageDetail: UIImage {
-        ImageStore.shared.image(name: self.imageDetailName)
-        return UIImage()
-    }
     var interest: Interest {
         Interest(id: self.id)
     }
     var homeLoader: ImageLoader {
-        ImageLoader()
+        ImageLoader(urlString: "http://localhost:5050/img/\(self.imageHomeName)/")
     }
     var detailLoader: ImageLoader {
-        ImageLoader()
+        ImageLoader(urlString: "http://localhost:5050/img/\(self.imageHomeName)/")
     }
 }
 
@@ -71,10 +63,15 @@ class Interest: ObservableObject {
 }
 
 final class ImageLoader: ObservableObject {
-    var didChange = PassthroughSubject<Data, Never>()
-    var data = Data() {
-        didSet {
-            didChange.send(data)
+    @Published var data:Data?
+    init(urlString: String) {
+        guard let url = URL(string: urlString) else { return }
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data else { return }
+            DispatchQueue.main.async {
+                self.data = data
+            }
         }
+        task.resume()
     }
 }
