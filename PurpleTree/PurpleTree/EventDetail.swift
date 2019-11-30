@@ -12,19 +12,13 @@ struct EventDetail: View {
     var event: Event
     var body: some View {
         GeometryReader { proxy in
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(alignment: .leading) {
-                    Profile(event: self.event, screenSize: proxy.size, imageLoader: self.event.detailLoader, image: self.event.detailLoader.image)
-                    SpeakerDescription(event: self.event, interested: UserDefaults.standard.bool(forKey: self.event.id), observed: self.event.interest)
-                        .padding(.leading)
-                        .padding(.trailing)
-                        .padding(.bottom, proxy.size.height/24)
-                    Text(self.event.description)
-                        .padding(.leading)
-                        .padding(.trailing)
-                    Spacer()
-                    }
+            VStack(alignment: .leading) {
+                Profile(event: self.event, screenSize: proxy.size, imageLoader: self.event.detailLoader, image: self.event.detailLoader.image)
+                Spacer()
                 }
+            .overlay(ScrollView(.vertical, showsIndicators: false) {
+                Description(event:self.event, screenSize: proxy.size)
+            })
             }
         .edgesIgnoringSafeArea(.top)
     }
@@ -52,6 +46,33 @@ struct Profile: View {
     }
 }
 
+struct Description: View {
+    var event: Event
+    let screenSize: CGSize
+    var body: some View {
+        VStack {
+            Spacer()
+                .frame(height: screenSize.height/2)
+            VStack(alignment: .leading){
+                SpeakerDescription(event: self.event, interested: UserDefaults.standard.bool(forKey: self.event.id), observed: self.event.interest)
+                    .padding(.top, 30)
+                    .padding(.bottom, 30)
+                Text(self.event.description)
+                    .padding(.leading)
+                    .padding(.trailing)
+                Spacer()
+            }
+            .background(
+                Color(.white)
+                .frame(height: screenSize.height*5/8)
+                .cornerRadius(10)
+                .shadow(radius: 5)
+                , alignment: .top
+            )
+        }
+    }
+}
+
 struct SpeakerDescription: View {
     var event: Event
     @State var interested: Bool
@@ -59,8 +80,10 @@ struct SpeakerDescription: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
+                Group {
                 Text(event.speaker)
                     .font(.title)
+                    .padding(.bottom, 10)
                 Text(event.speakerTitle)
                     .font(.subheadline)
                 HStack(alignment: .top) {
@@ -72,6 +95,10 @@ struct SpeakerDescription: View {
                 }
                 Text(event.location)
                 .font(.subheadline)
+                }
+                .padding(.trailing)
+                .padding(.leading)
+                
             }
             Spacer()
             Button(action: {
@@ -83,10 +110,12 @@ struct SpeakerDescription: View {
                                 .renderingMode(.original)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(height: 50)
+                                .frame(height: 30)
+                                .padding()
                     } else {
                         Text("Like")
                         .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
+                        .padding()
                     }
                 }
                 .onReceive(observed.didChange){
