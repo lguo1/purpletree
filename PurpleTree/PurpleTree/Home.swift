@@ -44,7 +44,7 @@ struct HomeRow: View {
         HStack {
             NavigationLink(
             destination: EventDetail(event: event)){
-                HomeItem(event: event, imageLoader: event.homeLoader, image: event.homeLoader.image)
+                HomeItem(event: event, imageLoader: event.homeLoader, image: event.homeLoader.image).environmentObject(self.userData)
             }
         }
     }
@@ -53,7 +53,10 @@ struct HomeRow: View {
 struct HomeItem: View{
     @EnvironmentObject private var userData: UserData
     var event: Event
-    @ObservedObject var imageLoader: ImageLoader
+    var eventIndex: Int {
+        userData.events.firstIndex(where: { $0.id == event.id })!
+    }
+    @ObservedObject var imageLoader = userData.events[eventIndex].homeLoader
     @State var image: UIImage
     var body: some View {
         VStack{
