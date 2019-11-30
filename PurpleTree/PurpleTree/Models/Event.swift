@@ -63,15 +63,31 @@ class Interest: ObservableObject {
 }
 
 final class ImageLoader: ObservableObject {
-    @Published var data:Data?
+    @Published var image = UIImage()
     init(urlString: String) {
         guard let url = URL(string: urlString) else { return }
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data else { return }
             DispatchQueue.main.async {
-                self.data = data
+                self.image = UIImage(data: data)!
             }
         }
         task.resume()
+    }
+}
+func saveImageData(imageName: String, data: Data) {
+    let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+    let fileURL = documentsDirectory.appendingPathComponent(imageName)
+    if FileManager.default.fileExists(atPath: fileURL.path) {
+        do {
+            try FileManager.default.removeItem(atPath: fileURL.path)
+        } catch {
+            print("error removing \(imageName)", error)
+        }
+    }
+    do {
+        try data.write(to: fileURL)
+    } catch {
+        print("error saving \(imageName)", error)
     }
 }
