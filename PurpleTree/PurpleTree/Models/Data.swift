@@ -18,26 +18,56 @@ final class UserData: ObservableObject {
                 DispatchQueue.main.async{
                     self.events = EventData
                 }
+                self.getImages(events: EventData)
             }
             else {
                 self.events = [Event]()
             }
         }
     }
-    func saveImageData(imageName: String, data: Data) {
+    func saveImage(imageName: String, image: UIImage) {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let fileURL = documentsDirectory.appendingPathComponent(imageName)
-        if FileManager.default.fileExists(atPath: fileURL.path) {
+        if let data = image.pngData() {
+            if FileManager.default.fileExists(atPath: fileURL.path) {
+                do {
+                    try FileManager.default.removeItem(atPath: fileURL.path)
+                } catch {
+                    print("error removing \(imageName)", error)
+                }
+            }
             do {
-                try FileManager.default.removeItem(atPath: fileURL.path)
+                try data.write(to: fileURL)
             } catch {
-                print("error removing \(imageName)", error)
+                print("error saving \(imageName)", error)
             }
         }
-        do {
-            try data.write(to: fileURL)
-        } catch {
-            print("error saving \(imageName)", error)
+    }
+    func getImages(events: [Event]) {
+        for event in events {
+            UserDefaults.standard.set(false, forKey: event.id)
+            requestImage("http://localhost:5050/img/", imageName: event.imageHomeName) {
+                (image, error) in
+                if let image = image {
+                    self.saveImage(imageName: event.imageHomeName, image: image)
+                    DispatchQueue.main.async {
+                        event.homeLoader.image = image
+                    }
+                } else {
+                    print("error getting \(event.imageHomeName) from internet")
+                }
+            }
+            requestImage("http://localhost:5050/img/", imageName: event.imageDetailName) {
+                (image, error) in
+                if let image = image {
+                    self.saveImage(imageName: event.imageDetailName, image: image)
+                    DispatchQueue.main.async {
+                        event.detailLoader.didChange.send(image)
+                    }
+                } else {
+                    print("error getting \(event.imageHomeName) from internet")
+                }
+            }
         }
     }
 }

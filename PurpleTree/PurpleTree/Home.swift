@@ -16,7 +16,7 @@ struct Home: View{
             ScrollView(.vertical, showsIndicators: false) {
                 VStack{
                     ForEach(self.userData.events) {event in
-                        HomeRow(event: event)
+                        HomeRow(event: event).environmentObject(self.userData)
                             .padding(.leading)
                             .padding(.bottom,20)
                             .padding(.trailing)
@@ -38,19 +38,23 @@ struct Home_Previews: PreviewProvider {
 }
 
 struct HomeRow: View {
+    @EnvironmentObject private var userData: UserData
     var event: Event
     var body: some View {
         HStack {
             NavigationLink(
             destination: EventDetail(event: event)){
-                HomeItem(event: event)
+                HomeItem(event: event, imageLoader: event.homeLoader, image: event.homeLoader.image)
             }
         }
     }
 }
 
 struct HomeItem: View{
+    @EnvironmentObject private var userData: UserData
     var event: Event
+    @ObservedObject var imageLoader: ImageLoader
+    @State var image: UIImage
     var body: some View {
         VStack{
             Color(red: event.red, green: event.green, blue: event.blue)
@@ -58,11 +62,17 @@ struct HomeItem: View{
                 .cornerRadius(10)
             .overlay(
                 HStack {
-                    Image(uiImage: event.homeLoader.data != nil ? UIImage(data: event.homeLoader.data!)! : UIImage())
-                    .renderingMode(.original)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(height: 180)
+                    VStack{
+                        Spacer()
+                        Image(uiImage: image)
+                        .renderingMode(.original)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 180)
+                        .onReceive(imageLoader.didChange, perform: { (image) in
+                            self.image = image
+                        })
+                    }
                     Spacer()
                 })
             .overlay(

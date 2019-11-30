@@ -41,10 +41,10 @@ extension Event {
         Interest(id: self.id)
     }
     var homeLoader: ImageLoader {
-        ImageLoader(urlString: "http://localhost:5050/img/\(self.imageHomeName)/")
+        ImageLoader()
     }
     var detailLoader: ImageLoader {
-        ImageLoader(urlString: "http://localhost:5050/img/\(self.imageHomeName)/")
+        ImageLoader()
     }
 }
 
@@ -63,15 +63,10 @@ class Interest: ObservableObject {
 }
 
 final class ImageLoader: ObservableObject {
-    @Published var data:Data?
-    init(urlString: String) {
-        guard let url = URL(string: urlString) else { return }
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data else { return }
-            DispatchQueue.main.async {
-                self.data = data
-            }
+    var didChange = PassthroughSubject<UIImage, Never>()
+    var image = UIImage() {
+        didSet {
+            didChange.send(image)
         }
-        task.resume()
     }
 }
