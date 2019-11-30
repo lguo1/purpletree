@@ -43,7 +43,7 @@ struct HomeRow: View {
         HStack {
             NavigationLink(
             destination: EventDetail(event: event)){
-                HomeItem(event: event)
+                HomeItem(event: event, imageLoader: event.homeLoader, image: event.homeLoader.image)
             }
         }
     }
@@ -51,6 +51,8 @@ struct HomeRow: View {
 
 struct HomeItem: View{
     var event: Event
+    @ObservedObject var imageLoader:ImageLoader
+    @State var image: UIImage
     var body: some View {
         VStack{
             Color(red: event.red, green: event.green, blue: event.blue)
@@ -58,11 +60,17 @@ struct HomeItem: View{
                 .cornerRadius(10)
             .overlay(
                 HStack {
-                    Image(uiImage: event.homeLoader.data != nil ? UIImage(data: event.homeLoader.data!)! : UIImage())
-                    .renderingMode(.original)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(height: 180)
+                    VStack {
+                        Spacer()
+                        Image(uiImage: image)
+                        .renderingMode(.original)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 180)
+                        .onReceive(imageLoader.didChange) {
+                                image in self.image = image
+                        }
+                    }
                     Spacer()
                 })
             .overlay(

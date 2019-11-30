@@ -14,7 +14,7 @@ struct EventDetail: View {
         GeometryReader { proxy in
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading) {
-                    Profile(event: self.event, screenSize: proxy.size)
+                    Profile(event: self.event, screenSize: proxy.size, imageLoader: self.event.detailLoader, image: self.event.detailLoader.image)
                     SpeakerDescription(event: self.event, interested: UserDefaults.standard.bool(forKey: self.event.id), observed: self.event.interest)
                         .padding(.leading)
                         .padding(.trailing)
@@ -33,16 +33,21 @@ struct EventDetail: View {
 struct Profile: View {
     var event: Event
     let screenSize: CGSize
+    @ObservedObject var imageLoader:ImageLoader
+    @State var image: UIImage
     var body: some View {
         Color(red: event.red, green: event.green, blue: event.blue)
             .frame(height: screenSize.height*5/8)
         .overlay(
             VStack {
                 Spacer()
-                Image(uiImage: event.homeLoader.data != nil ? UIImage(data: event.homeLoader.data!)! : UIImage())
+                Image(uiImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: screenSize.width)
+                    .onReceive(imageLoader.didChange) {
+                        image in self.image = image
+                    }
             })
     }
 }
