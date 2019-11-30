@@ -58,6 +58,7 @@ struct HomeItem: View{
             Color(red: event.red, green: event.green, blue: event.blue)
                 .frame(height: 200)
                 .cornerRadius(10)
+                .shadow(radius: 5)
             .overlay(
                 HStack {
                     VStack {
@@ -67,6 +68,7 @@ struct HomeItem: View{
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(height: 180)
+                        .padding(.leading, 10)
                         .onReceive(imageLoader.didChange) {
                                 image in self.image = image
                         }
@@ -81,6 +83,8 @@ struct HomeItem: View{
                         .multilineTextAlignment(.trailing)
                         .font(.title)
                         .foregroundColor(Color.white)
+                        .padding(.trailing, 10)
+                        .padding(.top, 10)
                     Spacer()
                 }
             })
