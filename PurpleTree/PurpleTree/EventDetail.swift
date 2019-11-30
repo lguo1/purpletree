@@ -14,7 +14,7 @@ struct EventDetail: View {
         GeometryReader { proxy in
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading) {
-                    Profile(screenSize: proxy.size, image: self.event.image, observed: self.event.loader)
+                    Profile(event: self.event, screenSize: proxy.size, image: self.event.imageDetail, observed: self.event.detailLoader)
                     SpeakerDescription(event: self.event, interested: UserDefaults.standard.bool(forKey: self.event.id), observed: self.event.interest)
                         .padding(.leading)
                         .padding(.trailing)
@@ -31,18 +31,24 @@ struct EventDetail: View {
 }
 
 struct Profile: View {
+    var event: Event
     let screenSize: CGSize
     @State var image: UIImage
     @ObservedObject var observed: ImageLoader
     var body: some View {
-        Image(uiImage: image)
-            .resizable()
-            .aspectRatio(contentMode: .fill)
-            .frame(width: screenSize.width, height: screenSize.height*5/8)
-            .clipped()
-            .onReceive(observed.didChange) {image in
-                self.image = image
-        }
+        Color(red: event.red, green: event.green, blue: event.blue)
+            .frame(height: screenSize.height*5/8)
+        .overlay(
+            VStack {
+                Spacer()
+                Image(uiImage: image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: screenSize.width)
+                    .onReceive(observed.didChange) {image in
+                        self.image = image
+                }
+            })
     }
 }
 
@@ -55,11 +61,11 @@ struct SpeakerDescription: View {
             VStack(alignment: .leading) {
                 Text(event.speaker)
                     .font(.title)
-                Text(event.speakerTitle).italic()
+                Text(event.speakerTitle)
                     .font(.subheadline)
                 HStack(alignment: .top) {
                     Group {
-                        Text(event.date!)
+                        Text(event.date)
                         Text(event.time)
                     }
                     .font(.subheadline)
@@ -79,9 +85,8 @@ struct SpeakerDescription: View {
                                 .aspectRatio(contentMode: .fit)
                                 .frame(height: 50)
                     } else {
-                        Text("register")
+                        Text("Like")
                         .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
-                        .frame(height: 50)
                     }
                 }
                 .onReceive(observed.didChange) { interested in self.interested = interested}

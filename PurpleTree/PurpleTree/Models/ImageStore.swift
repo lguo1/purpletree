@@ -29,8 +29,7 @@ final class ImageStore {
         let fileURL = documentsDirectory.appendingPathComponent(name)
         guard let image = UIImage(contentsOfFile: fileURL.path)
             else {
-                let path = Bundle.main.path(forResource: "default", ofType: "jpg")
-                return UIImage(contentsOfFile: path!)!
+                return UIImage()
         }
         return image
     }

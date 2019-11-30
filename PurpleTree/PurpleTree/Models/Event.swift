@@ -12,36 +12,46 @@ import Combine
 struct Event: Hashable, Codable, Identifiable {
     var id: String
     var speaker: String
+    var speakerHome: String
     var speakerTitle: String
     var time: String
-    var weekday: String?
-    var monthday: String?
-    var month: String?
-    var date: String?
+    var weekday: String
+    var date: String
     var season: String
     var year: String
-    var imageName: String
+    var imageHomeName: String
+    var imageDetailName: String
     var category: Category?
     var location: String
     var description: String
     var current: Bool
+    var red : Double
+    var green : Double
+    var blue : Double
     enum Category: String, CaseIterable, Codable, Hashable {
         case politics = "Politics"
         case economics = "Economics"
         case philosophy = "Philosophy"
+        case other = "Other"
     }
 }
 
 extension Event {
-    var image: UIImage {
-        ImageStore.shared.image(name: self.imageName)
+    var imageHome: UIImage {
+        ImageStore.shared.image(name: self.imageHomeName)
+    }
+    var imageDetail: UIImage {
+        ImageStore.shared.image(name: self.imageDetailName)
     }
     var interest: Interest {
         Interest(id: self.id)
     }
-    var loader: ImageLoader {
+    var homeLoader: ImageLoader {
         ImageLoader()
     }
+    var detailLoader: ImageLoader {
+           ImageLoader()
+       }
 }
 
 class Interest: ObservableObject {

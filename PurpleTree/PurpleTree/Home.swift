@@ -14,26 +14,12 @@ struct Home: View{
     var body: some View {
         NavigationView {
             ScrollView(.vertical, showsIndicators: false) {
-                VStack (alignment: .leading){
-                    Text("this fall")
-                        .padding(.leading,60)
-                    ForEach(self.userData.events) { event in
-                        if event.current {
-                            HomeRow(event: event).environmentObject(self.userData)
+                VStack{
+                    ForEach(self.userData.events) {event in
+                        HomeRow(event: event)
                             .padding(.leading)
                             .padding(.bottom,20)
                             .padding(.trailing)
-                        }
-                    }
-                    Text("in the future")
-                        .padding(.leading,60)
-                    ForEach(self.userData.events) { event in
-                        if !event.current {
-                            HomeRow(event: event).environmentObject(self.userData)
-                            .padding(.leading)
-                            .padding(.bottom,20)
-                            .padding(.trailing)
-                        }
                     }
                 }
             }
@@ -52,53 +38,52 @@ struct Home_Previews: PreviewProvider {
 }
 
 struct HomeRow: View {
-    @EnvironmentObject private var userData: UserData
     var event: Event
     var body: some View {
         HStack {
-            VStack{
-                if event.current {
-                        Text(event.month!)
-                        Text(event.monthday!)
-                    }
-                else {
-                        Text(event.season)
-                        Text(event.year)
-                }
-            }
             NavigationLink(
-            destination: EventDetail(event: event).environmentObject(self.userData)){
-                HomeItem(image: event.image, observed: event.loader, speaker: event.speaker)
+            destination: EventDetail(event: event)){
+                HomeItem(event: event, image: event.imageHome, observed: event.homeLoader)
             }
         }
     }
 }
 
 struct HomeItem: View{
+    var event: Event
     @State var image: UIImage
     @ObservedObject var observed: ImageLoader
-    var speaker: String
     var body: some View {
         VStack{
-            Image(uiImage: image)
-                .renderingMode(.original)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .overlay(
-                    Color.black.opacity(0.5))
-                .frame(height: 155)
+            Color(red: event.red, green: event.green, blue: event.blue)
+                .frame(height: 200)
                 .cornerRadius(10)
-                .clipped()
-                .onReceive(observed.didChange) {image in
-                self.image = image
-                }
             .overlay(
-            Text(speaker)
-                .font(.title)
-                .padding(.leading, 5)
-                .padding(.bottom, 5)
-                .foregroundColor(.white),
-            alignment:.bottomLeading)
+                HStack {
+                    VStack {
+                        Spacer()
+                        Image(uiImage: image)
+                            .renderingMode(.original)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 180)
+                            .onReceive(observed.didChange) {image in
+                            self.image = image
+                            }
+                    }
+                    Spacer()
+                })
+            .overlay(
+            HStack {
+                Spacer()
+                VStack {
+                    Text(event.speakerHome)
+                        .multilineTextAlignment(.trailing)
+                        .font(.title)
+                        .foregroundColor(Color.white)
+                    Spacer()
+                }
+            })
         }
     }
 }

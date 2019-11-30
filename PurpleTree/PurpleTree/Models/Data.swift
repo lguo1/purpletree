@@ -15,22 +15,33 @@ final class UserData: ObservableObject {
         request("http://localhost:5050/") {
         (EventData, error) in
             if let EventData = EventData {
-                for event in EventData {
-                    UserDefaults.standard.set(false, forKey: event.id)
-                    requestImage("http://localhost:5050/", imageName: event.imageName) {
-                        (image, error) in
-                        if let image = image {
-                            self.saveImage(imageName: event.imageName, image: image)
-                            DispatchQueue.main.async {
-                                event.loader.image = image
-                            }
-                        } else {
-                            print("error getting image")
-                        }
-                    }
-                }
                 DispatchQueue.main.async{
                     self.events = EventData
+                }
+                for event in EventData {
+                    UserDefaults.standard.set(false, forKey: event.id)
+                    requestImage("http://localhost:5050/", imageName: event.imageHomeName) {
+                        (image, error) in
+                        if let image = image {
+                            self.saveImage(imageName: event.imageHomeName, image: image)
+                            DispatchQueue.main.async {
+                                event.homeLoader.image = image
+                            }
+                        } else {
+                            print("error getting \(event.imageHomeName) from internet")
+                        }
+                    }
+                    requestImage("http://localhost:5050/", imageName: event.imageDetailName) {
+                        (image, error) in
+                        if let image = image {
+                            self.saveImage(imageName: event.imageDetailName, image: image)
+                            DispatchQueue.main.async {
+                                event.detailLoader.didChange.send(image)
+                            }
+                        } else {
+                            print("error getting \(event.imageHomeName) from internet")
+                        }
+                    }
                 }
             }
             else {
@@ -41,13 +52,18 @@ final class UserData: ObservableObject {
     func saveImage(imageName: String, image: UIImage) {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let fileURL = documentsDirectory.appendingPathComponent(imageName)
-        if let data = image.jpegData(compressionQuality:  1.0),
-          !FileManager.default.fileExists(atPath: fileURL.path) {
+        if let data = image.pngData() {
+            if FileManager.default.fileExists(atPath: fileURL.path) {
+                do {
+                    try FileManager.default.removeItem(atPath: fileURL.path)
+                } catch {
+                    print("error removing \(imageName)", error)
+                }
+            }
             do {
                 try data.write(to: fileURL)
-                print("image saved")
             } catch {
-                print("error saving image:", error)
+                print("error saving \(imageName)", error)
             }
         }
     }
