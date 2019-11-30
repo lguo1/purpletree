@@ -16,7 +16,7 @@ struct Home: View{
             ScrollView(.vertical, showsIndicators: false) {
                 VStack{
                     ForEach(self.userData.events) {event in
-                        HomeRow(event: event)
+                        HomeRow()
                             .padding(.leading)
                             .padding(.bottom,20)
                             .padding(.trailing)
