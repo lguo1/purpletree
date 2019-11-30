@@ -39,9 +39,11 @@ struct Event: Hashable, Codable, Identifiable {
 extension Event {
     var imageHome: UIImage {
         ImageStore.shared.image(name: self.imageHomeName)
+        return UIImage()
     }
     var imageDetail: UIImage {
         ImageStore.shared.image(name: self.imageDetailName)
+        return UIImage()
     }
     var interest: Interest {
         Interest(id: self.id)
@@ -50,8 +52,8 @@ extension Event {
         ImageLoader()
     }
     var detailLoader: ImageLoader {
-           ImageLoader()
-       }
+        ImageLoader()
+    }
 }
 
 class Interest: ObservableObject {
@@ -69,10 +71,10 @@ class Interest: ObservableObject {
 }
 
 final class ImageLoader: ObservableObject {
-    var didChange = PassthroughSubject<UIImage, Never>()
-    var image = UIImage() {
+    var didChange = PassthroughSubject<Data, Never>()
+    var data = Data() {
         didSet {
-            didChange.send(image)
+            didChange.send(data)
         }
     }
 }

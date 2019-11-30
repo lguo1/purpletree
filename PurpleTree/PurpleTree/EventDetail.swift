@@ -45,8 +45,8 @@ struct Profile: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: screenSize.width)
-                    .onReceive(observed.didChange) {image in
-                        self.image = image
+                    .onReceive(observed.didChange) {data in
+                        self.image = UIImage(data: data) ?? UIImage()
                 }
             })
     }
@@ -89,7 +89,8 @@ struct SpeakerDescription: View {
                         .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
                     }
                 }
-                .onReceive(observed.didChange) { interested in self.interested = interested}
+                .onReceive(observed.didChange){
+                    interested in self.interested = interested}
             }
         }
     }
