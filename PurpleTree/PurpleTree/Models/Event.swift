@@ -44,7 +44,7 @@ extension Event {
         ImageLoader(urlString: "http://localhost:5050/img/\(self.imageHomeName)/")
     }
     var detailLoader: ImageLoader {
-        ImageLoader(urlString: "http://localhost:5050/img/\(self.imageHomeName)/")
+        ImageLoader(urlString: "http://localhost:5050/img/\(self.imageDetailName)/")
     }
 }
 
@@ -63,13 +63,18 @@ class Interest: ObservableObject {
 }
 
 final class ImageLoader: ObservableObject {
-    @Published var data:Data?
+    var didChange = PassthroughSubject<UIImage, Never>()
+    var image = UIImage() {
+        didSet {
+            didChange.send(image)
+        }
+    }
     init(urlString: String) {
         guard let url = URL(string: urlString) else { return }
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data else { return }
             DispatchQueue.main.async {
-                self.data = data
+                self.image = UIImage(data: data)!
             }
         }
         task.resume()
