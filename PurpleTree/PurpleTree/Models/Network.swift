@@ -33,21 +33,3 @@ func request(_ location: String, completionHandler: @escaping ([Event]?, Error?)
    }
    task.resume()
 }
-
-
-func requestImageData(_ location: String, imageName: String, completionHandler: @escaping (Data?, Error?) -> Void) -> Void {
-    guard let url = URL(string: location+"img/"+imageName+"/") else {
-        print("Cannot create URL")
-        return
-    }
-    let task = URLSession.shared.dataTask(with: url) {
-    (data, response, error) in
-    guard let data = data else {
-        print("No data")
-        completionHandler(nil, error)
-        return
-    }
-        completionHandler(data, nil)
-    }
-    task.resume()
-}
