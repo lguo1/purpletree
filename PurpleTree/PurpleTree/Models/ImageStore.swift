@@ -11,25 +11,25 @@ import SwiftUI
 import CoreLocation
 
 final class ImageStore {
-    typealias _ImageDictionary = [String: UIImage]
+    typealias _ImageDictionary = [String: UIImage?]
     fileprivate var images: _ImageDictionary = [:]
 
     fileprivate static var scale = 2
     
     static var shared = ImageStore()
     
-    func image(name: String) -> UIImage {
+    func image(name: String) -> UIImage? {
         let index = _guaranteeImage(name: name)
         
         return images.values[index]
     }
 
-    static func loadImage(name: String) -> UIImage {
+    static func loadImage(name: String) -> UIImage? {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let fileURL = documentsDirectory.appendingPathComponent(name)
         guard let image = UIImage(contentsOfFile: fileURL.path)
             else {
-                return UIImage()
+                return nil
         }
         return image
     }

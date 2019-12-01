@@ -64,11 +64,11 @@ struct HomeItem: View{
                     VStack {
                         Spacer()
                         Image(uiImage: loader.homeImage)
-                        .renderingMode(.original)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 180)
-                        .padding(.leading, 10)
+                            .renderingMode(.original)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 180)
+                            .padding(.leading, 10)
                     }
                     Spacer()
                 })

@@ -63,21 +63,44 @@ final class Loader: ObservableObject {
     @Published var homeImage = UIImage()
     @Published var detailImage = UIImage()
     init(homeImageName: String, detailImageName: String) {
-        guard let homeUrl = URL(string: "http://localhost:5050/img/\(homeImageName)/") else { return }
-        let homeTask = URLSession.shared.dataTask(with: homeUrl) { data, response, error in
-            guard let data = data else { return }
-            DispatchQueue.main.async {
-                self.homeImage = UIImage(data: data)!
+        if let image = ImageStore.shared.image(name: homeImageName) {
+            self.homeImage = image
+            print("find local \(homeImageName)")
+        } else {
+            guard let homeUrl = URL(string: "http://localhost:5050/img/\(homeImageName)/") else { return }
+            let homeTask = URLSession.shared.dataTask(with: homeUrl) { data, response, error in
+                guard let data = data else { return }
+                self.saveImageData(imageName: homeImageName, data: data)
+                DispatchQueue.main.async {
+                    self.homeImage = UIImage(data: data)!
+                }
+            }
+            homeTask.resume()
+        }
+        if let image = ImageStore.shared.image(name: detailImageName) {
+            self.detailImage = image
+            print("find local \(detailImageName)")
+        } else {
+            guard let detailUrl = URL(string: "http://localhost:5050/img/\(detailImageName)/") else { return }
+            let detailTask = URLSession.shared.dataTask(with: detailUrl) { data, response, error in
+                guard let data = data else { return }
+                self.saveImageData(imageName: homeImageName, data: data)
+                DispatchQueue.main.async {
+                    self.detailImage = UIImage(data: data)!
+                }
+            }
+            detailTask.resume()
+        }
+    }
+    func saveImageData(imageName: String, data: Data) {
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let fileURL = documentsDirectory.appendingPathComponent(imageName)
+        if !FileManager.default.fileExists(atPath: fileURL.path) {
+            do {
+                try data.write(to: fileURL)
+            } catch {
+                print("error saving \(imageName)", error)
             }
         }
-        homeTask.resume()
-        guard let detailUrl = URL(string: "http://localhost:5050/img/\(detailImageName)/") else { return }
-        let detailTask = URLSession.shared.dataTask(with: detailUrl) { data, response, error in
-            guard let data = data else { return }
-            DispatchQueue.main.async {
-                self.detailImage = UIImage(data: data)!
-            }
-        }
-        detailTask.resume()
     }
 }
