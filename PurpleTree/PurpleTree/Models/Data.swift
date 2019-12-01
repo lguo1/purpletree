@@ -8,19 +8,28 @@
 import SwiftUI
 
 final class UserData: ObservableObject {
-    var test = false
+    @Published var display = UserDefaults.standard.string(forKey: "display") ?? String() {
+        didSet {
+            UserDefaults.standard.set(display, forKey: "display")
+        }
+    }
     @Published var events = [Event]()
     static var shared = UserData()
     init() {
-        request("http://localhost:5050/") {
-        (EventData, error) in
-            if let EventData = EventData {
-                DispatchQueue.main.async{
-                    self.events = EventData
+        requestUpdate("http://localhost:5050/update/") {
+            (update, error) in
+            if let update = update {
+                self.display = update[0]
+                for id in self.display {
+                    requestEvent("http://localhost:5050/event/\(id)/") {
+                        (event, error) in
+                        if let event = event {
+                           DispatchQueue.main.async {
+                                self.events.append(event)
+                            }
+                        }
+                    }
                 }
-            }
-            else {
-                self.events = [Event]()
             }
         }
     }

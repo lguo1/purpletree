@@ -65,7 +65,6 @@ final class Loader: ObservableObject {
     init(homeImageName: String, detailImageName: String) {
         if let image = ImageStore.shared.image(name: homeImageName) {
             self.homeImage = image
-            print("find local \(homeImageName)")
         } else {
             guard let homeUrl = URL(string: "http://localhost:5050/img/\(homeImageName)/") else { return }
             let homeTask = URLSession.shared.dataTask(with: homeUrl) { data, response, error in
@@ -79,7 +78,6 @@ final class Loader: ObservableObject {
         }
         if let image = ImageStore.shared.image(name: detailImageName) {
             self.detailImage = image
-            print("find local \(detailImageName)")
         } else {
             guard let detailUrl = URL(string: "http://localhost:5050/img/\(detailImageName)/") else { return }
             let detailTask = URLSession.shared.dataTask(with: detailUrl) { data, response, error in
