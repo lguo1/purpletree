@@ -15,11 +15,20 @@ struct Home: View{
         NavigationView {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack{
-                    ForEach(self.userData.events) {event in
-                        HomeRow(event: event).environmentObject(event.loader)
+                    if userData.events.count == 0 {
+                        NoEvent()
+                            .environmentObject(userData)
                             .padding(.leading)
                             .padding(.bottom, 20)
                             .padding(.trailing)
+                    } else {
+                        ForEach(self.userData.events) {event in
+                            HomeRow(event: event)
+                                .environmentObject(event.loader)
+                                .padding(.leading)
+                                .padding(.bottom, 20)
+                                .padding(.trailing)
+                        }
                     }
                 }
             }
@@ -31,12 +40,35 @@ struct Home: View{
     }
 }
 
-struct Home_Previews: PreviewProvider {
-    static var previews: some View {
-        Home().environmentObject(UserData())
+struct NoEvent: View {
+    @EnvironmentObject private var userData: UserData
+    var body: some View {
+        HStack {
+            NavigationLink(
+            destination: Notification().environmentObject(userData)){
+                VStack {
+                    Color(red: 0.6, green: 0.4, blue: 0.6)
+                    .frame(height: 200)
+                    .cornerRadius(10)
+                    .shadow(radius: 5)
+                    .overlay(
+                        HStack {
+                        Spacer()
+                        VStack {
+                            Text("No\nEvent")
+                                .multilineTextAlignment(.trailing)
+                                .font(.title)
+                                .foregroundColor(Color.white)
+                                .padding(.trailing, 10)
+                                .padding(.top, 10)
+                            Spacer()
+                        }
+                    })
+                }
+            }
+        }
     }
 }
-
 struct HomeRow: View {
     @EnvironmentObject private var loader: Loader
     var event: Event

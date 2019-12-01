@@ -10,6 +10,9 @@ import SwiftUI
 final class UserData: ObservableObject {
     @Published var events = load("events.json") ?? [Event]()
     init() {
+        self.get("http://localhost:5050/")
+    }
+    func get(_ filename: String) -> Void {
         request("http://localhost:5050/") {
         (events, error) in
             if let events = events {
@@ -22,8 +25,8 @@ final class UserData: ObservableObject {
     }
 }
 
+
 func save(_ filename: String, events: [Event]) -> Void {
-    print(events.count)
     let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
     let fileURL = documentsDirectory.appendingPathComponent(filename)
     let jsonEncoder = JSONEncoder()
