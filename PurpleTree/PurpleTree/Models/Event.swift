@@ -40,11 +40,8 @@ extension Event {
     var interest: Interest {
         Interest(id: self.id)
     }
-    var homeLoader: ImageLoader {
-        ImageLoader(urlString: "http://localhost:5050/img/\(self.imageHomeName)/")
-    }
-    var detailLoader: ImageLoader {
-        ImageLoader(urlString: "http://localhost:5050/img/\(self.imageDetailName)/")
+    var loader: Loader {
+        Loader(homeImageName: self.imageHomeName, detailImageName: self.imageDetailName)
     }
 }
 
@@ -62,21 +59,25 @@ class Interest: ObservableObject {
     }
 }
 
-final class ImageLoader: ObservableObject {
-    var didChange = PassthroughSubject<UIImage, Never>()
-    var image = UIImage() {
-        didSet {
-            didChange.send(image)
-        }
-    }
-    init(urlString: String) {
-        guard let url = URL(string: urlString) else { return }
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+final class Loader: ObservableObject {
+    @Published var homeImage = UIImage()
+    @Published var detailImage = UIImage()
+    init(homeImageName: String, detailImageName: String) {
+        guard let homeUrl = URL(string: "http://localhost:5050/img/\(homeImageName)/") else { return }
+        let homeTask = URLSession.shared.dataTask(with: homeUrl) { data, response, error in
             guard let data = data else { return }
             DispatchQueue.main.async {
-                self.image = UIImage(data: data)!
+                self.homeImage = UIImage(data: data)!
             }
         }
-        task.resume()
+        homeTask.resume()
+        guard let detailUrl = URL(string: "http://localhost:5050/img/\(detailImageName)/") else { return }
+        let detailTask = URLSession.shared.dataTask(with: detailUrl) { data, response, error in
+            guard let data = data else { return }
+            DispatchQueue.main.async {
+                self.detailImage = UIImage(data: data)!
+            }
+        }
+        detailTask.resume()
     }
 }

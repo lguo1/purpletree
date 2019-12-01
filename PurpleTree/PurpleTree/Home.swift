@@ -16,9 +16,9 @@ struct Home: View{
             ScrollView(.vertical, showsIndicators: false) {
                 VStack{
                     ForEach(self.userData.events) {event in
-                        HomeRow(event: event)
+                        HomeRow(event: event).environmentObject(event.loader)
                             .padding(.leading)
-                            .padding(.bottom,20)
+                            .padding(.bottom, 20)
                             .padding(.trailing)
                     }
                 }
@@ -33,26 +33,26 @@ struct Home: View{
 
 struct Home_Previews: PreviewProvider {
     static var previews: some View {
-        Home()
+        Home().environmentObject(UserData())
     }
 }
 
 struct HomeRow: View {
+    @EnvironmentObject private var loader: Loader
     var event: Event
     var body: some View {
         HStack {
             NavigationLink(
-            destination: EventDetail(event: event)){
-                HomeItem(event: event, imageLoader: event.homeLoader, image: event.homeLoader.image)
+            destination: EventDetail(event: event).environmentObject(loader)){
+                HomeItem(event: event).environmentObject(loader)
             }
         }
     }
 }
 
 struct HomeItem: View{
+    @EnvironmentObject private var loader: Loader
     var event: Event
-    @ObservedObject var imageLoader:ImageLoader
-    @State var image: UIImage
     var body: some View {
         VStack{
             Color(red: event.red, green: event.green, blue: event.blue)
@@ -63,15 +63,12 @@ struct HomeItem: View{
                 HStack {
                     VStack {
                         Spacer()
-                        Image(uiImage: image)
+                        Image(uiImage: loader.homeImage)
                         .renderingMode(.original)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(height: 180)
                         .padding(.leading, 10)
-                        .onReceive(imageLoader.didChange) {
-                                image in self.image = image
-                        }
                     }
                     Spacer()
                 })

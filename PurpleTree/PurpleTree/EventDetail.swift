@@ -9,11 +9,12 @@
 import SwiftUI
 
 struct EventDetail: View {
+    @EnvironmentObject private var loader: Loader
     var event: Event
     var body: some View {
         GeometryReader { proxy in
             VStack(alignment: .leading) {
-                Profile(event: self.event, screenSize: proxy.size, imageLoader: self.event.detailLoader, image: self.event.detailLoader.image)
+                Profile(event: self.event, screenSize: proxy.size)
                 Spacer()
                 }
             .overlay(ScrollView(.vertical, showsIndicators: false) {
@@ -25,23 +26,19 @@ struct EventDetail: View {
 }
 
 struct Profile: View {
+    @EnvironmentObject private var loader: Loader
     var event: Event
     let screenSize: CGSize
-    @ObservedObject var imageLoader:ImageLoader
-    @State var image: UIImage
     var body: some View {
         Color(red: event.red, green: event.green, blue: event.blue)
             .frame(height: screenSize.height*5/8)
         .overlay(
             VStack {
                 Spacer()
-                Image(uiImage: image)
+                Image(uiImage: loader.detailImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: screenSize.width)
-                    .onReceive(imageLoader.didChange) {
-                        image in self.image = image
-                    }
             })
     }
 }
