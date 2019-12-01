@@ -61,7 +61,7 @@ struct Description: View {
             }
             .background(
                 Color(.white)
-                .frame(height: screenSize.height*5/8)
+                    .frame(height: screenSize.height*2)
                 .cornerRadius(10)
                 .shadow(radius: 5)
                 , alignment: .top
