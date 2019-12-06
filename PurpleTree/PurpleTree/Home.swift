@@ -68,14 +68,16 @@ struct NoEvent: View {
                             }
                         })
                     .overlay(
-                        VStack{
+                        HStack{
+                            VStack{
+                                Spacer()
+                                Image("tree")
+                                    .renderingMode(.original)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: screenSize.width-30)
+                            }
                             Spacer()
-                            Image("matisse")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .foregroundColor(Color.white)
-                                .frame(width: screenSize.width)
-                                .offset(x: -screenSize.width/10, y: screenSize.width/10)
                         })
                 }
             }

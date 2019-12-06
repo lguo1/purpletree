@@ -14,7 +14,7 @@ struct Notification: View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(alignment: .leading) {
                 Button(action: {
-                    self.userData.get("http://localhost:5050/")
+                    self.userData.get("https://ppe.sccs.swarthmore.edu/")
                 }) {
                     Text("No Event")
                     .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
