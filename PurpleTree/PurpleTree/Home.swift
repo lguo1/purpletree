@@ -24,7 +24,7 @@ struct Home: View{
                     } else {
                         ForEach(self.userData.events) {event in
                             HomeRow(event: event)
-                                .environmentObject(event.loader)
+                                .environmentObject(self.userData)
                                 .padding(.leading)
                                 .padding(.bottom, 20)
                                 .padding(.trailing)
@@ -70,23 +70,24 @@ struct NoEvent: View {
     }
 }
 struct HomeRow: View {
-    @EnvironmentObject private var loader: Loader
+    @EnvironmentObject private var userData: UserData
     var event: Event
     var body: some View {
         HStack {
             NavigationLink(
-            destination: EventDetail(event: event).environmentObject(loader)){
-                HomeItem(event: event, interested: UserDefaults.standard.bool(forKey: self.event.id), observed: self.event.interest).environmentObject(loader)
+            destination: EventDetail(event: event).environmentObject(userData)){
+                HomeItem(event: event).environmentObject(userData)
             }
         }
     }
 }
 
 struct HomeItem: View{
-    @EnvironmentObject private var loader: Loader
+    @EnvironmentObject private var userData: UserData
     var event: Event
-    @State var interested: Bool
-    @ObservedObject var observed: Interest
+    var eventIndex: Int {
+        userData.events.firstIndex(where: { $0.id == event.id })!
+    }
     var body: some View {
         VStack{
             Color(red: event.red, green: event.green, blue: event.blue)
@@ -97,7 +98,7 @@ struct HomeItem: View{
                 HStack {
                     VStack {
                         Spacer()
-                        Image(uiImage: loader.homeImage)
+                        Image(uiImage: userData.events[eventIndex].loader.homeImage)
                             .renderingMode(.original)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -124,7 +125,7 @@ struct HomeItem: View{
                 Spacer()
                 VStack {
                     Spacer()
-                    if self.interested {
+                    if userData.events[eventIndex].interest.yes {
                     Image("logo")
                         .resizable()
                         .foregroundColor(Color.white)

@@ -9,16 +9,18 @@
 import SwiftUI
 
 struct EventDetail: View {
-    @EnvironmentObject private var loader: Loader
+    @EnvironmentObject private var userData: UserData
     var event: Event
     var body: some View {
         GeometryReader { proxy in
             VStack(alignment: .leading) {
                 Profile(event: self.event, screenSize: proxy.size)
+                    .environmentObject(self.userData)
                 Spacer()
                 }
             .overlay(ScrollView(.vertical, showsIndicators: false) {
                 Description(event:self.event, screenSize: proxy.size)
+                    .environmentObject(self.userData)
             })
             }
         .edgesIgnoringSafeArea(.top)
@@ -26,8 +28,11 @@ struct EventDetail: View {
 }
 
 struct Profile: View {
-    @EnvironmentObject private var loader: Loader
+    @EnvironmentObject private var userData: UserData
     var event: Event
+    var eventIndex: Int {
+        userData.events.firstIndex(where: { $0.id == event.id })!
+    }
     let screenSize: CGSize
     var body: some View {
         Color(red: event.red, green: event.green, blue: event.blue)
@@ -35,7 +40,7 @@ struct Profile: View {
         .overlay(
             VStack {
                 Spacer()
-                Image(uiImage: loader.detailImage)
+                Image(uiImage: userData.events[eventIndex].loader.detailImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: screenSize.width)
@@ -44,17 +49,22 @@ struct Profile: View {
 }
 
 struct Description: View {
+    @EnvironmentObject private var userData: UserData
     var event: Event
+    var eventIndex: Int {
+        userData.events.firstIndex(where: { $0.id == event.id })!
+    }
     let screenSize: CGSize
     var body: some View {
         VStack {
             Spacer()
                 .frame(height: screenSize.height/2)
             VStack(alignment: .leading){
-                SpeakerDescription(event: self.event, interested: UserDefaults.standard.bool(forKey: self.event.id), observed: self.event.interest)
+                SpeakerDescription(event: self.userData.events[eventIndex])
+                    .environmentObject(self.userData)
                     .padding(.top, 30)
                     .padding(.bottom, 30)
-                Text(self.event.description)
+                Text(self.userData.events[eventIndex].description)
                     .padding(.leading)
                     .padding(.trailing)
                 Spacer()
@@ -71,9 +81,11 @@ struct Description: View {
 }
 
 struct SpeakerDescription: View {
+    @EnvironmentObject private var userData: UserData
     var event: Event
-    @State var interested: Bool
-    @ObservedObject var observed: Interest
+    var eventIndex: Int {
+        userData.events.firstIndex(where: { $0.id == event.id })!
+    }
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -99,10 +111,10 @@ struct SpeakerDescription: View {
             }
             Spacer()
             Button(action: {
-                self.observed.yes.toggle()
+                self.userData.events[self.eventIndex].interest.yes.toggle()
             }) {
                 VStack{
-                    if self.interested {
+                    if self.userData.events[eventIndex].interest.yes {
                             Image("logo")
                                 .renderingMode(.original)
                                 .resizable()
@@ -115,8 +127,6 @@ struct SpeakerDescription: View {
                         .padding()
                     }
                 }
-                .onReceive(observed.didChange){
-                    interested in self.interested = interested}
             }
         }
     }

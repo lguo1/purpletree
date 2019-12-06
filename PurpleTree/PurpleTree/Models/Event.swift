@@ -37,32 +37,25 @@ struct Event: Hashable, Codable, Identifiable {
 }
 
 extension Event {
-    var interest: Interest {
-        Interest(id: self.id)
-    }
     var loader: Loader {
-        Loader(homeImageName: self.imageHomeName, detailImageName: self.imageDetailName)
+        Loader(id: self.id, homeImageName: self.imageHomeName, detailImageName: self.imageDetailName)
     }
 }
 
-class Interest: ObservableObject {
-    var id: String
-    var didChange = PassthroughSubject<Bool, Never>()
-    var yes = Bool() {
+final class Loader: ObservableObject {
+    private var id: String
+    @Published var yes = Bool() {
         didSet {
             UserDefaults.standard.set(yes, forKey: self.id)
-            didChange.send(yes)
         }
     }
     init(id: String) {
         self.id = id
     }
-}
-
-final class Loader: ObservableObject {
     @Published var homeImage = UIImage()
     @Published var detailImage = UIImage()
-    init(homeImageName: String, detailImageName: String) {
+    init(id: String, homeImageName: String, detailImageName: String) {
+        self.id = id
         if let image = ImageStore.shared.image(name: homeImageName) {
             self.homeImage = image
             print("find local \(homeImageName)")
