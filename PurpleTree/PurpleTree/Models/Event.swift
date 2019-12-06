@@ -6,7 +6,6 @@
 //  Copyright © 2019 purpletree. All rights reserved.
 //
 import SwiftUI
-import CoreLocation
 import Combine
 
 struct Event: Hashable, Codable, Identifiable {

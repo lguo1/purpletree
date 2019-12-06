@@ -20,7 +20,6 @@ final class ImageStore {
     
     func image(name: String) -> UIImage? {
         let index = _guaranteeImage(name: name)
-        
         return images.values[index]
     }
 

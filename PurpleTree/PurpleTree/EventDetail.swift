@@ -33,14 +33,14 @@ struct Profile: View {
     let screenSize: CGSize
     var body: some View {
         Color(red: event.red, green: event.green, blue: event.blue)
-            .frame(height: screenSize.height*5/8)
         .overlay(
             VStack {
-                Spacer()
                 Image(uiImage: loader.detailImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: screenSize.width)
+                Spacer()
+                    .frame(height: screenSize.height/4)
             })
     }
 }
@@ -110,7 +110,7 @@ struct SpeakerDescription: View {
                                 .renderingMode(.original)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(height: 20)
+                                .frame(height: 30)
                                 .padding()
                     } else {
                         Text("Like")

@@ -15,9 +15,9 @@ struct Home: View{
         NavigationView {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack{
-                    if userData.events.count == 0 {
+                    if self.userData.events.count == 0 {
                         NoEvent()
-                            .environmentObject(userData)
+                            .environmentObject(self.userData)
                             .padding(.leading)
                             .padding(.bottom, 20)
                             .padding(.trailing)
@@ -118,22 +118,6 @@ struct HomeItem: View{
                         .padding(.trailing, 10)
                         .padding(.top, 10)
                     Spacer()
-                }
-            })
-            .overlay(
-            HStack {
-                Spacer()
-                VStack {
-                    Spacer()
-                    if self.loader.interest {
-                    Image("logo")
-                        .resizable()
-                        .foregroundColor(Color.white)
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 20)
-                        .padding(.trailing, 10)
-                        .padding(.bottom, 10)
-                    }
                 }
             })
         }
