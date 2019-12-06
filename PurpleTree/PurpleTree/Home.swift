@@ -72,10 +72,10 @@ struct NoEvent: View {
                             Spacer()
                             Image("matisse")
                                 .resizable()
-                                .aspectRatio(contentMode: .fill)
+                                .aspectRatio(contentMode: .fit)
                                 .foregroundColor(Color.white)
                                 .frame(width: screenSize.width)
-                                .padding(.trailing, 20)
+                                .offset(x: -screenSize.width/10, y: screenSize.width/10)
                         })
                 }
             }
