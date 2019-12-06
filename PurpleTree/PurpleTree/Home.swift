@@ -71,23 +71,23 @@ struct NoEvent: View {
 }
 struct HomeRow: View {
     @EnvironmentObject private var userData: UserData
+    var eventIndex: Int {
+        userData.events.firstIndex(where: { $0.id == event.id })!
+    }
     var event: Event
     var body: some View {
         HStack {
             NavigationLink(
-            destination: EventDetail(event: event).environmentObject(userData)){
-                HomeItem(event: event).environmentObject(userData)
+            destination: EventDetail(event: event).environmentObject(userData.events[eventIndex].loader)){
+                HomeItem(event: event).environmentObject(userData.events[eventIndex].loader)
             }
         }
     }
 }
 
 struct HomeItem: View{
-    @EnvironmentObject private var userData: UserData
+    @EnvironmentObject private var loader: Loader
     var event: Event
-    var eventIndex: Int {
-        userData.events.firstIndex(where: { $0.id == event.id })!
-    }
     var body: some View {
         VStack{
             Color(red: event.red, green: event.green, blue: event.blue)
@@ -98,7 +98,7 @@ struct HomeItem: View{
                 HStack {
                     VStack {
                         Spacer()
-                        Image(uiImage: userData.events[eventIndex].loader.homeImage)
+                        Image(uiImage: self.loader.homeImage)
                             .renderingMode(.original)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -125,12 +125,12 @@ struct HomeItem: View{
                 Spacer()
                 VStack {
                     Spacer()
-                    if userData.events[eventIndex].interest.yes {
+                    if self.loader.interest {
                     Image("logo")
                         .resizable()
                         .foregroundColor(Color.white)
                         .aspectRatio(contentMode: .fit)
-                        .frame(height: 30)
+                        .frame(height: 20)
                         .padding(.trailing, 10)
                         .padding(.bottom, 10)
                     }

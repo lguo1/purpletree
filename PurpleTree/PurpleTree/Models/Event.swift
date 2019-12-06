@@ -44,16 +44,13 @@ extension Event {
 
 final class Loader: ObservableObject {
     private var id: String
-    @Published var yes = Bool() {
-        didSet {
-            UserDefaults.standard.set(yes, forKey: self.id)
-        }
-    }
-    init(id: String) {
-        self.id = id
-    }
     @Published var homeImage = UIImage()
     @Published var detailImage = UIImage()
+    @Published var interest = Bool() {
+        didSet {
+            UserDefaults.standard.set(interest, forKey: self.id)
+        }
+    }
     init(id: String, homeImageName: String, detailImageName: String) {
         self.id = id
         if let image = ImageStore.shared.image(name: homeImageName) {

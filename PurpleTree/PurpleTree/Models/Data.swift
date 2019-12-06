@@ -22,7 +22,7 @@ final class UserData: ObservableObject {
                 }
                 for event in self.events {
                     DispatchQueue.main.async{
-                        event.interest.yes = UserDefaults.standard.bool(forKey: event.id)
+                        event.loader.interest = UserDefaults.standard.bool(forKey: event.id)
                     }
                 }
             }
