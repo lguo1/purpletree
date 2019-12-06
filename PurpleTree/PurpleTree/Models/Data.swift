@@ -10,7 +10,7 @@ import SwiftUI
 final class UserData: ObservableObject {
     @Published var events = load("events.json") ?? [Event]()
     init() {
-        self.get("https://ppe.sccs.swarthmore.edu/")
+//        self.get("https://ppe.sccs.swarthmore.edu/")
     }
     func get(_ urlString: String) -> Void {
         request(urlString) {

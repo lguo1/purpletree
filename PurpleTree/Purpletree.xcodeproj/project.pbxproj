@@ -33,14 +33,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		183A47CC236DD71500FCDBCE /* PurpleTree.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PurpleTree.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		183A47CC236DD71500FCDBCE /* Purpletree.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Purpletree.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		183A47CF236DD71500FCDBCE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		183A47D1236DD71500FCDBCE /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		183A47D5236DD71800FCDBCE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		183A47D8236DD71800FCDBCE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		183A47DB236DD71800FCDBCE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		183A47DD236DD71800FCDBCE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		183A47E2236DD71900FCDBCE /* PurpleTreeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PurpleTreeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		183A47E2236DD71900FCDBCE /* PurpletreeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PurpletreeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		183A47E6236DD71900FCDBCE /* PurpleTreeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurpleTreeTests.swift; sourceTree = "<group>"; };
 		183A47E8236DD71900FCDBCE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		183A47F6236DD81B00FCDBCE /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
@@ -82,8 +82,8 @@
 		183A47CD236DD71500FCDBCE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				183A47CC236DD71500FCDBCE /* PurpleTree.app */,
-				183A47E2236DD71900FCDBCE /* PurpleTreeTests.xctest */,
+				183A47CC236DD71500FCDBCE /* Purpletree.app */,
+				183A47E2236DD71900FCDBCE /* PurpletreeTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -136,9 +136,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		183A47CB236DD71500FCDBCE /* PurpleTree */ = {
+		183A47CB236DD71500FCDBCE /* Purpletree */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 183A47EB236DD71900FCDBCE /* Build configuration list for PBXNativeTarget "PurpleTree" */;
+			buildConfigurationList = 183A47EB236DD71900FCDBCE /* Build configuration list for PBXNativeTarget "Purpletree" */;
 			buildPhases = (
 				183A47C8236DD71500FCDBCE /* Sources */,
 				183A47C9236DD71500FCDBCE /* Frameworks */,
@@ -148,14 +148,14 @@
 			);
 			dependencies = (
 			);
-			name = PurpleTree;
+			name = Purpletree;
 			productName = PurpleTree;
-			productReference = 183A47CC236DD71500FCDBCE /* PurpleTree.app */;
+			productReference = 183A47CC236DD71500FCDBCE /* Purpletree.app */;
 			productType = "com.apple.product-type.application";
 		};
-		183A47E1236DD71900FCDBCE /* PurpleTreeTests */ = {
+		183A47E1236DD71900FCDBCE /* PurpletreeTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 183A47EE236DD71900FCDBCE /* Build configuration list for PBXNativeTarget "PurpleTreeTests" */;
+			buildConfigurationList = 183A47EE236DD71900FCDBCE /* Build configuration list for PBXNativeTarget "PurpletreeTests" */;
 			buildPhases = (
 				183A47DE236DD71900FCDBCE /* Sources */,
 				183A47DF236DD71900FCDBCE /* Frameworks */,
@@ -166,9 +166,9 @@
 			dependencies = (
 				183A47E4236DD71900FCDBCE /* PBXTargetDependency */,
 			);
-			name = PurpleTreeTests;
+			name = PurpletreeTests;
 			productName = PurpleTreeTests;
-			productReference = 183A47E2236DD71900FCDBCE /* PurpleTreeTests.xctest */;
+			productReference = 183A47E2236DD71900FCDBCE /* PurpletreeTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -190,7 +190,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 183A47C7236DD71400FCDBCE /* Build configuration list for PBXProject "PurpleTree" */;
+			buildConfigurationList = 183A47C7236DD71400FCDBCE /* Build configuration list for PBXProject "Purpletree" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -203,8 +203,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				183A47CB236DD71500FCDBCE /* PurpleTree */,
-				183A47E1236DD71900FCDBCE /* PurpleTreeTests */,
+				183A47CB236DD71500FCDBCE /* Purpletree */,
+				183A47E1236DD71900FCDBCE /* PurpletreeTests */,
 			);
 		};
 /* End PBXProject section */
@@ -259,7 +259,7 @@
 /* Begin PBXTargetDependency section */
 		183A47E4236DD71900FCDBCE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 183A47CB236DD71500FCDBCE /* PurpleTree */;
+			target = 183A47CB236DD71500FCDBCE /* Purpletree */;
 			targetProxy = 183A47E3236DD71900FCDBCE /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -396,14 +396,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"PurpleTree/Preview Content\"";
+				DEVELOPMENT_TEAM = 39G6J67TP9;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = PurpleTree/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = purpletree.PurpleTree;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = edu.ppe.purpletree;
+				PRODUCT_NAME = Purpletree;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -415,14 +416,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"PurpleTree/Preview Content\"";
+				DEVELOPMENT_TEAM = 39G6J67TP9;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = PurpleTree/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = purpletree.PurpleTree;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = edu.ppe.purpletree;
+				PRODUCT_NAME = Purpletree;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -445,7 +447,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PurpleTree.app/PurpleTree";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Purpletree.app/Purpletree";
 			};
 			name = Debug;
 		};
@@ -466,14 +468,14 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PurpleTree.app/PurpleTree";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Purpletree.app/Purpletree";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		183A47C7236DD71400FCDBCE /* Build configuration list for PBXProject "PurpleTree" */ = {
+		183A47C7236DD71400FCDBCE /* Build configuration list for PBXProject "Purpletree" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				183A47E9236DD71900FCDBCE /* Debug */,
@@ -482,7 +484,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		183A47EB236DD71900FCDBCE /* Build configuration list for PBXNativeTarget "PurpleTree" */ = {
+		183A47EB236DD71900FCDBCE /* Build configuration list for PBXNativeTarget "Purpletree" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				183A47EC236DD71900FCDBCE /* Debug */,
@@ -491,7 +493,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		183A47EE236DD71900FCDBCE /* Build configuration list for PBXNativeTarget "PurpleTreeTests" */ = {
+		183A47EE236DD71900FCDBCE /* Build configuration list for PBXNativeTarget "PurpletreeTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				183A47EF236DD71900FCDBCE /* Debug */,
