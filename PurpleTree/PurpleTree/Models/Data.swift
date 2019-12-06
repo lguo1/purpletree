@@ -10,10 +10,10 @@ import SwiftUI
 final class UserData: ObservableObject {
     @Published var events = load("events.json") ?? [Event]()
     init() {
-        self.get("http://localhost:5050/")
+        self.get("https://ppe.sccs.swarthmore.edu/")
     }
-    func get(_ filename: String) -> Void {
-        request("http://localhost:5050/") {
+    func get(_ urlString: String) -> Void {
+        request(urlString) {
         (events, error) in
             if let events = events {
                 save("events.json", events: events)

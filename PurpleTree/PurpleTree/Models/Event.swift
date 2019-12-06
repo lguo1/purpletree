@@ -67,7 +67,7 @@ final class Loader: ObservableObject {
             self.homeImage = image
             print("find local \(homeImageName)")
         } else {
-            guard let homeUrl = URL(string: "http://localhost:5050/img/\(homeImageName)/") else { return }
+            guard let homeUrl = URL(string: "https://ppe.sccs.swarthmore.edu/img/\(homeImageName)/") else { return }
             let homeTask = URLSession.shared.dataTask(with: homeUrl) { data, response, error in
                 guard let data = data else { return }
                 self.saveImageData(imageName: homeImageName, data: data)
@@ -81,7 +81,7 @@ final class Loader: ObservableObject {
             self.detailImage = image
             print("find local \(detailImageName)")
         } else {
-            guard let detailUrl = URL(string: "http://localhost:5050/img/\(detailImageName)/") else { return }
+            guard let detailUrl = URL(string: "https://ppe.sccs.swarthmore.edu/img/\(detailImageName)/") else { return }
             let detailTask = URLSession.shared.dataTask(with: detailUrl) { data, response, error in
                 guard let data = data else { return }
                 self.saveImageData(imageName: homeImageName, data: data)

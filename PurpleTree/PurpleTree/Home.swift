@@ -76,7 +76,7 @@ struct HomeRow: View {
         HStack {
             NavigationLink(
             destination: EventDetail(event: event).environmentObject(loader)){
-                HomeItem(event: event).environmentObject(loader)
+                HomeItem(event: event, interested: UserDefaults.standard.bool(forKey: self.event.id), observed: self.event.interest).environmentObject(loader)
             }
         }
     }
@@ -85,6 +85,8 @@ struct HomeRow: View {
 struct HomeItem: View{
     @EnvironmentObject private var loader: Loader
     var event: Event
+    @State var interested: Bool
+    @ObservedObject var observed: Interest
     var body: some View {
         VStack{
             Color(red: event.red, green: event.green, blue: event.blue)
@@ -115,6 +117,22 @@ struct HomeItem: View{
                         .padding(.trailing, 10)
                         .padding(.top, 10)
                     Spacer()
+                }
+            })
+            .overlay(
+            HStack {
+                Spacer()
+                VStack {
+                    Spacer()
+                    if self.interested {
+                    Image("logo")
+                        .resizable()
+                        .foregroundColor(Color.white)
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 30)
+                        .padding(.trailing, 10)
+                        .padding(.bottom, 10)
+                    }
                 }
             })
         }

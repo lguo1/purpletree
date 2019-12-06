@@ -103,7 +103,7 @@ struct SpeakerDescription: View {
             }) {
                 VStack{
                     if self.interested {
-                            Image("Icon")
+                            Image("logo")
                                 .renderingMode(.original)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
