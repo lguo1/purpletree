@@ -8,7 +8,8 @@
 import SwiftUI
 
 final class UserData: ObservableObject {
-    @Published var events = load("events.json") ?? [Event]()
+    var updates = [String]()
+    @Published var events = Array(load("events.json")!.values)
     init() {
         self.get("https://ppe.sccs.swarthmore.edu/")
     }
@@ -16,6 +17,8 @@ final class UserData: ObservableObject {
         request(urlString) {
         (events, error) in
             if let events = events {
+                let saved = load("events.json") ?? [String:Event]()
+                self.updates = checkUpdate(saved: saved, new: events)
                 save("events.json", events: events)
                 DispatchQueue.main.async{
                     self.events = events
@@ -30,13 +33,30 @@ final class UserData: ObservableObject {
     }
 }
 
+func checkUpdate(saved: [String: Event], new: [Event]) -> [String] {
+    var updates = [String]()
+    for newEvent in new {
+        if let savedEvent = saved[newEvent.id] {
+            if savedEvent != newEvent {
+                updates.append(newEvent.id)
+            }
+        } else {
+            updates.append(newEvent.id)
+        }
+    }
+    return updates
+}
 
 func save(_ filename: String, events: [Event]) -> Void {
+    var toSave = [String: Event]()
+    for event in events {
+        toSave[event.id] = event
+    }
     let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
     let fileURL = documentsDirectory.appendingPathComponent(filename)
     let jsonEncoder = JSONEncoder()
     do {
-        let data = try jsonEncoder.encode(events)
+        let data = try jsonEncoder.encode(toSave)
         try data.write(to: fileURL)
     }
     catch {
@@ -44,7 +64,7 @@ func save(_ filename: String, events: [Event]) -> Void {
     }
 }
 
-func load(_ filename: String) -> [Event]? {
+func load(_ filename: String) -> [String: Event]? {
     let data: Data
     let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
     let fileURL = documentsDirectory.appendingPathComponent(filename)
@@ -58,12 +78,11 @@ func load(_ filename: String) -> [Event]? {
         print("Couldn't load \(filename):\n\(error)")
         return nil
     }
-
     do {
         let decoder = JSONDecoder()
-        return try decoder.decode([Event].self, from: data)
+        return try decoder.decode([String: Event].self, from: data)
     } catch {
-        print("Couldn't parse \(filename) as \([Event].self):\n\(error)")
+        print("Couldn't parse \(filename) as \([String: Event].self):\n\(error)")
         return nil
     }
 }

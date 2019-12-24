@@ -28,7 +28,7 @@ struct Notification: View {
                     Text("1")
                         .font(.title)
                         .padding(.trailing, 10)
-                    Text("You don't have internet connection. Check your connection and refresh by clicking the 'No Event' title.")
+                    Text("You don't have internet connection. Check your connection and click the 'No Event' title to refresh.")
                 }
                 .padding(.bottom, 30)
                 HStack {

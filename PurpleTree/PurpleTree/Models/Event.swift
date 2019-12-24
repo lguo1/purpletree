@@ -7,7 +7,7 @@
 //
 import SwiftUI
 
-struct Event: Hashable, Codable, Identifiable {
+struct Event: Hashable, Codable, Identifiable, Equatable {
     var id: String
     var speaker: String
     var speakerHome: String
@@ -31,6 +31,26 @@ struct Event: Hashable, Codable, Identifiable {
         case economics = "Economics"
         case philosophy = "Philosophy"
         case other = "Other"
+    }
+    static func == (lhs: Event, rhs: Event) -> Bool {
+        return lhs.id == rhs.id &&
+            lhs.speaker == rhs.speaker &&
+            lhs.speakerHome == rhs.speakerHome &&
+            lhs.speakerTitle == rhs.speakerTitle &&
+            lhs.time == rhs.time &&
+            lhs.weekday == rhs.weekday &&
+            lhs.date == rhs.date &&
+            lhs.season == rhs.season &&
+            lhs.year == rhs.year &&
+            lhs.imageHomeName == rhs.imageHomeName &&
+            lhs.imageDetailName == rhs.imageDetailName &&
+            lhs.category == rhs.category &&
+            lhs.location == rhs.location &&
+            lhs.description == rhs.description &&
+            lhs.current == rhs.current &&
+            lhs.red == rhs.red &&
+            lhs.green == rhs.green &&
+            lhs.blue == rhs.blue
     }
 }
 
