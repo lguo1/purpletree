@@ -57,22 +57,28 @@ struct Event: Hashable, Codable, Identifiable, Equatable {
 }
 
 extension Event {
-    var loader: Loader {
-        Loader(id: self.id, homeImageName: self.homeImageName, detailImageName: self.detailImageName)
+    unowned var loader: Loader {
+        Loader(event: self, homeImageName: self.homeImageName, detailImageName: self.detailImageName)
     }
 }
 
 final class Loader: ObservableObject {
-    private var id: String
+    private var interest = false
+    private var event: Event
     @Published var homeImage = UIImage()
     @Published var detailImage = UIImage()
-    @Published var interest = Bool() {
+    @Published var changeInterest = Bool() {
         didSet {
-            UserDefaults.standard.set(interest, forKey: self.id)
+            UserDefaults.standard.set(changeInterest, forKey: event.id)
+            interest = changeInterest
+            if changeInterest {
+                addEventToCalendar(event: event)
+            } else {
+                removeEventFromCalendar(event: event)
+            }
         }
     }
-    init(id: String, homeImageName: String, detailImageName: String) {
-        self.id = id
+    init(event: Event, homeImageName: String, detailImageName: String) {
         if let image = ImageStore.shared.image(name: homeImageName) {
             self.homeImage = image
             print("find local \(homeImageName)")
