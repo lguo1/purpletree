@@ -20,13 +20,18 @@ final class UserData: ObservableObject {
                 let saved = load("events.json") ?? [String:Event]()
                 self.updates = checkUpdate(saved: saved, new: events)
                 save("events.json", events: events)
+                for event in self.events {
+                    event.loader.interest = UserDefaults.standard.bool(forKey: event.id)
+                    if self.updates.contains(event.id) && event.loader.interest {
+                        editEvent(event: event, ekid: UserDefaults.standard.string(forKey:"ek"+event.id)!) { (ekid, error) in
+                            if let ekid = ekid {
+                                UserDefaults.standard.set(ekid, forKey: "ek"+event.id)
+                            }
+                        }
+                    }
+                }
                 DispatchQueue.main.async{
                     self.events = events
-                }
-                for event in self.events {
-                    DispatchQueue.main.async{
-                        event.loader.interest = UserDefaults.standard.bool(forKey: event.id)
-                    }
                 }
             }
         }

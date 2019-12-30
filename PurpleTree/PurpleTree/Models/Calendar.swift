@@ -53,7 +53,7 @@ func deleteEventfromCalendar(ekid: String) {
         }
     }
 }
-func editEvent(event: Event, ekid: String) {
+func editEvent(event: Event, ekid: String, completion: @escaping ((_ ekid: String?, _ error: NSError?) -> Void)) {
     let eventStore = EKEventStore()
     eventStore.requestAccess(to: .event) { (granted, error) in
         if !granted { return }
@@ -68,11 +68,14 @@ func editEvent(event: Event, ekid: String) {
             do {
                 try eventStore.save(ekEvent, span: .thisEvent)
                 print("added")
+                completion(ekEvent.eventIdentifier, nil)
             } catch {
                 print(error)
+                completion(nil, error as NSError)
             }
         } else {
             print("nothing to edit")
+            completion(nil, error as NSError?)
         }
     }
 }
