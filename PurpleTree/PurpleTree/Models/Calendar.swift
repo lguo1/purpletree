@@ -8,21 +8,23 @@
 
 import EventKit
 
-func addEventToCalendar(title: String, description: String?, startDate: Date, endDate: Date, completion: @escaping ((_ id: String?, _ error: NSError?) -> Void)) {
+func addEventToCalendar(event: Event, completion: @escaping ((_ ekid: String?, _ error: NSError?) -> Void)) {
     let eventStore = EKEventStore()
 
     eventStore.requestAccess(to: .event) { (granted, error) in
         if (granted) && (error == nil) {
-            let event = EKEvent(eventStore: eventStore)
-            event.title = title
-            event.startDate = startDate
-            event.endDate = endDate
-            event.notes = description
-            event.calendar = eventStore.defaultCalendarForNewEvents
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy/MM/dd HH:mm"
+            let ekEvent = EKEvent(eventStore: eventStore)
+            ekEvent.title = event.speaker
+            ekEvent.startDate = formatter.date(from: event.fullStart)
+            ekEvent.endDate = formatter.date(from: event.fullEnd)
+            ekEvent.notes = event.description
+            ekEvent.calendar = eventStore.defaultCalendarForNewEvents
             do {
-                try eventStore.save(event, span: .thisEvent)
+                try eventStore.save(ekEvent, span: .thisEvent)
                 print("added")
-                completion(event.eventIdentifier, nil)
+                completion(ekEvent.eventIdentifier, nil)
             } catch {
                 print(error)
                 completion(nil, error as NSError)
@@ -34,20 +36,43 @@ func addEventToCalendar(title: String, description: String?, startDate: Date, en
     }
 }
 
-func deleteEventfromCalendar(id: String) {
+func deleteEventfromCalendar(ekid: String) {
     let eventStore = EKEventStore()
     eventStore.requestAccess(to: .event) {(granted, error) in
         if !granted { return }
-        let eventToRemove = eventStore.event(withIdentifier: id)
-        if eventToRemove != nil {
+        let ekEvent = eventStore.event(withIdentifier: ekid)
+        if let ekEvent = ekEvent {
             do {
-                try eventStore.remove(eventToRemove!, span: .thisEvent, commit: true)
+                try eventStore.remove(ekEvent, span: .thisEvent, commit: true)
                 print("removed")
             } catch {
                 print(error)
             }
         } else {
             print("nothing to remove")
+        }
+    }
+}
+func editEvent(event: Event, ekid: String) {
+    let eventStore = EKEventStore()
+    eventStore.requestAccess(to: .event) { (granted, error) in
+        if !granted { return }
+        let ekEvent = eventStore.event(withIdentifier: ekid)
+        if let ekEvent = ekEvent {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy/MM/dd HH:mm"
+            ekEvent.title = event.speaker
+            ekEvent.startDate = formatter.date(from: event.fullStart)
+            ekEvent.endDate = formatter.date(from: event.fullEnd)
+            ekEvent.notes = event.description
+            do {
+                try eventStore.save(ekEvent, span: .thisEvent)
+                print("added")
+            } catch {
+                print(error)
+            }
+        } else {
+            print("nothing to edit")
         }
     }
 }

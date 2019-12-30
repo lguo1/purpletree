@@ -17,8 +17,10 @@ struct Event: Hashable, Codable, Identifiable, Equatable {
     var date: String
     var season: String
     var year: String
-    var imageHomeName: String
-    var imageDetailName: String
+    var fullStart: String
+    var fullEnd: String
+    var homeImageName: String
+    var detailImageName: String
     var category: Category?
     var location: String
     var description: String
@@ -42,8 +44,8 @@ struct Event: Hashable, Codable, Identifiable, Equatable {
             lhs.date == rhs.date &&
             lhs.season == rhs.season &&
             lhs.year == rhs.year &&
-            lhs.imageHomeName == rhs.imageHomeName &&
-            lhs.imageDetailName == rhs.imageDetailName &&
+            lhs.homeImageName == rhs.homeImageName &&
+            lhs.detailImageName == rhs.detailImageName &&
             lhs.category == rhs.category &&
             lhs.location == rhs.location &&
             lhs.description == rhs.description &&
@@ -56,7 +58,7 @@ struct Event: Hashable, Codable, Identifiable, Equatable {
 
 extension Event {
     var loader: Loader {
-        Loader(id: self.id, homeImageName: self.imageHomeName, detailImageName: self.imageDetailName)
+        Loader(id: self.id, homeImageName: self.homeImageName, detailImageName: self.detailImageName)
     }
 }
 
