@@ -9,7 +9,7 @@ import SwiftUI
 
 final class UserData: ObservableObject {
     var updates = [String]()
-    @Published var events = Array(load("events.json")!.values)
+    @Published var events = Array(load("events.json").values)
     init() {
         self.get("https://ppe.sccs.swarthmore.edu/")
     }
@@ -17,17 +17,14 @@ final class UserData: ObservableObject {
         request(urlString) {
         (events, error) in
             if let events = events {
-                let saved = load("events.json") ?? [String:Event]()
+                let saved = load("events.json")
                 self.updates = checkUpdate(saved: saved, new: events)
                 save("events.json", events: events)
                 for event in self.events {
-                    event.loader.interest = UserDefaults.standard.bool(forKey: event.id)
-                    if self.updates.contains(event.id) && event.loader.interest {
-                        editEvent(event: event, ekid: UserDefaults.standard.string(forKey:"ek"+event.id)!) { (ekid, error) in
-                            if let ekid = ekid {
-                                UserDefaults.standard.set(ekid, forKey: "ek"+event.id)
-                            }
-                        }
+                    if self.updates.contains(event.id) {
+                        event.loader.changeInterest =  UserDefaults.standard.bool(forKey: event.id)
+                    } else {
+                        event.loader.interest = UserDefaults.standard.bool(forKey: event.id)
                     }
                 }
                 DispatchQueue.main.async{
@@ -69,26 +66,26 @@ func save(_ filename: String, events: [Event]) -> Void {
     }
 }
 
-func load(_ filename: String) -> [String: Event]? {
+func load(_ filename: String) -> [String: Event] {
     let data: Data
     let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
     let fileURL = documentsDirectory.appendingPathComponent(filename)
     if !FileManager.default.fileExists(atPath: fileURL.path) {
         print("Cound't find \(filename)")
-        return nil
+        return [String: Event]()
     }
     do {
         data = try Data(contentsOf: fileURL)
     } catch {
         print("Couldn't load \(filename):\n\(error)")
-        return nil
+        return [String: Event]()
     }
     do {
         let decoder = JSONDecoder()
         return try decoder.decode([String: Event].self, from: data)
     } catch {
         print("Couldn't parse \(filename) as \([String: Event].self):\n\(error)")
-        return nil
+        return [String: Event]()
     }
 }
 

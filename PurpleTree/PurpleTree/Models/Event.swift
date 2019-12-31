@@ -17,8 +17,8 @@ struct Event: Hashable, Codable, Identifiable, Equatable {
     var date: String
     var season: String
     var year: String
-    var fullStart: String
-    var fullEnd: String
+    var start: String
+    var end: String
     var homeImageName: String
     var detailImageName: String
     var category: Category?
@@ -35,50 +35,46 @@ struct Event: Hashable, Codable, Identifiable, Equatable {
         case other = "Other"
     }
     static func == (lhs: Event, rhs: Event) -> Bool {
-        return lhs.id == rhs.id &&
+        return
             lhs.speaker == rhs.speaker &&
-            lhs.speakerHome == rhs.speakerHome &&
-            lhs.speakerTitle == rhs.speakerTitle &&
-            lhs.time == rhs.time &&
-            lhs.weekday == rhs.weekday &&
-            lhs.date == rhs.date &&
-            lhs.season == rhs.season &&
-            lhs.year == rhs.year &&
-            lhs.homeImageName == rhs.homeImageName &&
-            lhs.detailImageName == rhs.detailImageName &&
-            lhs.category == rhs.category &&
-            lhs.location == rhs.location &&
-            lhs.description == rhs.description &&
-            lhs.current == rhs.current &&
-            lhs.red == rhs.red &&
-            lhs.green == rhs.green &&
-            lhs.blue == rhs.blue
+            lhs.start == rhs.start &&
+            lhs.end == rhs.end &&
+            lhs.description == rhs.description
     }
 }
 
 extension Event {
-    unowned var loader: Loader {
-        Loader(event: self, homeImageName: self.homeImageName, detailImageName: self.detailImageName)
+    var loader: Loader {
+        Loader(id: self.id, speaker: self.speaker, start: self.start, end: self.end, description: self.description, homeImageName: self.homeImageName, detailImageName: self.detailImageName)
     }
 }
 
 final class Loader: ObservableObject {
-    private var interest = false
-    private var event: Event
+    var interest = false
+    var id: String
+    var speaker: String
+    var start: String
+    var end: String
+    var description: String
     @Published var homeImage = UIImage()
     @Published var detailImage = UIImage()
     @Published var changeInterest = Bool() {
         didSet {
-            UserDefaults.standard.set(changeInterest, forKey: event.id)
+            UserDefaults.standard.set(changeInterest, forKey: id)
             interest = changeInterest
             if changeInterest {
-                addEventToCalendar(event: event)
+                addToCalendar(id: id, speaker: speaker, start: start, end: end, description: description)
             } else {
-                removeEventFromCalendar(event: event)
+                removeFromCalendar(id: id)
             }
         }
     }
-    init(event: Event, homeImageName: String, detailImageName: String) {
+    init(id: String, speaker: String, start: String, end: String, description: String, homeImageName: String, detailImageName: String) {
+        self.id = id
+        self.speaker = speaker
+        self.start = start
+        self.end = end
+        self.description = description
         if let image = ImageStore.shared.image(name: homeImageName) {
             self.homeImage = image
             print("find local \(homeImageName)")

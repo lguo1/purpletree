@@ -8,8 +8,8 @@
 
 import EventKit
 
-func addEventToCalendar(event: Event) {
-    let ekid = UserDefaults.standard.string(forKey:"ek"+event.id)
+func addToCalendar(id: String, speaker: String, start: String, end: String, description: String) {
+    let ekid = UserDefaults.standard.string(forKey:"ek"+id)
     let eventStore = EKEventStore()
     eventStore.requestAccess(to: .event) { (granted, error) in
         if !granted { return }
@@ -17,14 +17,14 @@ func addEventToCalendar(event: Event) {
             let formatter = DateFormatter()
             let ekEvent = eventStore.event(withIdentifier: ekid)!
             formatter.dateFormat = "yyyy/MM/dd HH:mm"
-            ekEvent.title = event.speaker
-            ekEvent.startDate = formatter.date(from: event.fullStart)
-            ekEvent.endDate = formatter.date(from: event.fullEnd)
-            ekEvent.notes = event.description
+            ekEvent.title = speaker
+            ekEvent.startDate = formatter.date(from: start)
+            ekEvent.endDate = formatter.date(from: end)
+            ekEvent.notes = description
             do {
                 try eventStore.save(ekEvent, span: .thisEvent)
                 print("Added again")
-                UserDefaults.standard.set(ekid, forKey: "ek"+event.id)
+                UserDefaults.standard.set(ekid, forKey: "ek"+id)
             } catch {
                 print(error)
             }
@@ -32,10 +32,10 @@ func addEventToCalendar(event: Event) {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy/MM/dd HH:mm"
             let ekEvent = EKEvent(eventStore: eventStore)
-            ekEvent.title = event.speaker
-            ekEvent.startDate = formatter.date(from: event.fullStart)
-            ekEvent.endDate = formatter.date(from: event.fullEnd)
-            ekEvent.notes = event.description
+            ekEvent.title = speaker
+            ekEvent.startDate = formatter.date(from: start)
+            ekEvent.endDate = formatter.date(from: end)
+            ekEvent.notes = description
             ekEvent.calendar = eventStore.defaultCalendarForNewEvents
             do {
                 try eventStore.save(ekEvent, span: .thisEvent)
@@ -46,9 +46,8 @@ func addEventToCalendar(event: Event) {
         }
     }
 }
-
-func removeEventFromCalendar(event: Event) {
-    let ekid = UserDefaults.standard.string(forKey:"ek"+event.id)!
+func removeFromCalendar(id: String) {
+    let ekid = UserDefaults.standard.string(forKey:"ek"+id)!
     let eventStore = EKEventStore()
     eventStore.requestAccess(to: .event) {(granted, error) in
         if !granted { return }

@@ -102,7 +102,7 @@ struct SpeakerDescription: View {
             }
             Spacer()
             Button(action: {
-                self.loader.interest.toggle()
+                self.loader.changeInterest.toggle()
             }) {
                 VStack{
                     if loader.interest {
