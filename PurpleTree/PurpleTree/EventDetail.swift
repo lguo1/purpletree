@@ -84,7 +84,7 @@ struct SpeakerDescription: View {
                 Text(event.speaker)
                     .font(.title)
                     .padding(.bottom, 10)
-                Text(event.speakerTitle)
+                Text(event.titleSpeaker)
                     .font(.subheadline)
                 HStack(alignment: .top) {
                     Group {

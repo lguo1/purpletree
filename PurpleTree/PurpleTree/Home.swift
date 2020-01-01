@@ -11,6 +11,16 @@ import Combine
 
 struct Home: View{
     @EnvironmentObject private var userData: UserData
+    @State var showingProfile = false
+    var profileButton: some View {
+        Button(action: { self.showingProfile.toggle() }) {
+            Image(systemName: "person.crop.circle")
+                .foregroundColor(Color.black)
+                .imageScale(.large)
+                .accessibility(label: Text("User Profile"))
+                .padding()
+        }
+    }
     var body: some View {
         GeometryReader { proxy in
             NavigationView {
@@ -37,6 +47,7 @@ struct Home: View{
                 Text("PURPLETREE")
                     .font(.title)
                     .fontWeight(.heavy))
+                .navigationBarItems(trailing: self.profileButton)
             }
         }
     }
@@ -128,7 +139,7 @@ struct HomeItem: View{
             HStack {
                 Spacer()
                 VStack {
-                    Text(event.speakerHome)
+                    Text(event.homeSpeaker)
                         .multilineTextAlignment(.trailing)
                         .font(.title)
                         .foregroundColor(Color.white)

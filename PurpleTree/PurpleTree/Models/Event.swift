@@ -10,15 +10,15 @@ import SwiftUI
 struct Event: Hashable, Codable, Identifiable, Equatable {
     var id: String
     var speaker: String
-    var speakerHome: String
-    var speakerTitle: String
+    var homeSpeaker: String
+    var titleSpeaker: String
     var time: String
     var weekday: String
     var date: String
     var season: String
     var year: String
-    var start: String
-    var end: String
+    var start: String?
+    var end: String?
     var homeImageName: String
     var detailImageName: String
     var category: Category?
@@ -53,8 +53,8 @@ final class Loader: ObservableObject {
     var interest = false
     var id: String
     var speaker: String
-    var start: String
-    var end: String
+    var start: String?
+    var end: String?
     var description: String
     @Published var homeImage = UIImage()
     @Published var detailImage = UIImage()
@@ -62,14 +62,16 @@ final class Loader: ObservableObject {
         didSet {
             UserDefaults.standard.set(changeInterest, forKey: id)
             interest = changeInterest
-            if changeInterest {
-                addToCalendar(id: id, speaker: speaker, start: start, end: end, description: description)
-            } else {
-                removeFromCalendar(id: id)
+            if let start = start {
+                if changeInterest {
+                    addToCalendar(id: id, speaker: speaker, start: start, end: end!, description: description)
+                } else {
+                    removeFromCalendar(id: id)
+                }
             }
         }
     }
-    init(id: String, speaker: String, start: String, end: String, description: String, homeImageName: String, detailImageName: String) {
+    init(id: String, speaker: String, start: String?, end: String?, description: String, homeImageName: String, detailImageName: String) {
         self.id = id
         self.speaker = speaker
         self.start = start
