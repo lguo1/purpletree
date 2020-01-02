@@ -14,7 +14,7 @@ struct EventDetail: View {
     var body: some View {
         GeometryReader { proxy in
             VStack(alignment: .leading) {
-                Profile(event: self.event, screenSize: proxy.size)
+                DetailImage(event: self.event, screenSize: proxy.size)
                     .environmentObject(self.loader)
                 Spacer()
                 }
@@ -27,7 +27,7 @@ struct EventDetail: View {
     }
 }
 
-struct Profile: View {
+struct DetailImage: View {
     @EnvironmentObject private var loader: Loader
     var event: Event
     let screenSize: CGSize
@@ -84,7 +84,7 @@ struct SpeakerDescription: View {
                 Text(event.speaker)
                     .font(.title)
                     .padding(.bottom, 10)
-                Text(event.titleSpeaker)
+                Text(event.speakerTitle)
                     .font(.subheadline)
                 HStack(alignment: .top) {
                     Group {

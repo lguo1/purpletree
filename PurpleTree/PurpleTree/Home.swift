@@ -18,7 +18,6 @@ struct Home: View{
                 .foregroundColor(Color.black)
                 .imageScale(.large)
                 .accessibility(label: Text("User Profile"))
-                .padding()
         }
     }
     var body: some View {
@@ -48,6 +47,10 @@ struct Home: View{
                     .font(.title)
                     .fontWeight(.heavy))
                 .navigationBarItems(trailing: self.profileButton)
+                    .sheet(isPresented: self.$showingProfile) {
+                    ProfileHost()
+                        .environmentObject(self.userData)
+                }
             }
         }
     }
@@ -139,7 +142,7 @@ struct HomeItem: View{
             HStack {
                 Spacer()
                 VStack {
-                    Text(event.homeSpeaker)
+                    Text(event.speakerHome)
                         .multilineTextAlignment(.trailing)
                         .font(.title)
                         .foregroundColor(Color.white)

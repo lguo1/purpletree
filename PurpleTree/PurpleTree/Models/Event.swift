@@ -10,8 +10,8 @@ import SwiftUI
 struct Event: Hashable, Codable, Identifiable, Equatable {
     var id: String
     var speaker: String
-    var homeSpeaker: String
-    var titleSpeaker: String
+    var speakerHome: String
+    var speakerTitle: String
     var time: String
     var weekday: String
     var date: String
