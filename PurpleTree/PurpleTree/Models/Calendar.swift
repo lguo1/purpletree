@@ -9,13 +9,13 @@
 import EventKit
 
 func addToCalendar(id: String, speaker: String, start: String, end: String, description: String) {
-    let ekid = UserDefaults.standard.string(forKey:"ek"+id)
+    let ekid = UserDefaults.standard.string(forKey:"ek"+id) ?? String()
     let eventStore = EKEventStore()
+    let ekEvent = eventStore.event(withIdentifier: ekid)
     eventStore.requestAccess(to: .event) { (granted, error) in
         if !granted { return }
-        if let ekid = ekid {
+        if let ekEvent = ekEvent {
             let formatter = DateFormatter()
-            let ekEvent = eventStore.event(withIdentifier: ekid)!
             formatter.dateFormat = "yyyy/MM/dd HH:mm"
             ekEvent.title = speaker
             ekEvent.startDate = formatter.date(from: start)
@@ -23,8 +23,8 @@ func addToCalendar(id: String, speaker: String, start: String, end: String, desc
             ekEvent.notes = description
             do {
                 try eventStore.save(ekEvent, span: .thisEvent)
-                print("Added again")
-                UserDefaults.standard.set(ekid, forKey: "ek"+id)
+                UserDefaults.standard.set(ekEvent.eventIdentifier, forKey: "ek"+id)
+                print("added \(ekEvent.eventIdentifier ?? "none") again")
             } catch {
                 print(error)
             }
@@ -39,7 +39,8 @@ func addToCalendar(id: String, speaker: String, start: String, end: String, desc
             ekEvent.calendar = eventStore.defaultCalendarForNewEvents
             do {
                 try eventStore.save(ekEvent, span: .thisEvent)
-                print("added")
+                UserDefaults.standard.set(ekEvent.eventIdentifier, forKey: "ek"+id)
+                print("added \(ekEvent.eventIdentifier ?? "none")")
             } catch {
                 print(error)
             }
@@ -55,7 +56,7 @@ func removeFromCalendar(id: String) {
         if let ekEvent = ekEvent {
             do {
                 try eventStore.remove(ekEvent, span: .thisEvent, commit: true)
-                print("removed")
+                UserDefaults.standard.removeObject(forKey: "ek"+id)
             } catch {
                 print(error)
             }
