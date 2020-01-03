@@ -106,18 +106,21 @@ struct SpeakerDescription: View {
             }) {
                 VStack{
                     if loader.interest {
-                            Image("logo")
-                                .renderingMode(.original)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(height: 30)
-                                .padding()
+                        Image("logo")
+                        .renderingMode(.original)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 30)
+                        .padding()
                     } else {
                         Text("Like")
                         .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
                         .padding()
                     }
                 }
+            }
+            .actionSheet(isPresented: $loader.interest) {
+            ActionSheet(title: Text("Event Scheduled"), message: Text("Your event has been added to your calendar"), buttons: [.default(Text("Dismiss"))])
             }
         }
     }

@@ -51,6 +51,7 @@ extension Event {
 
 final class Loader: ObservableObject {
     var interest = false
+    var showingAlert = false
     var id: String
     var speaker: String
     var start: String?
@@ -65,8 +66,10 @@ final class Loader: ObservableObject {
             if let start = start {
                 if changeInterest {
                     addToCalendar(id: id, speaker: speaker, start: start, end: end!, description: description)
+                    showingAlert = true
                 } else {
                     removeFromCalendar(id: id)
+                    showingAlert = false
                 }
             }
         }

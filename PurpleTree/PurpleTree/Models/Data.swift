@@ -9,9 +9,26 @@ import SwiftUI
 
 final class UserData: ObservableObject {
     var updates = [String]()
+    @Published var prefersNotification = UserDefaults.standard.bool(forKey: "prefersNotification") {
+        didSet { UserDefaults.standard.set(prefersNotification, forKey: "prefersNotification")
+        }
+    }
+    @Published var sortBy = SortBy.all
     @Published var events = Array(load("events.json").values)
     init() {
         self.get("https://ppe.sccs.swarthmore.edu/")
+    }
+    enum SortBy: String, CaseIterable {
+        case all = "All"
+        case arts = "Arts"
+        case economics = "Economics"
+        case history = "History"
+        case mathematics = "Mathematics"
+        case philosophy = "Philosophy"
+        case politics = "Politics"
+        case science = "Science"
+        case sociology = "Sociology"
+        case technology = "Technology"
     }
     func get(_ urlString: String) -> Void {
         request(urlString) {

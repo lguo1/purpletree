@@ -48,7 +48,7 @@ struct Home: View{
                     .fontWeight(.heavy))
                 .navigationBarItems(trailing: self.profileButton)
                     .sheet(isPresented: self.$showingProfile) {
-                    ProfileHost()
+                    Settings()
                         .environmentObject(self.userData)
                 }
             }
