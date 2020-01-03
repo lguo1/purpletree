@@ -68,15 +68,18 @@ final class Loader: ObservableObject {
     @Published var changeInterest = Bool() {
         didSet {
             UserDefaults.standard.set(changeInterest, forKey: id)
-            self.userData.interests += ",\(id)"
             interest = changeInterest
             if let start = start {
                 if changeInterest {
                     addToCalendar(id: id, speaker: speaker, start: start, end: end!, description: description)
                     showingAlert = true
+                    self.userData.interests.append(speaker)
+                    print(self.userData.interests)
                 } else {
                     removeFromCalendar(id: id)
                     showingAlert = false
+                    self.userData.interests.removeLast()
+                    print(self.userData.interests)
                 }
             }
         }
