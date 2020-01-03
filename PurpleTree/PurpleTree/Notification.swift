@@ -21,7 +21,7 @@ struct Notification: View {
                     .font(.title)
                     .padding(.bottom, 10)
                 }
-                Text("There is no event because of either of the following reasons:")
+                Text("There is no event because of either of two reasons:")
                     .font(.headline)
                     .padding(.bottom, 30)
                 HStack {

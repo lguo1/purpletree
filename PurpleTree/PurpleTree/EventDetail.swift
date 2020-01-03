@@ -120,7 +120,7 @@ struct SpeakerDescription: View {
                     }
                 }
             }
-            .actionSheet(isPresented: $loader.interest) {
+            .actionSheet(isPresented: $loader.showingAlert) {
             ActionSheet(title: Text("Event Scheduled"), message: Text("Your event has been added to your calendar"), buttons: [.default(Text("Dismiss"))])
             }
         }

@@ -10,22 +10,13 @@ import SwiftUI
 final class UserData: ObservableObject {
     static var shared = UserData()
     var updates = [String]()
-    var interests: [String] { didSet {
-            UserDefaults.standard.set(interests, forKey: "Interests")
-        }
-    }
-    @Published var prefersNotification = UserDefaults.standard.bool(forKey: "PrefersNotification") {
-        didSet { UserDefaults.standard.set(prefersNotification, forKey: "PrefersNotification")
+    @Published var prefersCalendar = UserDefaults.standard.bool(forKey: "PrefersCalendar") {
+        didSet { UserDefaults.standard.set(prefersCalendar, forKey: "PrefersCalendar")
         }
     }
     @Published var sortBy = SortBy.all
     @Published var events = Array(load("events.json").values)
     init() {
-        if let interests = UserDefaults.standard.value(forKey: "Interests") {
-            self.interests = interests as! [String]
-        } else {
-            self.interests = [String]()
-        }
         self.get("https://ppe.sccs.swarthmore.edu/")
     }
     enum SortBy: String, CaseIterable {

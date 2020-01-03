@@ -68,15 +68,13 @@ final class Loader: ObservableObject {
         didSet {
             UserDefaults.standard.set(changeInterest, forKey: id)
             interest = changeInterest
-            if let start = start {
+            if start != nil && UserData.shared.prefersCalendar {
                 if changeInterest {
-                    addToCalendar(id: id, speaker: speaker, start: start, end: end!, description: description)
+                    addToCalendar(id: id, speaker: speaker, start: start!, end: end!, description: description)
                     showingAlert = true
-                    UserData.shared.interests.append(speaker)
                 } else {
                     removeFromCalendar(id: id)
                     showingAlert = false
-                    UserData.shared.interests.removeLast()
                 }
             }
         }

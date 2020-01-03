@@ -15,10 +15,10 @@ struct Settings: View {
         NavigationView {
             Form{
                 Section{
-                    Toggle(isOn: $userData.prefersNotification) {
-                        Text("Enable Notifications")
+                    Toggle(isOn: $userData.prefersCalendar) {
+                        Text("Enable Events Scheduling in Calendar")
                     }
-                    Picker("Sort By", selection: $userData.sortBy) {
+                    Picker("Sort by", selection: $userData.sortBy) {
                         ForEach(UserData.SortBy.allCases, id: \.self) {
                             category in
                             Text(category.rawValue)
