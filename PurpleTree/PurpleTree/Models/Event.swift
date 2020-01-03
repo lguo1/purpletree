@@ -29,10 +29,15 @@ struct Event: Hashable, Codable, Identifiable, Equatable {
     var green : Double
     var blue : Double
     enum Category: String, CaseIterable, Codable, Hashable {
-        case politics = "Politics"
+        case arts = "Arts"
         case economics = "Economics"
+        case history = "History"
+        case mathematics = "Mathematics"
         case philosophy = "Philosophy"
-        case other = "Other"
+        case politics = "Politics"
+        case science = "Science"
+        case sociology = "Sociology"
+        case technology = "Technology"
     }
     static func == (lhs: Event, rhs: Event) -> Bool {
         return

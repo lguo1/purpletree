@@ -112,6 +112,7 @@ struct SpeakerDescription: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(height: 30)
                         .padding()
+                        .animation(.easeIn)
                     } else {
                         Text("Like")
                         .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
