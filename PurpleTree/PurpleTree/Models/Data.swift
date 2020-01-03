@@ -8,9 +8,14 @@
 import SwiftUI
 
 final class UserData: ObservableObject {
+    static var shared = UserData()
     var updates = [String]()
-    @Published var prefersNotification = UserDefaults.standard.bool(forKey: "prefersNotification") {
-        didSet { UserDefaults.standard.set(prefersNotification, forKey: "prefersNotification")
+    var interests = UserDefaults.standard.string(forKey: "Interests") ?? String() { didSet {
+            UserDefaults.standard.set(interests, forKey: "Interests")
+        }
+    }
+    @Published var prefersNotification = UserDefaults.standard.bool(forKey: "PrefersNotification") {
+        didSet { UserDefaults.standard.set(prefersNotification, forKey: "PrefersNotification")
         }
     }
     @Published var sortBy = SortBy.all

@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import UserNotifications
 
 struct Settings: View {
     @EnvironmentObject var userData: UserData

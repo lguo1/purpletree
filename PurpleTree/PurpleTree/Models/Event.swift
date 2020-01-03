@@ -62,11 +62,13 @@ final class Loader: ObservableObject {
     var start: String?
     var end: String?
     var description: String
+    unowned var userData = UserData.shared
     @Published var homeImage = UIImage()
     @Published var detailImage = UIImage()
     @Published var changeInterest = Bool() {
         didSet {
             UserDefaults.standard.set(changeInterest, forKey: id)
+            self.userData.interests += ",\(id)"
             interest = changeInterest
             if let start = start {
                 if changeInterest {
