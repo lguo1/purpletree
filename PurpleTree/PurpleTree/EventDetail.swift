@@ -120,8 +120,8 @@ struct SpeakerDescription: View {
                     }
                 }
             }
-            .actionSheet(isPresented: $loader.showingAlert) {
-            ActionSheet(title: Text("Event Scheduled"), message: Text("Your event has been added to your calendar"), buttons: [.default(Text("Dismiss"))])
+            .alert(isPresented: $loader.showingAlert) {
+            Alert(title: Text("Event Scheduled"), message: Text("Your event has been added to your calendar"), dismissButton: .default(Text("OK")))
             }
         }
     }

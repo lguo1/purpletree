@@ -16,7 +16,7 @@ struct Settings: View {
             Form{
                 Section{
                     Toggle(isOn: $userData.prefersCalendar) {
-                        Text("Enable Events Scheduling in Calendar")
+                        Text("Enable Calendar Scheduling")
                     }
                     Picker("Sort by", selection: $userData.sortBy) {
                         ForEach(UserData.SortBy.allCases, id: \.self) {
