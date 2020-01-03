@@ -62,7 +62,6 @@ final class Loader: ObservableObject {
     var start: String?
     var end: String?
     var description: String
-    unowned var userData = UserData.shared
     @Published var homeImage = UIImage()
     @Published var detailImage = UIImage()
     @Published var changeInterest = Bool() {
@@ -73,13 +72,11 @@ final class Loader: ObservableObject {
                 if changeInterest {
                     addToCalendar(id: id, speaker: speaker, start: start, end: end!, description: description)
                     showingAlert = true
-                    self.userData.interests.append(speaker)
-                    print(self.userData.interests)
+                    UserData.shared.interests.append(speaker)
                 } else {
                     removeFromCalendar(id: id)
                     showingAlert = false
-                    self.userData.interests.removeLast()
-                    print(self.userData.interests)
+                    UserData.shared.interests.removeLast()
                 }
             }
         }
