@@ -39,7 +39,6 @@ struct Home: View{
                                 .padding(.trailing)
                             }
                             AddEvent(screenSize: proxy.size)
-                            .environmentObject(self.userData)
                             .padding(.leading)
                             .padding(.bottom, 20)
                             .padding(.trailing)
@@ -47,11 +46,11 @@ struct Home: View{
                     }
                 }
                 .navigationBarTitle(
-                Text("PURPLETREE")
-                    .font(.title)
-                    .fontWeight(.heavy))
+                    Text("PURPLETREE")
+                        .font(.title)
+                        .fontWeight(.heavy))
                 .navigationBarItems(trailing: self.profileButton)
-                    .sheet(isPresented: self.$showingProfile) {
+                .sheet(isPresented: self.$showingProfile) {
                     Settings()
                         .environmentObject(self.userData)
                 }

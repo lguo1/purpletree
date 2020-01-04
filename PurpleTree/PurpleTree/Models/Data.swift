@@ -16,9 +16,6 @@ final class UserData: ObservableObject {
     }
     @Published var sortBy = SortBy.all
     @Published var events = Array(load("events.json").values)
-    @Published var email: String = ""
-    @Published var organizer: String = ""
-    @State var description: String = ""
     @Published var created = false
     init() {
         self.get("https://ppe.sccs.swarthmore.edu/")
@@ -51,16 +48,6 @@ final class UserData: ObservableObject {
                 }
                 DispatchQueue.main.async{
                     self.events = events
-                }
-            }
-        }
-    }
-    func create() -> Void {
-        let proposal = ["email": self.email, "organizer": self.organizer, "description": self.description]
-        propose("localhost:5050/add/", proposal: proposal) { feedback in
-            if feedback == "done" {
-                DispatchQueue.main.async{
-                    self.created = true
                 }
             }
         }

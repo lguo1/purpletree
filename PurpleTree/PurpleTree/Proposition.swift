@@ -69,9 +69,12 @@ struct MultilineTextView: UIViewRepresentable {
 
 
 struct Proposition: View {
-    @EnvironmentObject var userData: UserData
+    @State var created = false
+    @State var email: String = ""
+    @State var organizer: String = ""
+    @State var description: String = ""
     var createButton: some View {
-        Button(action: {self.userData.create()}) {
+        Button(action: {self.create()}) {
             Text("Create")
             .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
         }
@@ -80,24 +83,35 @@ struct Proposition: View {
     var body: some View {
         GeometryReader { proxy in
             NavigationView {
-                VStack {
+                VStack{
                     List {
                         HStack{
                             Text("From")
                             .foregroundColor(.gray)
-                            TextField("leaves@purpletree", text: self.userData.$email)
+                            TextField("leaves@purpletree", text: self.$email)
                         }
                         HStack{
                             Text("By")
                             .foregroundColor(.gray)
-                            TextField("club, group, dept", text: self.userData.$organizer)
+                            TextField("club, group, dept", text: self.$organizer)
                         }
-                        MultilineTextView(placeholderText: "one or two sentences that describe the event", text: self.userData.$description)
+                        MultilineTextView(placeholderText: "one or two sentences that describe the event", text: self.$description)
                             .frame(height: proxy.size.height)
                     }
                     Spacer()
                 }
                 .navigationBarTitle(Text("New Event"))
+                .navigationBarItems(trailing: self.createButton)
+            }
+        }
+    }
+    func create() -> Void {
+        let proposal = ["email": self.email, "organizer": self.organizer, "description": self.description]
+        propose("localhost:5050/add/", proposal: proposal) { feedback in
+            if feedback == "done" {
+                DispatchQueue.main.async{
+                    self.created = true
+                }
             }
         }
     }
