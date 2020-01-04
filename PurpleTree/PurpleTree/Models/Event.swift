@@ -21,7 +21,7 @@ struct Event: Hashable, Codable, Identifiable, Equatable {
     var end: String?
     var homeImageName: String
     var detailImageName: String
-    var category: Category?
+    var category: Category
     var location: String
     var description: String
     var current: Bool
