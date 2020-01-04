@@ -12,7 +12,7 @@ import Combine
 struct Home: View{
     @EnvironmentObject private var userData: UserData
     @State var showingSheet = false
-    @State var sheetType = SheetType.none
+    @State var sheetType = SheetType.settings
     var profileButton: some View {
         Button(action: {
             self.showingSheet.toggle()
@@ -31,7 +31,7 @@ struct Home: View{
                 ScrollView(.vertical, showsIndicators: false) {
                     VStack{
                         if self.userData.events.count == 0 {
-                            NoEvent(screenSize: proxy.size)
+                            NoEvent(showingSheet: self.$showingSheet, sheetType: self.$sheetType, screenSize: proxy.size)
                             .padding(.leading)
                             .padding(.bottom, 20)
                             .padding(.trailing)
@@ -61,6 +61,8 @@ struct Home: View{
                         .environmentObject(self.userData)
                     } else if self.sheetType == .proposition {
                        Proposition()
+                    } else if self.sheetType == .explanation {
+                        Explanation()
                     }
                 }
             }
@@ -91,17 +93,22 @@ struct AddEvent: View {
 }
 
 struct NoEvent: View {
+    @Binding var showingSheet: Bool
+    @Binding var sheetType: SheetType
     let screenSize: CGSize
     var body: some View {
         HStack {
-            NavigationLink(destination: Explanation()){
+            Button(action: { self.showingSheet.toggle()
+                self.sheetType = .explanation
+            }){
                 Color(red: 0.6, green: 0.4, blue: 0.6)
                 .frame(height: screenSize.height/12)
                 .cornerRadius(10)
                 .shadow(radius: 5)
                 .overlay(
                     Image(systemName: "exclamationmark")
-                    .foregroundColor(Color.white))
+                    .foregroundColor(Color.white)
+                    .imageScale(.large))
             }
         }
     }
@@ -165,5 +172,5 @@ struct HomeItem: View{
 }
 
 enum SheetType {
-   case settings, proposition, explanation, none
+   case settings, proposition, explanation
 }
