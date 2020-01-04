@@ -15,10 +15,6 @@ struct MultilineTextView: UIViewRepresentable {
     func makeUIView(context: Context) -> UITextView {
         let view = UITextView()
         view.textContainer.lineFragmentPadding = 0
-        view.textContainerInset = .zero
-        //view.isScrollEnabled = true
-        //view.isEditable = true
-        //view.isUserInteractionEnabled = true
         view.font = UIFont.systemFont(ofSize: 17)
         view.text = placeholderText
         view.textColor = .placeholderText

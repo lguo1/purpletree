@@ -11,15 +11,20 @@ import Combine
 
 struct Home: View{
     @EnvironmentObject private var userData: UserData
-    @State var showingProfile = false
+    @State var showingSheet = false
+    @State var sheetType = SheetType.none
     var profileButton: some View {
-        Button(action: { self.showingProfile.toggle() }) {
+        Button(action: {
+            self.showingSheet.toggle()
+            self.sheetType = .settings
+        }) {
             Image(systemName: "person.crop.circle")
                 .foregroundColor(Color.black)
                 .imageScale(.large)
                 .accessibility(label: Text("Settings"))
         }
     }
+    
     var body: some View {
         GeometryReader { proxy in
             NavigationView {
@@ -38,7 +43,7 @@ struct Home: View{
                                 .padding(.bottom, 20)
                                 .padding(.trailing)
                             }
-                            AddEvent(screenSize: proxy.size)
+                            AddEvent(showingSheet: self.$showingSheet, sheetType: self.$sheetType, screenSize: proxy.size)
                             .padding(.leading)
                             .padding(.bottom, 20)
                             .padding(.trailing)
@@ -50,9 +55,13 @@ struct Home: View{
                         .font(.title)
                         .fontWeight(.heavy))
                 .navigationBarItems(trailing: self.profileButton)
-                .sheet(isPresented: self.$showingProfile) {
-                    Settings()
+                .sheet(isPresented: self.$showingSheet) {
+                    if self.sheetType == .settings {
+                        Settings()
                         .environmentObject(self.userData)
+                    } else if self.sheetType == .proposition {
+                       Proposition()
+                    }
                 }
             }
         }
@@ -60,12 +69,14 @@ struct Home: View{
 }
 
 struct AddEvent: View {
-    @EnvironmentObject private var userData: UserData
+    @Binding var showingSheet: Bool
+    @Binding var sheetType: SheetType
     let screenSize: CGSize
     var body: some View {
     VStack{
-        NavigationLink(destination: Proposition()
-        .environmentObject(self.userData)) {
+        Button(action: { self.showingSheet.toggle()
+            self.sheetType = .proposition
+        }) {
             Color(red: 0.6, green: 0.4, blue: 0.6)
             .frame(height: screenSize.height/12)
             .cornerRadius(10)
@@ -151,4 +162,8 @@ struct HomeItem: View{
             })
         }
     }
+}
+
+enum SheetType {
+   case settings, proposition, explanation, none
 }
