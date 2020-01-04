@@ -27,18 +27,22 @@ struct Home: View{
                     VStack{
                         if self.userData.events.count == 0 {
                             NoEvent(screenSize: proxy.size)
+                            .padding(.leading)
+                            .padding(.bottom, 20)
+                            .padding(.trailing)
+                        } else {
+                            ForEach(self.userData.events) {event in
+                                HomeRow(event: event, screenSize: proxy.size)
                                 .environmentObject(self.userData)
                                 .padding(.leading)
                                 .padding(.bottom, 20)
                                 .padding(.trailing)
-                        } else {
-                            ForEach(self.userData.events) {event in
-                                HomeRow(event: event, screenSize: proxy.size)
-                                    .environmentObject(self.userData)
-                                    .padding(.leading)
-                                    .padding(.bottom, 20)
-                                    .padding(.trailing)
                             }
+                            AddEvent(screenSize: proxy.size)
+                            .environmentObject(self.userData)
+                            .padding(.leading)
+                            .padding(.bottom, 20)
+                            .padding(.trailing)
                         }
                     }
                 }
@@ -56,48 +60,40 @@ struct Home: View{
     }
 }
 
-struct NoEvent: View {
+struct AddEvent: View {
     @EnvironmentObject private var userData: UserData
+    let screenSize: CGSize
+    var body: some View {
+    VStack{
+        Color(red: 0.6, green: 0.4, blue: 0.6)
+        .frame(height: screenSize.height/12)
+        .cornerRadius(10)
+        .shadow(radius: 5)
+        .overlay(
+            Image(systemName: "plus")
+            .foregroundColor(Color.white))
+        }
+    }
+}
+
+struct NoEvent: View {
     let screenSize: CGSize
     var body: some View {
         HStack {
             NavigationLink(
-            destination: Notification().environmentObject(userData)){
-                VStack {
-                    Color(red: 0.6, green: 0.4, blue: 0.6)
-                    .frame(height: screenSize.height/2)
-                    .cornerRadius(10)
-                    .shadow(radius: 5)
-                    .overlay(
-                        HStack {
-                            Spacer()
-                            VStack {
-                                Text("No\nEvent")
-                                    .multilineTextAlignment(.trailing)
-                                    .font(.title)
-                                    .foregroundColor(Color.white)
-                                    .padding(.trailing, 10)
-                                    .padding(.top, 10)
-                                Spacer()
-                            }
-                        })
-                    .overlay(
-                        HStack{
-                            VStack{
-                                Spacer()
-                                Image("tree")
-                                    .renderingMode(.original)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: screenSize.width-30)
-                            }
-                            Spacer()
-                        })
-                }
+            destination: Explanation()){
+                Color(red: 0.6, green: 0.4, blue: 0.6)
+                .frame(height: screenSize.height/12)
+                .cornerRadius(10)
+                .shadow(radius: 5)
+                .overlay(
+                    Image(systemName: "exclamationmark")
+                    .foregroundColor(Color.white))
             }
         }
     }
 }
+
 struct HomeRow: View {
     @EnvironmentObject private var userData: UserData
     var eventIndex: Int {

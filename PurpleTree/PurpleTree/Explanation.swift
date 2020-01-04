@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct Notification: View {
+struct Explanation: View {
     @EnvironmentObject var userData: UserData
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
