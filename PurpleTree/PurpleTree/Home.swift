@@ -65,13 +65,15 @@ struct AddEvent: View {
     let screenSize: CGSize
     var body: some View {
     VStack{
-        Color(red: 0.6, green: 0.4, blue: 0.6)
-        .frame(height: screenSize.height/12)
-        .cornerRadius(10)
-        .shadow(radius: 5)
-        .overlay(
-            Image(systemName: "plus")
-            .foregroundColor(Color.white))
+        NavigationLink(destination: Proposition()) {
+            Color(red: 0.6, green: 0.4, blue: 0.6)
+            .frame(height: screenSize.height/12)
+            .cornerRadius(10)
+            .shadow(radius: 5)
+            .overlay(
+                Image(systemName: "plus")
+                .foregroundColor(Color.white))
+            }
         }
     }
 }
@@ -80,8 +82,7 @@ struct NoEvent: View {
     let screenSize: CGSize
     var body: some View {
         HStack {
-            NavigationLink(
-            destination: Explanation()){
+            NavigationLink(destination: Explanation()){
                 Color(red: 0.6, green: 0.4, blue: 0.6)
                 .frame(height: screenSize.height/12)
                 .cornerRadius(10)

@@ -85,7 +85,7 @@ final class Loader: ObservableObject {
         self.start = start
         self.end = end
         self.description = description
-        if let image = ImageStore.shared.image(name: homeImageName) {
+        if let image = loadImage(name: homeImageName) {
             self.homeImage = image
             print("find local \(homeImageName)")
         } else {
@@ -99,7 +99,7 @@ final class Loader: ObservableObject {
             }
             homeTask.resume()
         }
-        if let image = ImageStore.shared.image(name: detailImageName) {
+        if let image = loadImage(name: detailImageName) {
             self.detailImage = image
             print("find local \(detailImageName)")
         } else {
@@ -124,5 +124,14 @@ final class Loader: ObservableObject {
                 print("error saving \(imageName)", error)
             }
         }
+    }
+    func loadImage(name: String) -> UIImage? {
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let fileURL = documentsDirectory.appendingPathComponent(name)
+        guard let image = UIImage(contentsOfFile: fileURL.path)
+            else {
+                return nil
+        }
+        return image
     }
 }
