@@ -69,31 +69,33 @@ struct MultilineTextView: UIViewRepresentable {
 
 
 struct Proposition: View {
-    @State private var email: String = ""
-    @State private var organizer: String = ""
-    @State private var description: String = ""
+    @EnvironmentObject var userData: UserData
+    var createButton: some View {
+        Button(action: {self.userData.create()}) {
+            Text("Create")
+            .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
+        }
+    }
 
     var body: some View {
         GeometryReader { proxy in
             NavigationView {
-                Form {
-                    Section {
+                VStack {
+                    List {
                         HStack{
                             Text("From")
                             .foregroundColor(.gray)
-                            TextField("leaves@purpletree", text: self.$email)
+                            TextField("leaves@purpletree", text: self.userData.$email)
                         }
                         HStack{
                             Text("By")
                             .foregroundColor(.gray)
-                            TextField("club, group, dept", text: self.$organizer)
+                            TextField("club, group, dept", text: self.userData.$organizer)
                         }
-                        VStack(alignment: .leading){
-                            MultilineTextView(placeholderText: "one or two sentences that describe the event", text: self.$description)
-                                .frame(height: proxy.size.height/2)
-                            
-                        }
+                        MultilineTextView(placeholderText: "one or two sentences that describe the event", text: self.userData.$description)
+                            .frame(height: proxy.size.height)
                     }
+                    Spacer()
                 }
                 .navigationBarTitle(Text("New Event"))
             }

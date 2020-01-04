@@ -34,19 +34,20 @@ func request(_ location: String, completionHandler: @escaping ([Event]?, Error?)
    task.resume()
 }
 
-func proposeEvent(_ location: String, proposal: Proposal, completionHandler: @escaping (String?) -> Void) -> Void {
+func propose(_ location: String, proposal: [String: String], completionHandler: @escaping (String?) -> Void) -> Void {
     guard let url = URL(string: location) else {
         print("Cannot create URL")
         return
     }
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
-    request.httpBody = try! JSONEncoder().encode(proposal)
+    let jsonData = try! JSONSerialization.data(withJSONObject: proposal)
+    request.httpBody = jsonData
     request.addValue("application/json", forHTTPHeaderField: "Content-Type")
     let task = URLSession.shared.dataTask(with: request) {
         (data, response, error) in
         guard let data = data else {
-            print("No data")
+            print("No feedback")
             completionHandler(nil)
             return
         }

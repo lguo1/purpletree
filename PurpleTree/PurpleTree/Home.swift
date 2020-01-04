@@ -17,7 +17,7 @@ struct Home: View{
             Image(systemName: "person.crop.circle")
                 .foregroundColor(Color.black)
                 .imageScale(.large)
-                .accessibility(label: Text("User Profile"))
+                .accessibility(label: Text("Settings"))
         }
     }
     var body: some View {
@@ -65,14 +65,16 @@ struct AddEvent: View {
     let screenSize: CGSize
     var body: some View {
     VStack{
-        NavigationLink(destination: Proposition()) {
+        NavigationLink(destination: Proposition()
+        .environmentObject(self.userData)) {
             Color(red: 0.6, green: 0.4, blue: 0.6)
             .frame(height: screenSize.height/12)
             .cornerRadius(10)
             .shadow(radius: 5)
             .overlay(
                 Image(systemName: "plus")
-                .foregroundColor(Color.white))
+                .foregroundColor(Color.white)
+                .imageScale(.large))
             }
         }
     }
