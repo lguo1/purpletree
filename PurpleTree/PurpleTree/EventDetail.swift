@@ -47,8 +47,25 @@ struct DetailImage: View {
 
 struct Description: View {
     @EnvironmentObject private var loader: Loader
+    @Binding var showingSheet: Bool
+    @State var subscribed: Bool
     var event: Event
     let screenSize: CGSize
+    var organizerButton: some View {
+        Button(action: {self.showingSheet.toggle()}) {
+            Text(self.event.organizer)
+            .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
+        }
+    }
+    var subscriptionButton: some View {
+        Button(action: {}) {
+            if subscribed {
+                Text("Subscribe to the mailing list")
+            } else {
+                Text("Subscribed")
+            }
+        }
+    }
     var body: some View {
         VStack {
             Spacer()
@@ -61,6 +78,7 @@ struct Description: View {
                 Text(event.description)
                     .padding(.leading)
                     .padding(.trailing)
+                    .padding(.bottom, 30)
                 Spacer()
             }
             .background(

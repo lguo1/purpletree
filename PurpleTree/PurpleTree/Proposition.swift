@@ -66,12 +66,20 @@ struct MultilineTextView: UIViewRepresentable {
 
 struct Proposition: View {
     @State var created = false
+    @State var showingAlert = false
     @State var email: String = ""
     @State var organizer: String = ""
     @State var description: String = ""
-    var createButton: some View {
+    var addButton: some View {
         Button(action: {self.create()}) {
             Image(systemName: "plus")
+            .imageScale(.large)
+            .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
+        }
+    }
+    var askButton: some View {
+        Button(action: {self.showingAlert.toggle()}) {
+            Image(systemName: "questionmark")
             .imageScale(.large)
             .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
         }
@@ -98,7 +106,10 @@ struct Proposition: View {
                     Spacer()
                 }
                 .navigationBarTitle(Text("New Event"))
-                .navigationBarItems(trailing: self.createButton)
+                .navigationBarItems(trailing: HStack{
+                    self.askButton
+                    .padding(.trailing, 5)
+                    self.addButton})
             }
         }
     }

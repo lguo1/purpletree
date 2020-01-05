@@ -9,17 +9,17 @@ import SwiftUI
 
 final class UserData: ObservableObject {
     static var shared = UserData()
+    var baseUrlString = "http://localhost:5050/"
     var updates = [String]()
     @Published var prefersCalendar = UserDefaults.standard.bool(forKey: "PrefersCalendar") {
         didSet { UserDefaults.standard.set(prefersCalendar, forKey: "PrefersCalendar")
         }
     }
     @Published var sortBy = SortBy.all
-    @Published var events = [Event]()
-//    @Published var events = Array(load("events.json").values)
+    @Published var events = Array(load("events.json").values)
     @Published var created = false
     init() {
-        self.get("https://ppe.sccs.swarthmore.edu/")
+        self.get()
     }
     enum SortBy: String, CaseIterable {
         case all = "All"
@@ -33,8 +33,8 @@ final class UserData: ObservableObject {
         case sociology = "Sociology"
         case technology = "Technology"
     }
-    func get(_ urlString: String) -> Void {
-        request(urlString) {
+    func get() -> Void {
+        request(self.baseUrlString) {
         (events, error) in
             if let events = events {
                 let saved = load("events.json")
@@ -48,7 +48,7 @@ final class UserData: ObservableObject {
                     }
                 }
                 DispatchQueue.main.async{
-//                    self.events = events
+                    self.events = events
                 }
             }
         }

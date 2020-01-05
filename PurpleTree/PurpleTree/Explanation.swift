@@ -12,7 +12,7 @@ struct Explanation: View {
     @EnvironmentObject var userData: UserData
     @Binding var sheetType: SheetType
     var refreshButton: some View {
-        Button(action: {self.userData.get("https://ppe.sccs.swarthmore.edu/")}) {
+        Button(action: {self.userData.get()}) {
             Image(systemName: "arrow.clockwise")
             .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
             .imageScale(.large)
@@ -55,15 +55,3 @@ struct Explanation: View {
         }
     }
 }
-
-/*
-Button(action: {
-    self.userData.get("https://ppe.sccs.swarthmore.edu/")
-}) {
-    Text("No Event")
-    .foregroundColor(Color.black)
-    .font(.title)
-    .padding(.top, 30)
-    .padding(.bottom, 10)
-}
-*/

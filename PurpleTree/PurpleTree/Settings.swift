@@ -25,7 +25,7 @@ struct Settings: View {
                         }
                     }
                     Button(action: {
-                        self.userData.get("https://ppe.sccs.swarthmore.edu/")
+                        self.userData.get()
                     }) {
                         Text("Refresh")
                         .foregroundColor(Color.black)
