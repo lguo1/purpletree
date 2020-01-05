@@ -173,5 +173,5 @@ struct HomeItem: View{
 }
 
 enum SheetType {
-   case settings, proposition, explanation, email, description
+   case settings, proposition, explanation, email, organizer
 }

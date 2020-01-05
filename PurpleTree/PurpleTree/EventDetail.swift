@@ -11,7 +11,7 @@ import SwiftUI
 struct EventDetail: View {
     @EnvironmentObject private var loader: Loader
     @State var showingSheet = false
-    @State var sheetType = SheetType.description
+    @State var sheetType = SheetType.organizer
     var event: Event
     @State var subscribed: Bool {
         didSet { UserDefaults.standard.set(subscribed, forKey: event.organizer)
@@ -28,13 +28,13 @@ struct EventDetail: View {
                 Description(showingSheet: self.$showingSheet, sheetType: self.$sheetType, subscribed: self.$subscribed, event:self.event, screenSize: proxy.size)
                     .environmentObject(self.loader)
             })
-        }
-        .edgesIgnoringSafeArea(.top)
-        .sheet(isPresented: self.$showingSheet) {
-            if self.sheetType == .email {
-                Email(subscribed: self.$subscribed, organizer: self.event.organizer)
+            .sheet(isPresented: self.$showingSheet) {
+                if self.sheetType == .email {
+                    Email(subscribed: self.$subscribed, organizer: self.event.organizer)
+                }
             }
         }
+        .edgesIgnoringSafeArea(.top)
     }
 }
 
@@ -57,8 +57,9 @@ struct DetailImage: View {
 }
 
 struct Description: View {
-    @State var showingSuccess = false
-    @State var showingError = false
+    @State var success = false
+    @State var subscriptionError = false
+    @State var loadingError = false
     @EnvironmentObject private var loader: Loader
     @Binding var showingSheet: Bool
     @Binding var sheetType: SheetType
@@ -66,7 +67,10 @@ struct Description: View {
     var event: Event
     let screenSize: CGSize
     var organizerButton: some View {
-        Button(action: {self.showingSheet.toggle()}) {
+        Button(action: {
+            self.showingSheet.toggle()
+            self.sheetType = .organizer
+        }) {
             Text(self.event.organizer)
             .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
         }
@@ -74,9 +78,11 @@ struct Description: View {
     var subscribeButton: some View {
         Button(action: {}) {
             if subscribed {
-                Text("Subscribe to the mailing list")
+                Image(systemName: "person.crop.circle.badge.checkmark")
+                .foregroundColor(.black)
             } else {
-                Text("Subscribed")
+                Image(systemName: "person.crop.circle.badge.plus")
+                .foregroundColor(.black)
             }
         }
     }
@@ -94,6 +100,15 @@ struct Description: View {
                     .padding(.trailing)
                     .padding(.bottom, 30)
                 Spacer()
+                HStack {
+                    Text("presented by")
+                        .padding(.trailing, 5)
+                    organizerButton
+                        .padding(.trailing, 5)
+                    subscribeButton
+                }
+                .padding(.leading)
+                .padding(.trailing)
             }
             .background(
                 Color(.white)
@@ -103,15 +118,21 @@ struct Description: View {
                 , alignment: .top
             )
         }
+        .alert(isPresented: $success) {
+            Alert(title: Text("Subscribed"), message: Text("You have joined the mailing list of \(event.organizer)."), dismissButton: .default(Text("OK")))
+        }
+        .alert(isPresented: $subscriptionError) {
+        Alert(title: Text("Error"), message: Text("Internet problem. Try again later."), dismissButton: .default(Text("OK")))
+        }
     }
     func subscribe() {
         if let email = UserDefaults.standard.string(forKey: "email") {
             propose("\(UserData.shared.baseUrlString)subscribe/", proposal: ["email": email, "organizer": event.organizer]) {feedback in
                 if feedback != nil {
                     self.subscribed = true
-                    self.showingSuccess = true
+                    self.success = true
                 } else {
-                    self.showingError = true
+                    self.subscriptionError = true
                 }
             }
         } else {
@@ -157,7 +178,7 @@ struct SpeakerDescription: View {
                         .renderingMode(.original)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(height: 30)
+                        .frame(height: 25)
                         .padding()
                         .animation(.easeIn)
                     } else {
