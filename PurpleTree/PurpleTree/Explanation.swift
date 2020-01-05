@@ -10,17 +10,24 @@ import SwiftUI
 
 struct Explanation: View {
     @EnvironmentObject var userData: UserData
+    @Binding var sheetType: SheetType
+    var refreshButton: some View {
+        Button(action: {self.userData.get("https://ppe.sccs.swarthmore.edu/")}) {
+            Image(systemName: "arrow.clockwise")
+            .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
+            .imageScale(.large)
+        }
+    }
+    var addButton: some View {
+        Button(action: { self.sheetType = .proposition}){
+            Image(systemName: "plus")
+            .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
+            .imageScale(.large)
+        }
+    }
     var body: some View {
-        ScrollView(.vertical, showsIndicators: false) {
+        NavigationView {
             VStack(alignment: .leading) {
-                Button(action: {
-                    self.userData.get("https://ppe.sccs.swarthmore.edu/")
-                }) {
-                    Text("No Event")
-                    .foregroundColor(Color.black)
-                    .font(.title)
-                    .padding(.bottom, 10)
-                }
                 Text("There is no event because of either of two reasons:")
                     .font(.headline)
                     .padding(.bottom, 30)
@@ -28,17 +35,35 @@ struct Explanation: View {
                     Text("1")
                         .font(.title)
                         .padding(.trailing, 10)
-                    Text("You don't have internet connection. Check the internet and click 'No Event' to refresh.")
+                    Text("You don't have internet connection. Check the internet and tap the refresh button.")
                 }
                 .padding(.bottom, 30)
                 HStack {
                     Text("2")
                         .font(.title)
                         .padding(.trailing, 10)
-                    Text("We haven't put out events yet. Stay tuned.")
+                    Text("We haven't put out events yet. Stay tuned or create your own event by tapping the add button.")
                 }
                 Spacer()
-            }.padding()
+            }
+            .padding()
+            .navigationBarTitle(Text("No Event"))
+            .navigationBarItems(trailing: HStack{
+                self.refreshButton
+                    .padding(.trailing, 5)
+                self.addButton})
         }
     }
 }
+
+/*
+Button(action: {
+    self.userData.get("https://ppe.sccs.swarthmore.edu/")
+}) {
+    Text("No Event")
+    .foregroundColor(Color.black)
+    .font(.title)
+    .padding(.top, 30)
+    .padding(.bottom, 10)
+}
+*/

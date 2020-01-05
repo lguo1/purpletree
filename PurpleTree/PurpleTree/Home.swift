@@ -62,7 +62,8 @@ struct Home: View{
                     } else if self.sheetType == .proposition {
                        Proposition()
                     } else if self.sheetType == .explanation {
-                        Explanation()
+                        Explanation(sheetType: self.$sheetType)
+                        .environmentObject(self.userData)
                     }
                 }
             }

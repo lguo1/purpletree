@@ -17,9 +17,7 @@
 		183A47F9236DD84B00FCDBCE /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183A47F8236DD84B00FCDBCE /* Data.swift */; };
 		183A4800236DD9D800FCDBCE /* EventDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183A47FF236DD9D800FCDBCE /* EventDetail.swift */; };
 		185863EC23BD274A00C9B5B5 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 185863EB23BD274A00C9B5B5 /* Settings.swift */; };
-		185863F223BF82D600C9B5B5 /* Email.swift in Sources */ = {isa = PBXBuildFile; fileRef = 185863F123BF82D600C9B5B5 /* Email.swift */; };
 		186DA815238E404A0093B3E6 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = 186DA814238E404A0093B3E6 /* Network.swift */; };
-		1872F7B723C046690054A848 /* Proposal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872F7B623C046690054A848 /* Proposal.swift */; };
 		1872F7BB23C057650054A848 /* Proposition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872F7BA23C057650054A848 /* Proposition.swift */; };
 		187934432394378800E59399 /* Explanation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187934422394378800E59399 /* Explanation.swift */; };
 		18BFA38423B28C87002E2DAD /* Calendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18BFA38323B28C87002E2DAD /* Calendar.swift */; };
@@ -51,9 +49,7 @@
 		183A47F8236DD84B00FCDBCE /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		183A47FF236DD9D800FCDBCE /* EventDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetail.swift; sourceTree = "<group>"; };
 		185863EB23BD274A00C9B5B5 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
-		185863F123BF82D600C9B5B5 /* Email.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Email.swift; sourceTree = "<group>"; };
 		186DA814238E404A0093B3E6 /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
-		1872F7B623C046690054A848 /* Proposal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Proposal.swift; sourceTree = "<group>"; };
 		1872F7BA23C057650054A848 /* Proposition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Proposition.swift; sourceTree = "<group>"; };
 		187934422394378800E59399 /* Explanation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Explanation.swift; sourceTree = "<group>"; };
 		18BFA38323B28C87002E2DAD /* Calendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calendar.swift; sourceTree = "<group>"; };
@@ -139,8 +135,6 @@
 				18BFA38323B28C87002E2DAD /* Calendar.swift */,
 				186DA814238E404A0093B3E6 /* Network.swift */,
 				183A47F6236DD81B00FCDBCE /* Event.swift */,
-				1872F7B623C046690054A848 /* Proposal.swift */,
-				185863F123BF82D600C9B5B5 /* Email.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -248,8 +242,6 @@
 			files = (
 				183A47F9236DD84B00FCDBCE /* Data.swift in Sources */,
 				183A47D0236DD71500FCDBCE /* AppDelegate.swift in Sources */,
-				185863F223BF82D600C9B5B5 /* Email.swift in Sources */,
-				1872F7B723C046690054A848 /* Proposal.swift in Sources */,
 				185863EC23BD274A00C9B5B5 /* Settings.swift in Sources */,
 				187934432394378800E59399 /* Explanation.swift in Sources */,
 				1872F7BB23C057650054A848 /* Proposition.swift in Sources */,

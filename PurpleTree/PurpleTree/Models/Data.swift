@@ -15,7 +15,8 @@ final class UserData: ObservableObject {
         }
     }
     @Published var sortBy = SortBy.all
-    @Published var events = Array(load("events.json").values)
+    @Published var events = [Event]()
+//    @Published var events = Array(load("events.json").values)
     @Published var created = false
     init() {
         self.get("https://ppe.sccs.swarthmore.edu/")
@@ -47,7 +48,7 @@ final class UserData: ObservableObject {
                     }
                 }
                 DispatchQueue.main.async{
-                    self.events = events
+//                    self.events = events
                 }
             }
         }
