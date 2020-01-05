@@ -71,7 +71,8 @@ struct Proposition: View {
     @State var description: String = ""
     var createButton: some View {
         Button(action: {self.create()}) {
-            Text("Create")
+            Image(systemName: "plus")
+            .imageScale(.large)
             .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
         }
     }
