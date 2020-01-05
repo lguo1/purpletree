@@ -60,7 +60,7 @@ struct Home: View{
                         Settings()
                         .environmentObject(self.userData)
                     } else if self.sheetType == .proposition {
-                       Proposition()
+                        Proposition()
                     } else if self.sheetType == .explanation {
                         Explanation(sheetType: self.$sheetType)
                         .environmentObject(self.userData)
@@ -125,7 +125,7 @@ struct HomeRow: View {
     var body: some View {
         HStack {
             NavigationLink(
-            destination: EventDetail(event: event).environmentObject(userData.events[eventIndex].loader)){
+            destination: EventDetail(event: event, subscribed: UserDefaults.standard.bool(forKey: event.organizer)).environmentObject(userData.events[eventIndex].loader)){
                 HomeItem(event: event, screenSize: screenSize).environmentObject(userData.events[eventIndex].loader)
             }
         }
@@ -173,5 +173,5 @@ struct HomeItem: View{
 }
 
 enum SheetType {
-   case settings, proposition, explanation
+   case settings, proposition, explanation, email, description
 }

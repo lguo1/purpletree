@@ -10,20 +10,31 @@ import SwiftUI
 
 struct EventDetail: View {
     @EnvironmentObject private var loader: Loader
+    @State var showingSheet = false
+    @State var sheetType = SheetType.description
     var event: Event
+    @State var subscribed: Bool {
+        didSet { UserDefaults.standard.set(subscribed, forKey: event.organizer)
+        }
+    }
     var body: some View {
         GeometryReader { proxy in
             VStack(alignment: .leading) {
                 DetailImage(event: self.event, screenSize: proxy.size)
                     .environmentObject(self.loader)
                 Spacer()
-                }
+            }
             .overlay(ScrollView(.vertical, showsIndicators: false) {
-                Description(event:self.event, screenSize: proxy.size)
+                Description(showingSheet: self.$showingSheet, sheetType: self.$sheetType, subscribed: self.$subscribed, event:self.event, screenSize: proxy.size)
                     .environmentObject(self.loader)
             })
-            }
+        }
         .edgesIgnoringSafeArea(.top)
+        .sheet(isPresented: self.$showingSheet) {
+            if self.sheetType == .email {
+                Email(subscribed: self.$subscribed, organizer: self.event.organizer)
+            }
+        }
     }
 }
 
@@ -46,9 +57,12 @@ struct DetailImage: View {
 }
 
 struct Description: View {
+    @State var showingSuccess = false
+    @State var showingError = false
     @EnvironmentObject private var loader: Loader
     @Binding var showingSheet: Bool
-    @State var subscribed: Bool
+    @Binding var sheetType: SheetType
+    @Binding var subscribed: Bool
     var event: Event
     let screenSize: CGSize
     var organizerButton: some View {
@@ -57,7 +71,7 @@ struct Description: View {
             .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
         }
     }
-    var subscriptionButton: some View {
+    var subscribeButton: some View {
         Button(action: {}) {
             if subscribed {
                 Text("Subscribe to the mailing list")
@@ -88,6 +102,21 @@ struct Description: View {
                 .shadow(radius: 5)
                 , alignment: .top
             )
+        }
+    }
+    func subscribe() {
+        if let email = UserDefaults.standard.string(forKey: "email") {
+            propose("\(UserData.shared.baseUrlString)subscribe/", proposal: ["email": email, "organizer": event.organizer]) {feedback in
+                if feedback != nil {
+                    self.subscribed = true
+                    self.showingSuccess = true
+                } else {
+                    self.showingError = true
+                }
+            }
+        } else {
+            self.sheetType = .email
+            self.showingSheet = true
         }
     }
 }
