@@ -33,7 +33,7 @@ struct Email: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .leading) {
-                Text("To subscribe to the mailing list of \(organizer), please provide your email address below.")
+                Text("To join the mailing list of \(organizer), please provide your email address below.")
                     .font(.headline)
                     .padding()
                 List {
@@ -65,6 +65,7 @@ struct Email: View {
             self.alert = true
             self.alertType = .empty
         } else if validateEmail(email) {
+            UserDefaults.standard.set(email, forKey: "Email")
             post("\(UserData.shared.endPoint)subscribe/", dic: ["email": email, "organizer": organizer]) {feedback in
                 if feedback != nil {
                     if self.subscribed {

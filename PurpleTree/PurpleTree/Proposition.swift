@@ -67,9 +67,18 @@ struct MultilineTextView: UIViewRepresentable {
 struct Proposition: View {
     @State var alert = false
     @State var alertType = AlertType.asked
-    @State var email: String = ""
-    @State var organizer: String = ""
-    @State var description: String = ""
+    @State var email: String = UserDefaults.standard.string(forKey: "DraftEmail") ?? UserDefaults.standard.string(forKey: "Email") ?? "" {
+        didSet { UserDefaults.standard.set(email, forKey: "DraftEmail")
+        }
+    }
+    @State var organizer: String = UserDefaults.standard.string(forKey: "DraftOrganizer") ?? "" {
+        didSet { UserDefaults.standard.set(organizer, forKey: "DraftOrganizer")
+        }
+    }
+    @State var description: String = UserDefaults.standard.string(forKey: "DraftDescription") ?? "" {
+        didSet { UserDefaults.standard.set(organizer, forKey: "DraftDescription")
+        }
+    }
     
     enum AlertType {
        case empty, invalid, proposed, asked, failed
@@ -118,13 +127,13 @@ struct Proposition: View {
                     case .asked:
                         return Alert(title: Text("Helper"), message: Text("You can create your own event on this page. After submitting the form, you will be contacted through email for details. Your event will be put out after its approval."), dismissButton: .default(Text("Got it")))
                     case .proposed:
-                        return Alert(title: Text("Success"), message: Text("You have created a new event. We will get back to you for details."), dismissButton: .default(Text("OK")))
+                        return Alert(title: Text("Success"), message: Text("You have created a new event. We will get back to you shortly."), dismissButton: .default(Text("OK")))
                     case .failed:
                         return Alert(title: Text("Error"), message: Text("Cannot submit your form due to an internet problem. Try again later."), dismissButton: .default(Text("OK")))
                     case .empty:
                         return Alert(title: Text("Error"), message: Text("One or more places are empty."), dismissButton: .default(Text("OK")))
                     case .invalid:
-                        return Alert(title: Text("Error"), message: Text("Please provide a valid email address for contact"), dismissButton: .default(Text("OK")))
+                        return Alert(title: Text("Error"), message: Text("Please provide a valid email address for contact."), dismissButton: .default(Text("OK")))
                     }
                 }
                 .navigationBarTitle(Text("New Event"))
@@ -134,6 +143,12 @@ struct Proposition: View {
                     self.addButton})
             }
         }
+    }
+    func clear() -> Void {
+        email = ""
+        organizer = ""
+        description = ""
+        UserDefaults.standard.removeObject(forKey: "DraftEmail")
     }
     func propose() -> Void {
         if email == "" || organizer == "" || description == "" {
@@ -145,8 +160,9 @@ struct Proposition: View {
             self.alertType = .invalid
             
         } else {
-            post("\(UserData.shared.baseUrlString)propose/", dic: ["email": self.email, "organizer": self.organizer, "description": self.description]) { feedback in
+            post("\(UserData.shared.endPoint)propose/", dic: ["email": self.email, "organizer": self.organizer, "description": self.description]) { feedback in
                 if feedback == "done" {
+                    self.clear()
                     self.alert = true
                     self.alertType = .proposed
                 } else {
