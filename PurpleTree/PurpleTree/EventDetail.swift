@@ -128,7 +128,7 @@ struct Description: View {
         Alert(title: Text("Error"), message: Text("Internet problem. Try again later."), dismissButton: .default(Text("OK")))
         }
         .alert(isPresented: $loadingError) {
-            Alert(title: Text("Error"), message: Text("Cannot load information about \(event.organizer). Try again later."), dismissButton: .default(Text("OK")))
+            Alert(title: Text("Error"), message: Text("Cannot load information of \(event.organizer). Try again later."), dismissButton: .default(Text("OK")))
         }
     }
     func getOrganizer() {
@@ -136,8 +136,8 @@ struct Description: View {
             self.showingSheet = true
             self.sheetType = .organizer
         } else {
-            requestString("\(UserData.shared.baseUrlString)organizer/\(event.organizer.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)")
-            { overview, _ in
+            getString("\(UserData.shared.baseUrlString)organizer/\(event.organizer.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)")
+            {overview in
                 if let overview = overview {
                     UserData.shared.overviews[self.event.organizer] = overview
                     UserData.shared.saveOverviews()
@@ -152,7 +152,7 @@ struct Description: View {
     
     func subscribe() {
         if let email = UserDefaults.standard.string(forKey: "email") {
-            propose("\(UserData.shared.baseUrlString)subscribe/", proposal: ["email": email, "organizer": event.organizer]) {feedback in
+            post("\(UserData.shared.baseUrlString)subscribe/", dic: ["email": email, "organizer": event.organizer]) {feedback in
                 if feedback != nil {
                     self.subscribed = true
                     self.success = true

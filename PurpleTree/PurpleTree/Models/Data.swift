@@ -35,7 +35,7 @@ final class UserData: ObservableObject {
         case technology = "Technology"
     }
     func get() -> Void {
-        request(self.baseUrlString) {
+        getEvent(self.baseUrlString) {
         (events, error) in
             if let events = events {
                 self.checkUpdates(new: events)

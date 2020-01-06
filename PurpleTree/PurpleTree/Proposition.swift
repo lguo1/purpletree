@@ -114,8 +114,7 @@ struct Proposition: View {
         }
     }
     func create() -> Void {
-        let proposal = ["email": self.email, "organizer": self.organizer, "description": self.description]
-        propose("localhost:5050/add/", proposal: proposal) { feedback in
+        post("\(UserData.shared.baseUrlString)propose/", dic: ["email": self.email, "organizer": self.organizer, "description": self.description]) { feedback in
             if feedback == "done" {
                 DispatchQueue.main.async{
                     self.created = true

@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-func request(_ location: String, completionHandler: @escaping ([Event]?, Error?) -> Void) -> Void {
+func getEvent(_ location: String, completionHandler: @escaping ([Event]?, Error?) -> Void) -> Void {
     
     guard let url = URL(string: location) else {
         print("Cannot create URL")
@@ -24,7 +24,7 @@ func request(_ location: String, completionHandler: @escaping ([Event]?, Error?)
        let decoder = JSONDecoder()
        do {
         let eventData = try decoder.decode(Array<Event>.self, from: data)
-            print("Networking succeeded")
+            print("Getting events succeeded")
             completionHandler(eventData, nil)
        } catch {
             print("Decoding failed")
@@ -34,14 +34,14 @@ func request(_ location: String, completionHandler: @escaping ([Event]?, Error?)
    task.resume()
 }
 
-func propose(_ location: String, proposal: [String: String], completionHandler: @escaping (String?) -> Void) -> Void {
+func post(_ location: String, dic: [String: String], completionHandler: @escaping (String?) -> Void) -> Void {
     guard let url = URL(string: location) else {
         print("Cannot create URL")
         return
     }
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
-    let jsonData = try! JSONSerialization.data(withJSONObject: proposal)
+    let jsonData = try! JSONSerialization.data(withJSONObject: dic)
     request.httpBody = jsonData
     request.addValue("application/json", forHTTPHeaderField: "Content-Type")
     let task = URLSession.shared.dataTask(with: request) {
@@ -51,27 +51,27 @@ func propose(_ location: String, proposal: [String: String], completionHandler: 
             completionHandler(nil)
             return
         }
-        completionHandler(String(data: data, encoding: .utf8))
+        print("Posting succeeded")
+        completionHandler(String(decoding: data, as: UTF8.self))
     }
     task.resume()
 }
 
-func requestString(_ location: String, completionHandler: @escaping (String?, Error?) -> Void) -> Void {
+func getString(_ location: String, completionHandler: @escaping (String?) -> Void) -> Void {
     guard let url = URL(string: location) else {
-        print(location)
         print("Cannot create URL")
+        completionHandler(nil)
         return
     }
     let task = URLSession.shared.dataTask(with: url) {
        (data, response, error) in
        guard let data = data else {
             print("No data")
-            completionHandler(nil, error)
+            completionHandler(nil)
             return
        }
-    let overview = String(decoding: data, as: UTF8.self)
-        print("Networking succeeded")
-        completionHandler(overview, nil)
+    print("Networking succeeded")
+    completionHandler(String(decoding: data, as: UTF8.self))
    }
    task.resume()
 }
