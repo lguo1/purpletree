@@ -59,13 +59,15 @@ struct DetailImage: View {
 }
 
 struct Description: View {
-    @State var success = false
-    @State var subscriptionError = false
-    @State var loadingError = false
+    @State var alert = false
+    @State var alertType = AlertType.subscribed
     @EnvironmentObject private var loader: Loader
     @Binding var showingSheet: Bool
     @Binding var sheetType: SheetType
     @Binding var subscribed: Bool
+    enum AlertType {
+        case subscribed, unsubscribed, subscriptionError, loadingError
+    }
     var event: Event
     let screenSize: CGSize
     var organizerButton: some View {
@@ -121,14 +123,17 @@ struct Description: View {
                 , alignment: .top
             )
         }
-        .alert(isPresented: $success) {
-            Alert(title: Text("Subscribed"), message: Text("You have joined the mailing list of \(event.organizer)."), dismissButton: .default(Text("OK")))
-        }
-        .alert(isPresented: $subscriptionError) {
-        Alert(title: Text("Error"), message: Text("Internet problem. Try again later."), dismissButton: .default(Text("OK")))
-        }
-        .alert(isPresented: $loadingError) {
-            Alert(title: Text("Error"), message: Text("Cannot load information of \(event.organizer). Try again later."), dismissButton: .default(Text("OK")))
+        .alert(isPresented: $alert) {
+            switch alertType {
+            case .subscribed:
+                return Alert(title: Text("Subscribed"), message: Text("Thank you for joining the mailing list of \(event.organizer)."), dismissButton: .default(Text("Welcome")))
+            case .unsubscribed:
+                return Alert(title: Text("Unsubscribed"), message: Text("You have unsubscribed from the mailing list of \(event.organizer)."), dismissButton: .default(Text("Close")))
+            case .subscriptionError:
+                return Alert(title: Text("Error"), message: Text("Cannot subcribe to the mailing list of \(event.organizer) due to an internet problem. Try again later."), dismissButton: .default(Text("OK")))
+            case .loadingError:
+                return Alert(title: Text("Error"), message: Text("Cannot load information of \(event.organizer). Try again later."), dismissButton: .default(Text("OK")))
+            }
         }
     }
     func getOrganizer() {
@@ -144,7 +149,8 @@ struct Description: View {
                     self.showingSheet = true
                     self.sheetType = .organizer
                 } else {
-                    self.loadingError = true
+                    self.alertType = .loadingError
+                    self.alert = true
                 }
             }
         }
@@ -153,11 +159,19 @@ struct Description: View {
     func subscribe() {
         if let email = UserDefaults.standard.string(forKey: "email") {
             post("\(UserData.shared.baseUrlString)subscribe/", dic: ["email": email, "organizer": event.organizer]) {feedback in
-                if feedback != nil {
-                    self.subscribed = true
-                    self.success = true
+                if feedback == "done" {
+                    if self.subscribed {
+                        self.subscribed = false
+                        self.alertType = .subscribed
+                        self.alert = true
+                    } else {
+                        self.subscribed = true
+                        self.alertType = .unsubscribed
+                        self.alert = true
+                    }
                 } else {
-                    self.subscriptionError = true
+                    self.alertType = .subscriptionError
+                    self.alert = true
                 }
             }
         } else {

@@ -65,20 +65,28 @@ struct MultilineTextView: UIViewRepresentable {
 
 
 struct Proposition: View {
-    @State var created = false
-    @State var showingAlert = false
+    @State var alert = false
+    @State var alertType = AlertType.asked
     @State var email: String = ""
     @State var organizer: String = ""
     @State var description: String = ""
+    
+    enum AlertType {
+       case empty, invalid, proposed, asked, failed
+    }
+    
     var addButton: some View {
-        Button(action: {self.create()}) {
+        Button(action: {self.propose()}) {
             Image(systemName: "plus")
             .imageScale(.large)
             .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
         }
     }
     var askButton: some View {
-        Button(action: {self.showingAlert.toggle()}) {
+        Button(action: {
+            self.alert.toggle()
+            self.alertType = .asked
+        }) {
             Image(systemName: "questionmark")
             .imageScale(.large)
             .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
@@ -105,6 +113,20 @@ struct Proposition: View {
                     }
                     Spacer()
                 }
+                .alert(isPresented: self.$alert) {
+                    switch self.alertType {
+                    case .asked:
+                        return Alert(title: Text("Helper"), message: Text("You can create your own event on this page. After submitting the form, you will be contacted through email for details. Your event will be put out after its approval."), dismissButton: .default(Text("Got it")))
+                    case .proposed:
+                        return Alert(title: Text("Success"), message: Text("You have created a new event. We will get back to you for details."), dismissButton: .default(Text("OK")))
+                    case .failed:
+                        return Alert(title: Text("Error"), message: Text("Cannot submit your form due to an internet problem. Try again later."), dismissButton: .default(Text("OK")))
+                    case .empty:
+                        return Alert(title: Text("Error"), message: Text("One or more places are empty."), dismissButton: .default(Text("OK")))
+                    case .invalid:
+                        return Alert(title: Text("Error"), message: Text("Please provide a valid email address for contact"), dismissButton: .default(Text("OK")))
+                    }
+                }
                 .navigationBarTitle(Text("New Event"))
                 .navigationBarItems(trailing: HStack{
                     self.askButton
@@ -113,11 +135,23 @@ struct Proposition: View {
             }
         }
     }
-    func create() -> Void {
-        post("\(UserData.shared.baseUrlString)propose/", dic: ["email": self.email, "organizer": self.organizer, "description": self.description]) { feedback in
-            if feedback == "done" {
-                DispatchQueue.main.async{
-                    self.created = true
+    func propose() -> Void {
+        if email == "" || organizer == "" || description == "" {
+            self.alert = true
+            self.alertType = .empty
+            
+        } else if !validateEmail(email) {
+            self.alert = true
+            self.alertType = .invalid
+            
+        } else {
+            post("\(UserData.shared.baseUrlString)propose/", dic: ["email": self.email, "organizer": self.organizer, "description": self.description]) { feedback in
+                if feedback == "done" {
+                    self.alert = true
+                    self.alertType = .proposed
+                } else {
+                    self.alert = true
+                    self.alertType = .failed
                 }
             }
         }

@@ -16,6 +16,7 @@ struct Organizer: View {
             VStack{
                 Text(overview)
                 .font(.headline)
+                Spacer()
             }
             .padding()
             .navigationBarTitle(Text(organizer))
