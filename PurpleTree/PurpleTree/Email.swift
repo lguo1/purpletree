@@ -13,6 +13,7 @@ struct Email: View {
     @State var success = false
     @State var internetError = false
     @State var invalidEmail = false
+    @State var emptyEmail = false
     @Binding var subscribed: Bool
     var organizer: String
     var submitButton: some View {
@@ -26,11 +27,15 @@ struct Email: View {
     }
     var body: some View {
         NavigationView {
-            VStack{
-                Text("Please provide your email for subscription.")
-                .font(.headline)
-                .padding(.bottom, 30)
-                TextField("leaves@purpletree", text: self.$email)
+            VStack(alignment: .leading) {
+                Text("To subscribe to the mailing list of \(organizer), please provide your email address below.")
+                    .font(.headline)
+                    .padding()
+                List {
+                    TextField("leaves@purpletree", text: self.$email)
+                        .padding(.leading)
+                }
+                Spacer()
             }
             .navigationBarTitle(Text("Email"))
             .navigationBarItems(trailing: submitButton)
@@ -44,9 +49,14 @@ struct Email: View {
         .alert(isPresented: $invalidEmail) {
         Alert(title: Text("Error"), message: Text("Your email address is invalid."), dismissButton: .default(Text("OK")))
         }
+        .alert(isPresented: $emptyEmail) {
+        Alert(title: Text("Error"), message: Text("Your email address is empty."), dismissButton: .default(Text("OK")))
+        }
     }
     func submit() {
-        if validateEmail(email) {
+        if email == "" {
+            self.emptyEmail = true
+        } else if validateEmail(email) {
             propose("\(UserData.shared.baseUrlString)subscribe/", proposal: ["email": email, "organizer": organizer]) {feedback in
                 if feedback != nil {
                     self.subscribed = true

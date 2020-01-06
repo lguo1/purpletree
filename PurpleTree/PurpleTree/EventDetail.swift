@@ -31,6 +31,8 @@ struct EventDetail: View {
             .sheet(isPresented: self.$showingSheet) {
                 if self.sheetType == .email {
                     Email(subscribed: self.$subscribed, organizer: self.event.organizer)
+                } else if self.sheetType == .organizer {
+                    Organizer(organizer: self.event.organizer, overview: UserData.shared.overviews[self.event.organizer]!)
                 }
             }
         }
@@ -68,20 +70,21 @@ struct Description: View {
     let screenSize: CGSize
     var organizerButton: some View {
         Button(action: {
-            self.showingSheet.toggle()
-            self.sheetType = .organizer
+            self.getOrganizer()
         }) {
             Text(self.event.organizer)
             .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
         }
     }
     var subscribeButton: some View {
-        Button(action: {}) {
+        Button(action: {
+            self.subscribe()
+        }) {
             if subscribed {
-                Image(systemName: "person.crop.circle.badge.checkmark")
+                Image(systemName: "person.2.filled")
                 .foregroundColor(.black)
             } else {
-                Image(systemName: "person.crop.circle.badge.plus")
+                Image(systemName: "person.2")
                 .foregroundColor(.black)
             }
         }
@@ -101,10 +104,10 @@ struct Description: View {
                     .padding(.bottom, 30)
                 Spacer()
                 HStack {
-                    Text("presented by")
-                        .padding(.trailing, 5)
+                    Text("Presented by")
+                        .padding(.trailing, 3)
                     organizerButton
-                        .padding(.trailing, 5)
+                        .padding(.trailing, 3)
                     subscribeButton
                 }
                 .padding(.leading)
@@ -124,7 +127,29 @@ struct Description: View {
         .alert(isPresented: $subscriptionError) {
         Alert(title: Text("Error"), message: Text("Internet problem. Try again later."), dismissButton: .default(Text("OK")))
         }
+        .alert(isPresented: $loadingError) {
+            Alert(title: Text("Error"), message: Text("Cannot load information about \(event.organizer). Try again later."), dismissButton: .default(Text("OK")))
+        }
     }
+    func getOrganizer() {
+        if UserData.shared.overviews[event.organizer] != nil {
+            self.showingSheet = true
+            self.sheetType = .organizer
+        } else {
+            requestString("\(UserData.shared.baseUrlString)organizer/\(event.organizer.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)")
+            { overview, _ in
+                if let overview = overview {
+                    UserData.shared.overviews[self.event.organizer] = overview
+                    UserData.shared.saveOverviews()
+                    self.showingSheet = true
+                    self.sheetType = .organizer
+                } else {
+                    self.loadingError = true
+                }
+            }
+        }
+    }
+    
     func subscribe() {
         if let email = UserDefaults.standard.string(forKey: "email") {
             propose("\(UserData.shared.baseUrlString)subscribe/", proposal: ["email": email, "organizer": event.organizer]) {feedback in
@@ -153,16 +178,13 @@ struct SpeakerDescription: View {
                     .font(.title)
                     .padding(.bottom, 10)
                 Text(event.speakerTitle)
-                    .font(.subheadline)
                 HStack(alignment: .top) {
                     Group {
                         Text(event.date)
                         Text(event.time)
                     }
-                    .font(.subheadline)
                 }
                 Text(event.location)
-                .font(.subheadline)
                 }
                 .padding(.trailing)
                 .padding(.leading)

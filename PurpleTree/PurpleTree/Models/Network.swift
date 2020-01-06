@@ -55,3 +55,23 @@ func propose(_ location: String, proposal: [String: String], completionHandler: 
     }
     task.resume()
 }
+
+func requestString(_ location: String, completionHandler: @escaping (String?, Error?) -> Void) -> Void {
+    guard let url = URL(string: location) else {
+        print(location)
+        print("Cannot create URL")
+        return
+    }
+    let task = URLSession.shared.dataTask(with: url) {
+       (data, response, error) in
+       guard let data = data else {
+            print("No data")
+            completionHandler(nil, error)
+            return
+       }
+    let overview = String(decoding: data, as: UTF8.self)
+        print("Networking succeeded")
+        completionHandler(overview, nil)
+   }
+   task.resume()
+}
