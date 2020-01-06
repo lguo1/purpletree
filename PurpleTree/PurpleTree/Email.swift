@@ -50,7 +50,7 @@ struct Email: View {
             case .subscribed:
             return Alert(title: Text("Subscribed"), message: Text("Thank your for joining the mailing list of \(organizer)."), dismissButton: .default(Text("OK")))
             case .unsubscribed:
-            return Alert(title: Text("Unsubscribed"), message: Text("You have unsubscribed from the mailing list of \(organizer)."), dismissButton: .default(Text("Close")))
+            return Alert(title: Text("Unsubscribed"), message: Text("You have unsubscribed from \(organizer)."), dismissButton: .default(Text("OK")))
             case .internetError:
                 return Alert(title: Text("Error"), message: Text("Cannot subcribe to the mailing list of \(organizer) due to an internet problem. Try again later."), dismissButton: .default(Text("OK")))
             case .invalid:
@@ -65,7 +65,7 @@ struct Email: View {
             self.alert = true
             self.alertType = .empty
         } else if validateEmail(email) {
-            post("\(UserData.shared.baseUrlString)subscribe/", dic: ["email": email, "organizer": organizer]) {feedback in
+            post("\(UserData.shared.endPoint)subscribe/", dic: ["email": email, "organizer": organizer]) {feedback in
                 if feedback != nil {
                     if self.subscribed {
                         self.subscribed = false

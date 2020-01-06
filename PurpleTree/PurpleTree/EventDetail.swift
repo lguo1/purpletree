@@ -128,7 +128,7 @@ struct Description: View {
             case .subscribed:
                 return Alert(title: Text("Subscribed"), message: Text("Thank you for joining the mailing list of \(event.organizer)."), dismissButton: .default(Text("Welcome")))
             case .unsubscribed:
-                return Alert(title: Text("Unsubscribed"), message: Text("You have unsubscribed from the mailing list of \(event.organizer)."), dismissButton: .default(Text("Close")))
+                return Alert(title: Text("Unsubscribed"), message: Text("You have unsubscribed from \(event.organizer)."), dismissButton: .default(Text("OK")))
             case .subscriptionError:
                 return Alert(title: Text("Error"), message: Text("Cannot subcribe to the mailing list of \(event.organizer) due to an internet problem. Try again later."), dismissButton: .default(Text("OK")))
             case .loadingError:
@@ -141,7 +141,7 @@ struct Description: View {
             self.showingSheet = true
             self.sheetType = .organizer
         } else {
-            getString("\(UserData.shared.baseUrlString)organizer/\(event.organizer.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)")
+            getString("\(UserData.shared.endPoint)organizer/\(event.organizer.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)")
             {overview in
                 if let overview = overview {
                     UserData.shared.overviews[self.event.organizer] = overview
@@ -158,7 +158,7 @@ struct Description: View {
     
     func subscribe() {
         if let email = UserDefaults.standard.string(forKey: "email") {
-            post("\(UserData.shared.baseUrlString)subscribe/", dic: ["email": email, "organizer": event.organizer]) {feedback in
+            post("\(UserData.shared.endPoint)subscribe/", dic: ["email": email, "organizer": event.organizer]) {feedback in
                 if feedback == "done" {
                     if self.subscribed {
                         self.subscribed = false

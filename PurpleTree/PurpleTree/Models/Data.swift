@@ -9,7 +9,7 @@ import SwiftUI
 
 final class UserData: ObservableObject {
     static var shared = UserData()
-    var baseUrlString = "http://localhost:5050/"
+    var endPoint = "http://localhost:5050/"
     var updates = [String]()
     var overviews = loadOverviews()
     @Published var prefersCalendar = UserDefaults.standard.bool(forKey: "PrefersCalendar") {
@@ -35,7 +35,7 @@ final class UserData: ObservableObject {
         case technology = "Technology"
     }
     func get() -> Void {
-        getEvent(self.baseUrlString) {
+        getEvent(self.endPoint) {
         (events, error) in
             if let events = events {
                 self.checkUpdates(new: events)
