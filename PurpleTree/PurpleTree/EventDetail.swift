@@ -60,7 +60,7 @@ struct SpeakerDescription: View {
     
     var likeButton: some View {
         Button(action: {
-            self.userData.eventData[self.event.id]!.interest.toggle()
+            self.changeInterest()
         }) {
             VStack{
                 if userData.eventData[event.id]!.interest {
@@ -108,10 +108,10 @@ struct SpeakerDescription: View {
         Alert(title: Text("Event Scheduled"), message: Text("Your event has been added to your calendar"), dismissButton: .default(Text("OK")))
         }
     }
-    func changeIntererst() {
+    func changeInterest() {
         self.userData.eventData[self.event.id]!.interest.toggle()
         if self.userData.eventData[self.event.id]!.interest && self.event.decided {
-            scheduleNotification(title: self.event.speaker, body: "Happening at \(self.event.location) in 5 mins.")
+            scheduleNotification(title: self.event.speaker, body: "Will begin at \(self.event.location) in 5 mins.", start: self.event.start)
             if self.userData.prefersCalendar {
                 addToCalendar(id: self.event.id, speaker: self.event.speaker, start: self.event.start, end: self.event.end, location: self.event.location)
             }

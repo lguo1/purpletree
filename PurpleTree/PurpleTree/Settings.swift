@@ -14,7 +14,9 @@ struct Settings: View {
         NavigationView {
             Form{
                 Section{
-                    Toggle(isOn: $userData.allowsNotification) {
+                    Button(action: {
+                        requestNotification()
+                    }) {
                         Text("Allows Notification")
                     }
                     Toggle(isOn: $userData.prefersCalendar) {

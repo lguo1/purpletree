@@ -17,14 +17,6 @@ final class UserData: ObservableObject {
     var tempImageData = [String: [UIImage?]]()
     var endPoint = "http://localhost:5050/"
     //Settings
-    var requested = false
-    @Published var allowsNotification = false {
-        didSet {
-            if !requested {
-                requestNotification()
-            }
-        }
-    }
     @Published var sortBy = SortBy.all {
         didSet {
             switch sortBy {
@@ -68,40 +60,9 @@ final class UserData: ObservableObject {
     @Published var sorted = [Event]()
     
     init() {
-        checkNotification()
         sortBy = .all
         loadImageData()
         getData()
-    }
-    
-    func checkNotification() {
-        let center = UNUserNotificationCenter.current()
-        center.getNotificationSettings { (settings) in
-        if settings.authorizationStatus != .authorized {
-                DispatchQueue.main.async {
-                    self.requested = true
-                    self.allowsNotification = false
-                    self.requested = false
-                }
-          } else {
-                DispatchQueue.main.async {
-                    self.requested = true
-                    self.allowsNotification = false
-                    self.requested = false
-                }
-            }
-        }
-    }
-    
-    func requestNotification() {
-        let center = UNUserNotificationCenter.current()
-        center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
-            DispatchQueue.main.async {
-                self.requested = true
-                self.allowsNotification = granted
-                self.requested = false
-            }
-        }
     }
     
     func getData() -> Void {
