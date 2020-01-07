@@ -12,7 +12,7 @@ struct Explanation: View {
     @EnvironmentObject var userData: UserData
     @Binding var sheetType: SheetType
     var refreshButton: some View {
-        Button(action: {self.userData.get()}) {
+        Button(action: {self.userData.getData()}) {
             Image(systemName: "arrow.clockwise")
             .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
             .imageScale(.large)

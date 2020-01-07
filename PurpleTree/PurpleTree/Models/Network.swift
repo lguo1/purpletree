@@ -8,37 +8,8 @@
 
 import SwiftUI
 
-func getEvent(_ location: String, completionHandler: @escaping ([Event]?, Error?) -> Void) -> Void {
-    
-    guard let url = URL(string: location) else {
-        print("Cannot create URL")
-        return
-    }
-    let task = URLSession.shared.dataTask(with: url) {
-       (data, response, error) in
-       guard let data = data else {
-            print("No data")
-            completionHandler(nil, error)
-            return
-       }
-       let decoder = JSONDecoder()
-       do {
-        let eventData = try decoder.decode(Array<Event>.self, from: data)
-            print("Getting events succeeded")
-            completionHandler(eventData, nil)
-       } catch {
-            print("Decoding failed")
-            completionHandler(nil, error)
-       }
-   }
-   task.resume()
-}
-
 func post(_ location: String, dic: [String: String], completionHandler: @escaping (String?) -> Void) -> Void {
-    guard let url = URL(string: location) else {
-        print("Cannot create URL")
-        return
-    }
+    let url = URL(string: location)!
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
     let jsonData = try! JSONSerialization.data(withJSONObject: dic)
@@ -57,12 +28,8 @@ func post(_ location: String, dic: [String: String], completionHandler: @escapin
     task.resume()
 }
 
-func getString(_ location: String, completionHandler: @escaping (String?) -> Void) -> Void {
-    guard let url = URL(string: location) else {
-        print("Cannot create URL")
-        completionHandler(nil)
-        return
-    }
+func getEventData(_ location: String, completionHandler: @escaping ([String: Event]?) -> Void) -> Void {
+    let url = URL(string: location)!
     let task = URLSession.shared.dataTask(with: url) {
        (data, response, error) in
        guard let data = data else {
@@ -70,8 +37,68 @@ func getString(_ location: String, completionHandler: @escaping (String?) -> Voi
             completionHandler(nil)
             return
        }
-    print("Networking succeeded")
-    completionHandler(String(decoding: data, as: UTF8.self))
+       let decoder = JSONDecoder()
+       do {
+        let eventData = try decoder.decode([String: Event].self, from: data)
+            print("Got eventData")
+            completionHandler(eventData)
+       } catch {
+            print("Events decoding failed")
+            completionHandler(nil)
+       }
    }
    task.resume()
+}
+
+func getOrganizerData(_ location: String, completionHandler: @escaping ([String: Organizer]?) -> Void) -> Void {
+    let url = URL(string: location)!
+    let task = URLSession.shared.dataTask(with: url) {
+       (data, response, error) in
+       guard let data = data else {
+            print("No data")
+            completionHandler(nil)
+            return
+       }
+       let decoder = JSONDecoder()
+       do {
+        let organizerData = try decoder.decode([String: Organizer].self, from: data)
+            print("Got organizerData")
+            completionHandler(organizerData)
+       } catch {
+            print("Organizer decoding failed")
+            completionHandler(nil)
+       }
+   }
+   task.resume()
+}
+
+func getImage(_ endPoint: String, imageName: String, completionHandler: @escaping (UIImage?) -> Void) -> Void {
+    let url = URL(string: "\(endPoint)img/\(imageName)/")!
+    let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+        guard let data = data else {
+            completionHandler(nil)
+            print("No data for \(imageName)")
+            return
+        }
+        guard let image = UIImage(data: data) else {
+            completionHandler(nil)
+            print("Cannot decode \(imageName)")
+            return
+        }
+        saveImage(image, imageName: imageName)
+        completionHandler(image)
+        print("Got \(imageName)")
+    }
+    task.resume()
+}
+
+func saveImage(_ image: UIImage, imageName: String) -> Void {
+    let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+    let imageHomeURL = documentsDirectory.appendingPathComponent(imageName)
+    do {
+        try image.pngData()!.write(to: imageHomeURL)
+        print("Saved \(imageName)")
+    } catch {
+        print("Couldn't save \(imageName)")
+    }
 }

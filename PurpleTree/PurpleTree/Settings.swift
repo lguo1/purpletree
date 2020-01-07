@@ -9,6 +9,8 @@
 import SwiftUI
 import UserNotifications
 
+import SwiftUI
+
 struct Settings: View {
     @EnvironmentObject var userData: UserData
     var body: some View {
@@ -19,13 +21,12 @@ struct Settings: View {
                         Text("Enable Calendar Scheduling")
                     }
                     Picker("Sort by", selection: $userData.sortBy) {
-                        ForEach(UserData.SortBy.allCases, id: \.self) {
-                            category in
+                        ForEach(SortBy.allCases, id: \.self) { category in
                             Text(category.rawValue)
                         }
                     }
                     Button(action: {
-                        self.userData.get()
+                        self.userData.getData()
                     }) {
                         Text("Refresh")
                         .foregroundColor(Color.black)

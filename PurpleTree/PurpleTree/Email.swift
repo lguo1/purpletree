@@ -16,11 +16,11 @@ struct Email: View {
     @State var invalidEmail = false
     @State var emptyEmail = false
     @State var email: String = ""
-    @Binding var subscribed: Bool
+    @EnvironmentObject var userData: UserData
+    var organizer: Organizer
     enum AlertType {
         case subscribed, internetError, invalid, empty, unsubscribed
     }
-    var organizer: String
     var submitButton: some View {
         Button(action: {
             self.submit()
@@ -33,7 +33,7 @@ struct Email: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .leading) {
-                Text("To join the mailing list of \(organizer), please provide your email address below.")
+                Text("To join the mailing list of \(organizer.id), please provide your email address below.")
                     .font(.headline)
                     .padding()
                 List {
@@ -48,11 +48,11 @@ struct Email: View {
         .alert(isPresented: $alert) {
             switch alertType {
             case .subscribed:
-            return Alert(title: Text("Subscribed"), message: Text("Thank your for joining the mailing list of \(organizer)."), dismissButton: .default(Text("OK")))
+                return Alert(title: Text("Subscribed"), message: Text("Thank your for joining the mailing list of \(organizer.id)."), dismissButton: .default(Text("OK")))
             case .unsubscribed:
-            return Alert(title: Text("Unsubscribed"), message: Text("You have unsubscribed from \(organizer)."), dismissButton: .default(Text("OK")))
+                return Alert(title: Text("Unsubscribed"), message: Text("You have unsubscribed from \(organizer.id)."), dismissButton: .default(Text("OK")))
             case .internetError:
-                return Alert(title: Text("Error"), message: Text("Cannot subcribe to the mailing list of \(organizer) due to an internet problem. Try again later."), dismissButton: .default(Text("OK")))
+                return Alert(title: Text("Error"), message: Text("Cannot subcribe to the mailing list of \(organizer.id) due to an internet problem. Try again later."), dismissButton: .default(Text("OK")))
             case .invalid:
                 return Alert(title: Text("Error"), message: Text("Please provide a valid email address for contact."), dismissButton: .default(Text("OK")))
             case .empty:
@@ -66,15 +66,14 @@ struct Email: View {
             self.alertType = .empty
         } else if validateEmail(email) {
             UserDefaults.standard.set(email, forKey: "Email")
-            post("\(UserData.shared.endPoint)subscribe/", dic: ["email": email, "organizer": organizer]) {feedback in
+            post("\(UserData.shared.endPoint)subscribe/", dic: ["email": email, "organizer": organizer.id]) {feedback in
                 if feedback != nil {
-                    if self.subscribed {
-                        self.subscribed = false
-                        self.alert = true
+                   DispatchQueue.main.async { self.userData.organizerData[self.organizer.id]!.subscribed = !self.userData.organizerData[self.organizer.id]!.subscribed
+                    }
+                    self.alert = true
+                    if self.organizer.subscribed {
                         self.alertType = .unsubscribed
                     } else {
-                        self.subscribed = true
-                        self.alert = true
                         self.alertType = .subscribed
                     }
                 } else {
@@ -89,8 +88,3 @@ struct Email: View {
     }
 }
 
-func validateEmail(_ email: String) -> Bool{
-    let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
-    let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
-    return emailPred.evaluate(with: email)
-}

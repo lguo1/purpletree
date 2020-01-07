@@ -1,26 +1,24 @@
 //
-//  Organizer.swift
+//  OrganizerDetail.swift
 //  Purpletree
 //
-//  Created by apple on 2020/1/5.
+//  Created by apple on 2020/1/7.
 //  Copyright © 2020 purpletree. All rights reserved.
 //
 
 import SwiftUI
 
-struct Organizer: View {
-    let organizer: String
-    let overview: String
+struct OrganizerDetail: View {
+    let organizer: Organizer
     var body: some View {
         NavigationView {
             VStack{
-                Text(overview)
+                Text(organizer.overview)
                 .font(.headline)
                 Spacer()
             }
             .padding()
-            .navigationBarTitle(Text(organizer))
+            .navigationBarTitle(Text(organizer.id))
         }
     }
 }
-

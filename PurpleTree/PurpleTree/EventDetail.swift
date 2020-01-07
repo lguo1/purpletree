@@ -9,46 +9,42 @@
 import SwiftUI
 
 struct EventDetail: View {
-    @EnvironmentObject private var loader: Loader
+    @EnvironmentObject var userData: UserData
     @State var showingSheet = false
     @State var sheetType = SheetType.organizer
     var event: Event
-    @State var subscribed: Bool {
-        didSet { UserDefaults.standard.set(subscribed, forKey: event.organizer)
-        }
-    }
     var body: some View {
         GeometryReader { proxy in
             VStack(alignment: .leading) {
-                DetailImage(event: self.event, screenSize: proxy.size)
-                    .environmentObject(self.loader)
+                ImageDetail(event: self.event, screenSize: proxy.size)
+                    .environmentObject(self.userData)
                 Spacer()
             }
             .overlay(ScrollView(.vertical, showsIndicators: false) {
-                Description(showingSheet: self.$showingSheet, sheetType: self.$sheetType, subscribed: self.$subscribed, event:self.event, screenSize: proxy.size)
-                    .environmentObject(self.loader)
+                Description(showingSheet: self.$showingSheet, sheetType: self.$sheetType, event:self.event, screenSize: proxy.size)
+                    .environmentObject(self.userData)
             })
             .sheet(isPresented: self.$showingSheet) {
                 if self.sheetType == .email {
-                    Email(subscribed: self.$subscribed, organizer: self.event.organizer)
+                    Email(organizer: self.userData.organizerData[self.event.organizer]!)
+                        .environmentObject(self.userData)
                 } else if self.sheetType == .organizer {
-                    Organizer(organizer: self.event.organizer, overview: UserData.shared.overviews[self.event.organizer]!)
+                    OrganizerDetail(organizer: self.userData.organizerData[self.event.organizer]!)
                 }
             }
         }
         .edgesIgnoringSafeArea(.top)
     }
 }
-
-struct DetailImage: View {
-    @EnvironmentObject private var loader: Loader
+struct ImageDetail: View {
+    @EnvironmentObject var userData: UserData
     var event: Event
     let screenSize: CGSize
     var body: some View {
         Color(red: event.red, green: event.green, blue: event.blue)
         .overlay(
             VStack {
-                Image(uiImage: loader.detailImage)
+                Image(uiImage: userData.imageData[event.id]![1] ?? UIImage())
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: screenSize.width)
@@ -58,21 +54,73 @@ struct DetailImage: View {
     }
 }
 
+struct SpeakerDescription: View {
+    @EnvironmentObject var userData: UserData
+    @State var showingAlert = false
+    var event: Event
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Group {
+                Text(event.speaker)
+                    .font(.title)
+                    .padding(.bottom, 10)
+                Text(event.speakerTitle)
+                HStack(alignment: .top) {
+                    Group {
+                        Text(event.date)
+                        Text(event.time)
+                    }
+                }
+                Text(event.location)
+                }
+                .padding(.trailing)
+                .padding(.leading)
+                
+            }
+            Spacer()
+            Button(action: {
+                self.userData.eventData[self.event.id]!.interest.toggle()
+            }) {
+                VStack{
+                    if userData.eventData[event.id]!.interest {
+                        Image("logo")
+                        .renderingMode(.original)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 25)
+                        .padding()
+                        .animation(.easeIn)
+                    } else {
+                        Text("Like")
+                        .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
+                        .padding()
+                    }
+                }
+            }
+            .alert(isPresented: $showingAlert) {
+            Alert(title: Text("Event Scheduled"), message: Text("Your event has been added to your calendar"), dismissButton: .default(Text("OK")))
+            }
+        }
+    }
+}
+
 struct Description: View {
     @State var alert = false
     @State var alertType = AlertType.subscribed
-    @EnvironmentObject private var loader: Loader
+    @EnvironmentObject var userData: UserData
     @Binding var showingSheet: Bool
     @Binding var sheetType: SheetType
-    @Binding var subscribed: Bool
-    enum AlertType {
-        case subscribed, unsubscribed, subscriptionError, loadingError
-    }
     var event: Event
     let screenSize: CGSize
+    
+    enum AlertType {
+        case subscribed, unsubscribed, subscriptionError
+    }
     var organizerButton: some View {
         Button(action: {
-            self.getOrganizer()
+            self.showingSheet = true
+            self.sheetType = .organizer
         }) {
             Text(self.event.organizer)
             .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
@@ -82,8 +130,8 @@ struct Description: View {
         Button(action: {
             self.subscribe()
         }) {
-            if subscribed {
-                Image(systemName: "person.2.filled")
+            if userData.organizerData[event.organizer]!.subscribed {
+                Image(systemName: "person.2.fill")
                 .foregroundColor(.black)
             } else {
                 Image(systemName: "person.2")
@@ -97,7 +145,7 @@ struct Description: View {
                 .frame(height: screenSize.height/2)
             VStack(alignment: .leading){
                 SpeakerDescription(event: event)
-                    .environmentObject(loader)
+                    .environmentObject(userData)
                     .padding(.top, 30)
                     .padding(.bottom, 30)
                 Text(event.description)
@@ -131,44 +179,19 @@ struct Description: View {
                 return Alert(title: Text("Unsubscribed"), message: Text("You have unsubscribed from \(event.organizer)."), dismissButton: .default(Text("OK")))
             case .subscriptionError:
                 return Alert(title: Text("Error"), message: Text("Cannot subcribe to the mailing list of \(event.organizer) due to an internet problem. Try again later."), dismissButton: .default(Text("OK")))
-            case .loadingError:
-                return Alert(title: Text("Error"), message: Text("Cannot load information of \(event.organizer). Try again later."), dismissButton: .default(Text("OK")))
-            }
-        }
-    }
-    func getOrganizer() {
-        if UserData.shared.overviews[event.organizer] != nil {
-            self.showingSheet = true
-            self.sheetType = .organizer
-        } else {
-            getString("\(UserData.shared.endPoint)organizer/\(event.organizer.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)")
-            {overview in
-                if let overview = overview {
-                    UserData.shared.overviews[self.event.organizer] = overview
-                    UserData.shared.saveOverviews()
-                    self.showingSheet = true
-                    self.sheetType = .organizer
-                } else {
-                    self.alertType = .loadingError
-                    self.alert = true
-                }
             }
         }
     }
     
     func subscribe() {
-        if let email = UserDefaults.standard.string(forKey: "email") {
+        if let email = UserDefaults.standard.string(forKey: "Email") {
             post("\(UserData.shared.endPoint)subscribe/", dic: ["email": email, "organizer": event.organizer]) {feedback in
                 if feedback == "done" {
-                    if self.subscribed {
-                        self.subscribed = false
-                        self.alertType = .subscribed
-                        self.alert = true
-                    } else {
-                        self.subscribed = true
-                        self.alertType = .unsubscribed
-                        self.alert = true
+                   DispatchQueue.main.async {
+                    self.userData.organizerData[self.event.organizer]!.subscribed = !self.userData.organizerData[self.event.organizer]!.subscribed
                     }
+                    self.alertType = .subscribed
+                    self.alert = true
                 } else {
                     self.alertType = .subscriptionError
                     self.alert = true
@@ -181,52 +204,3 @@ struct Description: View {
     }
 }
 
-struct SpeakerDescription: View {
-    @EnvironmentObject private var loader: Loader
-    var event: Event
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Group {
-                Text(event.speaker)
-                    .font(.title)
-                    .padding(.bottom, 10)
-                Text(event.speakerTitle)
-                HStack(alignment: .top) {
-                    Group {
-                        Text(event.date)
-                        Text(event.time)
-                    }
-                }
-                Text(event.location)
-                }
-                .padding(.trailing)
-                .padding(.leading)
-                
-            }
-            Spacer()
-            Button(action: {
-                self.loader.changeInterest.toggle()
-            }) {
-                VStack{
-                    if loader.interest {
-                        Image("logo")
-                        .renderingMode(.original)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 25)
-                        .padding()
-                        .animation(.easeIn)
-                    } else {
-                        Text("Like")
-                        .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
-                        .padding()
-                    }
-                }
-            }
-            .alert(isPresented: $loader.showingAlert) {
-            Alert(title: Text("Event Scheduled"), message: Text("Your event has been added to your calendar"), dismissButton: .default(Text("OK")))
-            }
-        }
-    }
-}

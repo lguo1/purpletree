@@ -9,11 +9,13 @@
 import SwiftUI
 import Combine
 
-struct Home: View{
-    @EnvironmentObject private var userData: UserData
+import SwiftUI
+
+struct Home: View {
+    @EnvironmentObject var userData: UserData
     @State var showingSheet = false
     @State var sheetType = SheetType.settings
-    var profileButton: some View {
+    var settingsButton: some View {
         Button(action: {
             self.showingSheet.toggle()
             self.sheetType = .settings
@@ -24,37 +26,33 @@ struct Home: View{
                 .accessibility(label: Text("Settings"))
         }
     }
-    
     var body: some View {
         GeometryReader { proxy in
             NavigationView {
                 ScrollView(.vertical, showsIndicators: false) {
-                    VStack{
-                        if self.userData.events.count == 0 {
+                    VStack {
+                        if self.userData.eventData.count == 0 {
                             NoEvent(showingSheet: self.$showingSheet, sheetType: self.$sheetType, screenSize: proxy.size)
-                            .padding(.leading)
                             .padding(.bottom, 20)
-                            .padding(.trailing)
                         } else {
-                            ForEach(self.userData.events) {event in
+                            ForEach(self.userData.sorted) { event in
                                 HomeRow(event: event, screenSize: proxy.size)
                                 .environmentObject(self.userData)
-                                .padding(.leading)
                                 .padding(.bottom, 20)
-                                .padding(.trailing)
                             }
                             AddEvent(showingSheet: self.$showingSheet, sheetType: self.$sheetType, screenSize: proxy.size)
-                            .padding(.leading)
                             .padding(.bottom, 20)
-                            .padding(.trailing)
                         }
+                            
                     }
+                    .padding(.leading)
+                    .padding(.trailing)
                 }
                 .navigationBarTitle(
-                    Text("PURPLETREE")
-                        .font(.title)
-                        .fontWeight(.heavy))
-                .navigationBarItems(trailing: self.profileButton)
+                Text("PURPLETREE")
+                    .font(.title)
+                    .fontWeight(.heavy))
+                .navigationBarItems(trailing: self.settingsButton)
                 .sheet(isPresented: self.$showingSheet) {
                     if self.sheetType == .settings {
                         Settings()
@@ -115,59 +113,45 @@ struct NoEvent: View {
     }
 }
 
-struct HomeRow: View {
-    @EnvironmentObject private var userData: UserData
-    var eventIndex: Int {
-        userData.events.firstIndex(where: { $0.id == event.id })!
-    }
-    var event: Event
-    let screenSize: CGSize
-    var body: some View {
-        HStack {
-            NavigationLink(
-            destination: EventDetail(event: event, subscribed: UserDefaults.standard.bool(forKey: event.organizer)).environmentObject(userData.events[eventIndex].loader)){
-                HomeItem(event: event, screenSize: screenSize).environmentObject(userData.events[eventIndex].loader)
-            }
-        }
-    }
-}
 
-struct HomeItem: View{
-    @EnvironmentObject private var loader: Loader
+struct HomeRow: View{
+    @EnvironmentObject var userData: UserData
     var event: Event
     let screenSize: CGSize
     var body: some View {
-        VStack{
-            Color(red: event.red, green: event.green, blue: event.blue)
-                .frame(height: screenSize.height/4)
-                .cornerRadius(10)
-                .shadow(radius: 5)
-            .overlay(
-                HStack {
-                    VStack {
+        NavigationLink(destination: EventDetail(event: event)) {
+            VStack{
+                Color(red: event.red, green: event.green, blue: event.blue)
+                    .frame(height: screenSize.height/4)
+                    .cornerRadius(10)
+                    .shadow(radius: 5)
+                .overlay(
+                    HStack {
+                        VStack {
+                            Spacer()
+                            Image(uiImage: userData.imageData[event.id]![0] ?? UIImage())
+                                .renderingMode(.original)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: screenSize.height/4 - 20)
+                                .padding(.leading, 10)
+                        }
                         Spacer()
-                        Image(uiImage: self.loader.homeImage)
-                            .renderingMode(.original)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(height: screenSize.height/4 - 20)
-                            .padding(.leading, 10)
+                    })
+                .overlay(
+                HStack {
+                    Spacer()
+                    VStack {
+                        Text(userData.eventData[event.id]!.speakerHome)
+                            .multilineTextAlignment(.trailing)
+                            .font(.title)
+                            .foregroundColor(Color.white)
+                            .padding(.trailing, 10)
+                            .padding(.top, 10)
+                        Spacer()
                     }
-                    Spacer()
                 })
-            .overlay(
-            HStack {
-                Spacer()
-                VStack {
-                    Text(event.speakerHome)
-                        .multilineTextAlignment(.trailing)
-                        .font(.title)
-                        .foregroundColor(Color.white)
-                        .padding(.trailing, 10)
-                        .padding(.top, 10)
-                    Spacer()
-                }
-            })
+            }
         }
     }
 }
