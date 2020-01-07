@@ -7,9 +7,6 @@
 //
 
 import SwiftUI
-import UserNotifications
-
-import SwiftUI
 
 struct Settings: View {
     @EnvironmentObject var userData: UserData
@@ -17,6 +14,9 @@ struct Settings: View {
         NavigationView {
             Form{
                 Section{
+                    Toggle(isOn: $userData.allowsNotification) {
+                        Text("Allows Notification")
+                    }
                     Toggle(isOn: $userData.prefersCalendar) {
                         Text("Enable Calendar Scheduling")
                     }

@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import UserNotifications
 
 final class UserData: ObservableObject {
     //Unpublished variables
@@ -16,28 +17,91 @@ final class UserData: ObservableObject {
     var tempImageData = [String: [UIImage?]]()
     var endPoint = "http://localhost:5050/"
     //Settings
-    @Published var sortBy = SortBy.all
+    var requested = false
+    @Published var allowsNotification = false {
+        didSet {
+            if !requested {
+                requestNotification()
+            }
+        }
+    }
+    @Published var sortBy = SortBy.all {
+        didSet {
+            switch sortBy {
+            case .all:
+                sorted = Array(eventData.values).sorted(by: {
+                    if $0.decided == $1.decided {
+                        return  $0.start < $1.start
+                    } else {
+                        return $0.decided
+                    }
+                })
+            default:
+                sorted = Array(eventData.values)
+                .filter({$0.category.rawValue == sortBy.rawValue})
+                .sorted(by: {
+                    if $0.decided == $1.decided {
+                        return  $0.start < $1.start
+                    } else {
+                        return $0.decided
+                    }
+                })
+            }
+        }
+    }
     @Published var prefersCalendar = UserDefaults.standard.bool(forKey: "PrefersCalendar") {
         didSet {UserDefaults.standard.set(prefersCalendar, forKey: "PrefersCalendar")
         }
     }
     //Data
-    @Published var organizerData = loadOrganizerData()
-    @Published var eventData = loadEventData()
+    @Published var organizerData = loadOrganizerData() {
+        didSet {
+            saveOrganizerData()
+        }
+    }
+    @Published var eventData = loadEventData() {
+        didSet {
+            saveEventData()
+        }
+    }
     @Published var imageData = [String: [UIImage?]]()
     @Published var sorted = [Event]()
     
     init() {
-        sorted = Array(eventData.values).sorted(by: {
-                if $0.decided == $1.decided {
-                    return  $0.start < $1.start
-                } else {
-                    return $0.decided
-                }
-            })
+        checkNotification()
+        sortBy = .all
         loadImageData()
         getData()
-// needs to make sure sortby is all
+    }
+    
+    func checkNotification() {
+        let center = UNUserNotificationCenter.current()
+        center.getNotificationSettings { (settings) in
+        if settings.authorizationStatus != .authorized {
+                DispatchQueue.main.async {
+                    self.requested = true
+                    self.allowsNotification = false
+                    self.requested = false
+                }
+          } else {
+                DispatchQueue.main.async {
+                    self.requested = true
+                    self.allowsNotification = false
+                    self.requested = false
+                }
+            }
+        }
+    }
+    
+    func requestNotification() {
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
+            DispatchQueue.main.async {
+                self.requested = true
+                self.allowsNotification = granted
+                self.requested = false
+            }
+        }
     }
     
     func getData() -> Void {
@@ -57,26 +121,18 @@ final class UserData: ObservableObject {
             }
         }
         textgroup.notify(queue: .main) {
-            self.saveData()
             self.eventData = self.tempEventData
             self.organizerData = self.tempOrganizerData
             self.imageData = self.tempImageData
-            self.sorted = Array(self.eventData.values).sorted(by: {
-                if $0.decided == $1.decided {
-                    return  $0.start < $1.start
-                } else {
-                    return $0.decided
-                }
-            })
+            self.sortBy = .all
             print("Networking completes")
         }
     }
     
-    func saveData() -> Void {
+    func saveOrganizerData() -> Void {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let jsonEncoder = JSONEncoder()
         let organizerURL = documentsDirectory.appendingPathComponent("organizerData.json")
-        let eventURL = documentsDirectory.appendingPathComponent("eventData.json")
         do {
             let data = try jsonEncoder.encode(self.tempOrganizerData)
             try data.write(to: organizerURL)
@@ -85,6 +141,12 @@ final class UserData: ObservableObject {
         catch {
             print("Couldn't save organizerData.json")
         }
+    }
+    
+    func saveEventData() -> Void {
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let jsonEncoder = JSONEncoder()
+        let eventURL = documentsDirectory.appendingPathComponent("eventData.json")
         do {
             let data = try jsonEncoder.encode(self.tempEventData)
             try data.write(to: eventURL)
@@ -98,8 +160,17 @@ final class UserData: ObservableObject {
     func updateEvent(_ new: [String: Event]) -> [String: Event] {
         var output = new
         for data in output {
-            if let saved = self.eventData[data.key]{
-                output[data.key]!.interest = saved.interest
+            if let saved = self.eventData[data.key] {
+                if saved.interest {
+                    output[data.key]!.interest = saved.interest
+                    if data.value.decided {
+                        if saved.start != data.value.start || saved.location != data.value.location {
+                            addToCalendar(id: saved.id, speaker: saved.speaker, start: saved.start, end: saved.end, location: saved.location)
+                        }
+                    } else if saved.decided {
+                        removeFromCalendar(id: saved.id)
+                    }
+                }
             }
         }
         return output
@@ -165,9 +236,7 @@ final class UserData: ObservableObject {
                     innerGroup.leave()
                     }
                 } else {
-                    pair.append(imageHome)
-                    pair.append(imageDetail)
-                    self.tempImageData[data.key] = pair
+                    self.tempImageData[data.key] = imageData[data.key]
                     innerGroup.leave()
                 }
             }

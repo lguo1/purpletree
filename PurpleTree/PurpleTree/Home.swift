@@ -86,6 +86,7 @@ struct AddEvent: View {
                 Image(systemName: "plus")
                 .foregroundColor(Color.white)
                 .imageScale(.large))
+                .accessibility(label: Text("Add Event"))
             }
         }
     }
@@ -108,6 +109,7 @@ struct NoEvent: View {
                     Image(systemName: "exclamationmark")
                     .foregroundColor(Color.white)
                     .imageScale(.large))
+                    .accessibility(label: Text("No Event"))
             }
         }
     }

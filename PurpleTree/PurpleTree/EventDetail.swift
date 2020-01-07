@@ -57,6 +57,29 @@ struct ImageDetail: View {
 struct SpeakerDescription: View {
     @EnvironmentObject var userData: UserData
     @State var showingAlert = false
+    
+    var likeButton: some View {
+        Button(action: {
+            self.userData.eventData[self.event.id]!.interest.toggle()
+        }) {
+            VStack{
+                if userData.eventData[event.id]!.interest {
+                    Image("logo")
+                    .renderingMode(.original)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: 25)
+                    .padding()
+                    .animation(.easeIn)
+                } else {
+                    Text("Like")
+                    .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
+                    .padding()
+                }
+            }
+        }
+    }
+    
     var event: Event
     var body: some View {
         HStack {
@@ -79,27 +102,18 @@ struct SpeakerDescription: View {
                 
             }
             Spacer()
-            Button(action: {
-                self.userData.eventData[self.event.id]!.interest.toggle()
-            }) {
-                VStack{
-                    if userData.eventData[event.id]!.interest {
-                        Image("logo")
-                        .renderingMode(.original)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 25)
-                        .padding()
-                        .animation(.easeIn)
-                    } else {
-                        Text("Like")
-                        .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
-                        .padding()
-                    }
-                }
-            }
-            .alert(isPresented: $showingAlert) {
-            Alert(title: Text("Event Scheduled"), message: Text("Your event has been added to your calendar"), dismissButton: .default(Text("OK")))
+            likeButton
+        }
+        .alert(isPresented: $showingAlert) {
+        Alert(title: Text("Event Scheduled"), message: Text("Your event has been added to your calendar"), dismissButton: .default(Text("OK")))
+        }
+    }
+    func changeIntererst() {
+        self.userData.eventData[self.event.id]!.interest.toggle()
+        if self.userData.eventData[self.event.id]!.interest && self.event.decided {
+            scheduleNotification(title: self.event.speaker, body: "Happening at \(self.event.location) in 5 mins.")
+            if self.userData.prefersCalendar {
+                addToCalendar(id: self.event.id, speaker: self.event.speaker, start: self.event.start, end: self.event.end, location: self.event.location)
             }
         }
     }
@@ -178,7 +192,7 @@ struct Description: View {
             case .unsubscribed:
                 return Alert(title: Text("Unsubscribed"), message: Text("You have unsubscribed from \(event.organizer)."), dismissButton: .default(Text("OK")))
             case .subscriptionError:
-                return Alert(title: Text("Error"), message: Text("Cannot subcribe to the mailing list of \(event.organizer) due to an internet problem. Try again later."), dismissButton: .default(Text("OK")))
+                return Alert(title: Text("Failed"), message: Text("Cannot join the mailing list of \(event.organizer) due to an internet problem. Try again later."), dismissButton: .default(Text("OK")))
             }
         }
     }
@@ -187,10 +201,15 @@ struct Description: View {
         if let email = UserDefaults.standard.string(forKey: "Email") {
             post("\(UserData.shared.endPoint)subscribe/", dic: ["email": email, "organizer": event.organizer]) {feedback in
                 if feedback == "done" {
+                    let old = self.userData.organizerData[self.event.organizer]!.subscribed
                    DispatchQueue.main.async {
-                    self.userData.organizerData[self.event.organizer]!.subscribed = !self.userData.organizerData[self.event.organizer]!.subscribed
+                    self.userData.organizerData[self.event.organizer]!.subscribed = !old
                     }
-                    self.alertType = .subscribed
+                    if old {
+                        self.alertType = .unsubscribed
+                    } else {
+                        self.alertType = .subscribed
+                    }
                     self.alert = true
                 } else {
                     self.alertType = .subscriptionError

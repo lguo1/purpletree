@@ -33,9 +33,15 @@ struct Email: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .leading) {
-                Text("To join the mailing list of \(organizer.id), please provide your email address below.")
+                if organizer.subscribed {
+                    Text("To unsubscribe from \(organizer.id), please provide your subscribed email address.")
                     .font(.headline)
                     .padding()
+                } else {
+                    Text("To join the mailing list of \(organizer.id), please provide your email address below.")
+                    .font(.headline)
+                    .padding()
+                }
                 List {
                     TextField("leaves@purpletree", text: self.$email)
                         .padding(.leading)

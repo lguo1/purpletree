@@ -8,7 +8,7 @@
 
 import EventKit
 
-func addToCalendar(id: String, speaker: String, start: String, end: String, description: String) {
+func addToCalendar(id: String, speaker: String, start: String, end: String, location: String) {
     let ekid = UserDefaults.standard.string(forKey:"ek"+id) ?? String()
     let eventStore = EKEventStore()
     let ekEvent = eventStore.event(withIdentifier: ekid)
@@ -20,7 +20,7 @@ func addToCalendar(id: String, speaker: String, start: String, end: String, desc
             ekEvent.title = speaker
             ekEvent.startDate = formatter.date(from: start)
             ekEvent.endDate = formatter.date(from: end)
-            ekEvent.notes = description
+            ekEvent.notes = location
             do {
                 try eventStore.save(ekEvent, span: .thisEvent)
                 UserDefaults.standard.set(ekEvent.eventIdentifier, forKey: "ek"+id)
@@ -35,7 +35,7 @@ func addToCalendar(id: String, speaker: String, start: String, end: String, desc
             ekEvent.title = speaker
             ekEvent.startDate = formatter.date(from: start)
             ekEvent.endDate = formatter.date(from: end)
-            ekEvent.notes = description
+            ekEvent.notes = location
             ekEvent.calendar = eventStore.defaultCalendarForNewEvents
             do {
                 try eventStore.save(ekEvent, span: .thisEvent)
@@ -48,7 +48,10 @@ func addToCalendar(id: String, speaker: String, start: String, end: String, desc
     }
 }
 func removeFromCalendar(id: String) {
-    let ekid = UserDefaults.standard.string(forKey:"ek"+id)!
+    guard let ekid = UserDefaults.standard.string(forKey:"ek"+id) else {
+        print("Nothing to remove")
+        return
+    }
     let eventStore = EKEventStore()
     eventStore.requestAccess(to: .event) {(granted, error) in
         if !granted { return }
@@ -57,11 +60,10 @@ func removeFromCalendar(id: String) {
             do {
                 try eventStore.remove(ekEvent, span: .thisEvent, commit: true)
                 UserDefaults.standard.removeObject(forKey: "ek"+id)
+                print("Removed event with id \(id)")
             } catch {
-                print(error)
+                print("Cannot remove event with id \(id)")
             }
-        } else {
-            print("nothing to remove")
         }
     }
 }

@@ -8,7 +8,7 @@
 		<true/>
 	</dict>
 	<key>NSCalendarsUsageDescription</key>
-	<string>This app accesses calendar in order to save user liked events in calendar. </string>
+	<string>This app accesses calendar to schedule events. Users can grant its permission in settings</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>

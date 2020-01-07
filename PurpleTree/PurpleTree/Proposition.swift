@@ -32,6 +32,7 @@ struct Proposition: View {
             Image(systemName: "plus")
             .imageScale(.large)
             .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
+            .accessibility(label: Text("Add Event"))
         }
     }
     var askButton: some View {
@@ -42,6 +43,7 @@ struct Proposition: View {
             Image(systemName: "questionmark")
             .imageScale(.large)
             .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.6))
+            .accessibility(label: Text("Ask"))
         }
     }
 
