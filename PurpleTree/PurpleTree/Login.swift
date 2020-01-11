@@ -16,7 +16,7 @@ struct Login: View {
             Section(header: Text("NAME")) {
                 TextField("Purple Leaves", text: self.$name)
             }
-            Section(header: Text("REACHABLE AT"), footer: Text("This email address will be used to subscribe you to student clubs, contact you after you submit an event proposal. ")) {
+            Section(header: Text("REACHABLE AT"), footer: Text("This email address will be used to subscribe you to student clubs, contact you after you submit an event proposal.")) {
                 TextField("leaves@purpletree.com", text: self.$email)
             }
         }

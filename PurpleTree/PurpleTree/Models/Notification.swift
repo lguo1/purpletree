@@ -33,7 +33,7 @@ func scheduleNotification(id: String, title: String, body: String, start: String
     UserDefaults.standard.set(uuid, forKey: "uu"+id)
     let request = UNNotificationRequest(identifier: uuid, content: content, trigger: trigger)
     center.add(request)
-    print("Notification of \(title) scheduled")
+    print("Scheduled notification with \(id)")
 }
 
 func removeNotification(id: String) {
@@ -43,4 +43,5 @@ func removeNotification(id: String) {
     }
     let center = UNUserNotificationCenter.current()
     center.removePendingNotificationRequests(withIdentifiers: [uuid])
+    print("Removed notification with \(id)")
 }

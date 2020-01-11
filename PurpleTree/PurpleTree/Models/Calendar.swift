@@ -24,7 +24,7 @@ func addToCalendar(id: String, speaker: String, start: String, end: String, loca
             do {
                 try eventStore.save(ekEvent, span: .thisEvent)
                 UserDefaults.standard.set(ekEvent.eventIdentifier, forKey: "ek"+id)
-                print("added \(ekEvent.eventIdentifier ?? "none") again")
+                print("Edited event with \(id) in calendar")
             } catch {
                 print(error)
             }
@@ -40,7 +40,7 @@ func addToCalendar(id: String, speaker: String, start: String, end: String, loca
             do {
                 try eventStore.save(ekEvent, span: .thisEvent)
                 UserDefaults.standard.set(ekEvent.eventIdentifier, forKey: "ek"+id)
-                print("added \(ekEvent.eventIdentifier ?? "none")")
+                print("Added event with \(id) to calendar")
             } catch {
                 print(error)
             }
@@ -49,7 +49,7 @@ func addToCalendar(id: String, speaker: String, start: String, end: String, loca
 }
 func removeFromCalendar(id: String) {
     guard let ekid = UserDefaults.standard.string(forKey:"ek"+id) else {
-        print("Nothing to remove")
+        print("No calendar event to remove")
         return
     }
     let eventStore = EKEventStore()
