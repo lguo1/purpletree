@@ -17,7 +17,7 @@ func requestNotification() {
     }
 }
 
-func scheduleNotification(title: String, body: String, start: String) {
+func scheduleNotification(id: String, title: String, body: String, start: String) {
     let center = UNUserNotificationCenter.current()
     let content = UNMutableNotificationContent()
     content.title = title
@@ -29,7 +29,18 @@ func scheduleNotification(title: String, body: String, start: String) {
     let notificationDate = Calendar.current.date(byAdding: DateComponents(minute: -5), to: startDate)
     let dateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: notificationDate!)
     let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+    let uuid = UUID().uuidString
+    UserDefaults.standard.set(uuid, forKey: "uu"+id)
+    let request = UNNotificationRequest(identifier: uuid, content: content, trigger: trigger)
     center.add(request)
     print("Notification of \(title) scheduled")
+}
+
+func removeNotification(id: String) {
+    guard let uuid = UserDefaults.standard.string(forKey:"uu"+id) else {
+        print("No notification to remove")
+        return
+    }
+    let center = UNUserNotificationCenter.current()
+    center.removePendingNotificationRequests(withIdentifiers: [uuid])
 }

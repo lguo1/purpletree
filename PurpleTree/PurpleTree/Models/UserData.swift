@@ -17,6 +17,24 @@ final class UserData: ObservableObject {
     var tempImageData = [String: [UIImage?]]()
     var endPoint = "http://localhost:5050/"
     //Settings
+    @Published var name = UserDefaults.standard.string(forKey: "Name") ?? ""{
+        didSet {
+            if name == "" {
+                UserDefaults.standard.removeObject(forKey: "Name")
+            } else {
+                UserDefaults.standard.set(name, forKey: "Name")
+            }
+        }
+    }
+    @Published var email = UserDefaults.standard.string(forKey: "Email") ?? ""{
+        didSet {
+            if email == "" {
+                UserDefaults.standard.removeObject(forKey: "Email")
+            } else {
+                UserDefaults.standard.set(email, forKey: "Email")
+            }
+        }
+    }
     @Published var sortBy = SortBy.all {
         didSet {
             switch sortBy {

@@ -31,6 +31,9 @@ struct Event: Hashable, Codable, Identifiable {
     var green : Double
     var blue : Double
     var organizer: String
+    var funding: Bool
+    var bundle: String?
+    var background: String?
     enum Category: String, CaseIterable, Codable, Hashable {
         case arts = "Arts"
         case economics = "Economics"
@@ -41,5 +44,6 @@ struct Event: Hashable, Codable, Identifiable {
         case science = "Science"
         case sociology = "Sociology"
         case technology = "Technology"
+        case careers = "Careers"
     }
 }

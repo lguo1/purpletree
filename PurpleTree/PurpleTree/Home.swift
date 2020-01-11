@@ -55,13 +55,15 @@ struct Home: View {
                 .navigationBarItems(trailing: self.settingsButton)
                 .sheet(isPresented: self.$showingSheet) {
                     if self.sheetType == .settings {
-                        Settings()
+                        Settings(sheetType: self.$sheetType)
                         .environmentObject(self.userData)
                     } else if self.sheetType == .proposition {
                         Proposition()
                     } else if self.sheetType == .explanation {
                         Explanation(sheetType: self.$sheetType)
                         .environmentObject(self.userData)
+                    } else if self.sheetType == .feedback {
+                        Feedback()
                     }
                 }
             }
@@ -159,5 +161,5 @@ struct HomeRow: View{
 }
 
 enum SheetType {
-   case settings, proposition, explanation, email, organizer
+   case settings, proposition, explanation, email, organizer, feedback
 }

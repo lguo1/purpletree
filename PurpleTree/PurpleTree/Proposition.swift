@@ -74,7 +74,7 @@ struct Proposition: View {
                     case .proposed:
                         return Alert(title: Text("Success"), message: Text("You have created a new event. We will get back to you shortly."), dismissButton: .default(Text("OK")))
                     case .failed:
-                        return Alert(title: Text("Error"), message: Text("Cannot submit your form due to an internet problem. Try again later."), dismissButton: .default(Text("OK")))
+                        return Alert(title: Text("Failed"), message: Text("Cannot submit your form due to an internet problem. Try again later."), dismissButton: .default(Text("OK")))
                     case .empty:
                         return Alert(title: Text("Error"), message: Text("One or more places are empty."), dismissButton: .default(Text("OK")))
                     case .invalid:
@@ -90,7 +90,6 @@ struct Proposition: View {
         }
     }
     func clear() -> Void {
-        email = ""
         organizer = ""
         description = ""
         UserDefaults.standard.removeObject(forKey: "DraftEmail")

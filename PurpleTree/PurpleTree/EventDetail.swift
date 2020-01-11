@@ -29,7 +29,8 @@ struct EventDetail: View {
                     Email(organizer: self.userData.organizerData[self.event.organizer]!)
                         .environmentObject(self.userData)
                 } else if self.sheetType == .organizer {
-                    OrganizerDetail(organizer: self.userData.organizerData[self.event.organizer]!)
+                    OrganizerDetail(showingSheet: self.$showingSheet, sheetType: self.$sheetType, organizer: self.userData.organizerData[self.event.organizer]!)
+                        .environmentObject(self.userData)
                 }
             }
         }
@@ -56,8 +57,9 @@ struct ImageDetail: View {
 
 struct SpeakerDescription: View {
     @EnvironmentObject var userData: UserData
-    @State var showingAlert = false
-    
+    @Binding var alert: Bool
+    @Binding var alertType: DetailAlertType
+    var event: Event
     var likeButton: some View {
         Button(action: {
             self.changeInterest()
@@ -79,8 +81,6 @@ struct SpeakerDescription: View {
             }
         }
     }
-    
-    var event: Event
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -104,16 +104,20 @@ struct SpeakerDescription: View {
             Spacer()
             likeButton
         }
-        .alert(isPresented: $showingAlert) {
-        Alert(title: Text("Event Scheduled"), message: Text("Your event has been added to your calendar"), dismissButton: .default(Text("OK")))
-        }
     }
     func changeInterest() {
         self.userData.eventData[self.event.id]!.interest.toggle()
         if self.userData.eventData[self.event.id]!.interest && self.event.decided {
-            scheduleNotification(title: self.event.speaker, body: "Will begin at \(self.event.location) in 5 mins.", start: self.event.start)
+            scheduleNotification(id: self.event.id, title: self.event.speaker, body: "Will begin at \(self.event.location) in 5 mins.", start: self.event.start)
             if self.userData.prefersCalendar {
                 addToCalendar(id: self.event.id, speaker: self.event.speaker, start: self.event.start, end: self.event.end, location: self.event.location)
+                self.alertType = .scheduled
+                self.alert = true
+            }
+        } else {
+            removeNotification(id: self.event.id)
+            if self.userData.prefersCalendar {
+                removeFromCalendar(id: self.event.id)
             }
         }
     }
@@ -121,16 +125,12 @@ struct SpeakerDescription: View {
 
 struct Description: View {
     @State var alert = false
-    @State var alertType = AlertType.subscribed
+    @State var alertType = DetailAlertType.subscribed
     @EnvironmentObject var userData: UserData
     @Binding var showingSheet: Bool
     @Binding var sheetType: SheetType
     var event: Event
     let screenSize: CGSize
-    
-    enum AlertType {
-        case subscribed, unsubscribed, subscriptionError
-    }
     var organizerButton: some View {
         Button(action: {
             self.showingSheet = true
@@ -158,7 +158,7 @@ struct Description: View {
             Spacer()
                 .frame(height: screenSize.height/2)
             VStack(alignment: .leading){
-                SpeakerDescription(event: event)
+                SpeakerDescription(alert: $alert, alertType: $alertType, event: event)
                     .environmentObject(userData)
                     .padding(.top, 30)
                     .padding(.bottom, 30)
@@ -187,6 +187,8 @@ struct Description: View {
         }
         .alert(isPresented: $alert) {
             switch alertType {
+            case .scheduled:
+                return Alert(title: Text("Event Scheduled"), message: Text("Your event has been added to your calendar"), dismissButton: .default(Text("OK")))
             case .subscribed:
                 return Alert(title: Text("Subscribed"), message: Text("Thank you for joining the mailing list of \(event.organizer)."), dismissButton: .default(Text("Welcome")))
             case .unsubscribed:
@@ -222,4 +224,6 @@ struct Description: View {
         }
     }
 }
-
+enum DetailAlertType {
+    case subscribed, unsubscribed, subscriptionError, scheduled
+}

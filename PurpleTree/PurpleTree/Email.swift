@@ -42,10 +42,10 @@ struct Email: View {
                     .font(.headline)
                     .padding()
                 }
-                List {
-                    TextField("leaves@purpletree", text: self.$email)
-                        .padding(.leading)
-                }
+                TextField("leaves@purpletree", text: self.$email)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding(.leading)
+                    .padding(.trailing)
                 Spacer()
             }
             .navigationBarTitle(Text("Email"))
@@ -60,7 +60,7 @@ struct Email: View {
             case .internetError:
                 return Alert(title: Text("Error"), message: Text("Cannot subcribe to the mailing list of \(organizer.id) due to an internet problem. Try again later."), dismissButton: .default(Text("OK")))
             case .invalid:
-                return Alert(title: Text("Error"), message: Text("Please provide a valid email address for contact."), dismissButton: .default(Text("OK")))
+                return Alert(title: Text("Error"), message: Text("Please provide a valid email address."), dismissButton: .default(Text("OK")))
             case .empty:
                 return Alert(title: Text("Error"), message: Text("Empty email address"), dismissButton: .default(Text("Close")))
             }
