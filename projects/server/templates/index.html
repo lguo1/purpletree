@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	  	<meta charset="utf-8">
+	  	<meta name="viewport" content="width=device-width, initial-scale=1">
+	  	<title>Purple Help</title>
+	  	<style>
+	  		*{
+	  			margin:0;
+	  			padding:0;
+	  		}
+	  		body {
+				font-family: ReithSans,Arial,Helvetica,freesans,sans-serif;
+			}
+			h3 {
+				margin-top:1em;
+				margin-left:1em;
+				margin-bottom:1em;
+			}
+			.intro {
+				margin-left:2em;
+				margin-right:3em;
+				margin-bottom:2em;
+			}
+
+			.ask {
+        margin-top:.5em;
+				margin-left:2em;
+				margin-right:3em;
+				margin-bottom:1em;
+				font-weight: bold;
+			}
+			.answer {
+				margin-left:2em;
+				margin-right:3em;
+				margin-bottom:5em;
+			}
+      .phone {
+        font-family:'Roboto',arial,sans-serif;
+        font-weight: 550;
+        font-size:90%;
+      }
+			ul {
+        list-style-type:none;
+				margin-left:5em;
+				margin-right:3em;
+				margin-bottom:3em;
+			}
+
+			ul li {
+        text-decoration: none;
+				font-weight: bold;
+			}
+			ul li:hover {
+        font-style: italic;
+				text-decoration: underline;
+				font-weight: bold;
+			}
+      a {
+        text-decoration: none;
+        color:black;
+      }
+
+      p img {
+        height:1em;
+      }
+	  	</style>
+  </head>
+  <body>
+  		<h3>Purple Help</h3>
+  		<br>
+  		<p class="intro">This page will answer your questions about Purple Tree mobile app. Some common questions are: </p>
+  		<ul>
+  			<li><a href="#howtocreate">How to create an event?</a></li>
+  			<li><a href="#howtoreport">How to report a bug?</a></li>
+  			<li><a href="#nonspeaker">Can I create a non-speaker event, like a dance, a concert, or a study break?</a></li>
+  			<li><a href="#blankimages">Blank images</a></li>
+  			<li><a href="#email">Purpletree asks for my email, why?</a></li>
+  			<li><a href="#savecalendar">How to save events to my calendar?</a></li>
+  			<li><a href="#aftercreate">What will happen after I create an event?</a></li>
+  			<li><a href="#exclamationalert">Exclamation alert</a></li>
+  			<li><a href="#notifications">How to get notified about events?</a></li>
+  		</ul>
+
+      <p class="intro"> If you have additional questions, please ask them by referring to <img src="{{url_for('static',filename='img/person.crop.circle.jpg')}}"> > <span class="phone"> Feedback </span> on your app.
+      <br>
+      <br>
+      <br>
+      <br>
+      <hr>
+  		<section id ="howtocreate">
+  		<p class="ask">How to create an event?</p>
+  		<p class="answer">	Open <img src="{{url_for('static',filename='img/person.crop.circle.jpg')}}"> on the home page and tap <span class="phone"> Create an event</span>. Or scroll down to the bottom of the homepage and tap the rectangle with <img src="{{url_for('static',filename='img/plus.jpg')}}">. Purpletree will direct you to a form where you can submit a proposal of your event. After its submission, a review team will contact you through your provided email.</p>
+  		</section>
+
+  		<section id ="howtoreport">
+  		<p class="ask">How to report a bug?</p>
+  		<p class="answer">	Open <img src="{{url_for('static',filename='img/person.crop.circle.jpg')}}"> and tap <span class="phone"> Feedback </span>. This will direct you to a form where you can describe the bug. We are thankful for your feedback.</p>
+  		</section>
+
+  		</section id ="nonspeaker">
+  		<p class="ask">Can I create a non-speaker event, like a dance, a concert, or a study break?</p>
+  		<p class="answer"> Certainly, you can create any event happening on campus. Purpletree can show time and location of your event. Though it usually features a speaker profile on the cover of an event page, showing speaker profiles is <i>not necessary</i>. Some events like dances or concerts are better advertised by pictures of a group of people or pictures of a stage set. After you submit your event proposal, you and our review team will both determine its visual design. </p>
+  		</section>
+
+  		<section id ="blankimages">
+  		<p class="ask">Blank images</p>
+  		<p class="answer">	Purpletree sometimes show blank images because it is offline and couldn't find relevant images on your phone. This usually happens because you have cleared its memory, or cache. The best solution is to refresh Purpletree by going to <img src="{{url_for('static',filename='img/person.crop.circle.jpg')}}">  and tapping <span class="phone"> Refresh </span>. However, if blank images happen too often, this may be a bug of Purpletree. Report the problem by going to <img src="{{url_for('static',filename='img/person.crop.circle.jpg')}}"> > <span class="phone"> Feedback</span>.</p>
+  		</section>
+
+  		<section id ="email">
+  		<p class="ask">Why do I need to provide my email?</p>
+  		<p class="answer">Purpletree needs your email for many reasons. When you subscribe to a club, Purpletree needs your email to add you to the mailing list. When you create an event, Purpletree needs your email to put you in contact with the event review team. In other cases, rarely, Purpletree will send you version updates and other product information.</p>
+  		</section>
+
+  		<section id ="exclamationalert">
+  		<p class="ask">Exclamation alert</p>
+  		<p class="answer">When Purpletree shows a rectangle with <img src="{{url_for('static',filename='img/exclamationmark.jpg')}}">, it has troubles finding an event. Tap on <img src="{{url_for('static',filename='img/exclamationmark.jpg')}}">, you will find details of this problem. Usually this happens because you don't have an internet connection. Connect your phone to the internet and reload Purpletree. Less commonly, there really isn't any event. You can create more events by tapping <img src="{{url_for('static',filename='img/plus.jpg')}}">.</p>
+  		</section>
+
+  		<section id ="aftercreate">
+  		<p class="ask">What will happen after I create an event?</p>
+  		<p class="answer">After you submitted your event proposal, you will receive an email confirming your submission. Later our review team will reach back to you to tell you whether your event is approved or whether some details are needed. This process generally takes place within a day. However, if you haven't heard back from us after a day, check the spam inbox of your email. If you couldn't find our emails anywhere, your proposal likely didn't get submitted or yor submitted a wrong email address. In either case, the best way is to submit another proposal.</p></section>
+
+
+  		<section id ="savecalendar">
+  		<p class="ask">How to save events to my calendar?<p>
+  		<p class="answer">	Open <img src="{{url_for('static',filename='img/person.crop.circle.jpg')}}"> and toggle <span class="phone">Enable Calendar Scheduling</span>. This will allow Purpletree to save any event you have liked to your calendar app. When organizers change the time or location of your liked events, your calendar will get updated.</p>
+  		</section>
+
+  		<section id ="notifcations">
+  		<p class="ask">How to receive notifications about events?</p>
+  		<p class="answer">By default, Purpletree will try to notify you 5 minutes before your liked events start. However, it can only show you notifications if you give it permission. You can allow notifications by going to the system app of your phone. Alternatively, you can go to <img src="{{url_for('static',filename='img/person.crop.circle.jpg')}}"> > <span class="phone"> Allows notifications</span>.</p>
+  		</section>
+  		<br>
+  		<br>
+  		<p> </p>
+  </body>
+</html>
